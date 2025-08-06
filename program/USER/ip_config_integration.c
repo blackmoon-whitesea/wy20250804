@@ -8,30 +8,14 @@
 extern void process_uart_commands(void);
 extern void uart_rx_interrupt_handler(u8 received_char);
 
-// 全局变量
-u32 current_device_ip = 0xC0A80164;  // 默认IP: 192.168.1.100
+// 全局变量 (在SipMsgAnalysis.c中定义)
+extern u32 current_device_ip;
 
 // 在主循环中调用的函数
 void handle_ip_configuration(void)
 {
     // 处理串口接收到的IP配置命令
     process_uart_commands();
-}
-
-// 串口中断服务函数中调用 (修改现有的USART_IRQHandler)
-void USART1_IRQHandler(void)
-{
-    u8 received_char;
-    
-    if(USART_GetITStatus(USART1, USART_IT_RXNE) != RESET)
-    {
-        received_char = USART_ReceiveData(USART1);
-        
-        // 调用IP配置处理函数
-        uart_rx_interrupt_handler(received_char);
-        
-        USART_ClearITPendingBit(USART1, USART_IT_RXNE);
-    }
 }
 
 // 在main.c中的集成示例:

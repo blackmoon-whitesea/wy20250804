@@ -1,65 +1,75 @@
 #include "usmart.h"
 #include "usart.h"
 #include "sys.h" 
+#include "stdio.h"
+#include "string.h"
+#include "../USER/usmart_network.h"  // Include network detection functions
+
 //////////////////////////////////////////////////////////////////////////////////	 
-//本程序只供学习使用，未经作者许可，不得用于其它任何用途
-//ALIENTEK STM32开发板	   
-//正点原子@ALIENTEK
-//技术论坛:www.openedv.com 
-//版本：V3.1
-//版权所有，盗版必究。
-//Copyright(C) 正点原子 2011-2021
+//This program is only for learning use, without author's permission, 
+//it cannot be used for any other purpose
+//ALIENTEK STM32 Development Board	   
+//ALIENTEK@ALIENTEK
+//Technical Forum:www.openedv.com 
+//Modified Date:V3.1
+//All rights reserved, piracy will be prosecuted.
+//Copyright(C) ALIENTEK 2011-2021
 //All rights reserved
 //********************************************************************************
-//升级说明
-//V1.4
-//增加了对参数为string类型的函数的支持.适用范围大大提高.
-//优化了内存占用,静态内存占用为79个字节@10个参数.动态适应数字及字符串长度
-//V2.0 
-//1,修改了list指令,打印函数的完整表达式.
-//2,增加了id指令,打印每个函数的入口地址.
-//3,修改了参数匹配,支持函数参数的调用(输入入口地址).
-//4,增加了函数名长度宏定义.	
-//V2.1 20110707		 
-//1,增加dec,hex两个指令,用于设置参数显示进制,及执行进制转换.
-//注:当dec,hex不带参数的时候,即设定显示参数进制.当后跟参数的时候,即执行进制转换.
-//如:"dec 0XFF" 则会将0XFF转为255,由串口返回.
-//如:"hex 100" 	则会将100转为0X64,由串口返回
-//2,新增usmart_get_cmdname函数,用于获取指令名字.
-//V2.2 20110726	
-//1,修正了void类型参数的参数统计错误.
-//2,修改数据显示格式默认为16进制.
-//V2.3 20110815
-//1,去掉了函数名后必须跟"("的限制.
-//2,修正了字符串参数中不能有"("的bug.
-//3,修改了函数默认显示参数格式的修改方式. 
-//V2.4 20110905
-//1,修改了usmart_get_cmdname函数,增加最大参数长度限制.避免了输入错误参数时的死机现象.
-//2,增加USMART_ENTIM2_SCAN宏定义,用于配置是否使用TIM2定时执行scan函数.
-//V2.5 20110930
-//1,修改usmart_init函数为void usmart_init(u8 sysclk),可以根据系统频率自动设定扫描时间.(固定100ms)
-//2,去掉了usmart_init函数中的uart_init函数,串口初始化必须在外部初始化,方便用户自行管理.
-//V2.6 20111009
-//1,增加了read_addr和write_addr两个函数.可以利用这两个函数读写内部任意地址(必须是有效地址).更加方便调试.
-//2,read_addr和write_addr两个函数可以通过设置USMART_USE_WRFUNS为来使能和关闭.
-//3,修改了usmart_strcmp,使其规范化.			  
-//V2.7 20111024
-//1,修正了返回值16进制显示时不换行的bug.
-//2,增加了函数是否有返回值的判断,如果没有返回值,则不会显示.有返回值时才显示其返回值.
-//V2.8 20111116
-//1,修正了list等不带参数的指令发送后可能导致死机的bug.
-//V2.9 20120917
-//1,修改了形如：void*xxx(void)类型函数不能识别的bug。
-//V3.0 20130425
-//1,新增了字符串参数对转义符的支持。
-//V3.1 20131120
-//1,增加runtime系统指令,可以用于统计函数执行时间.
-//用法:
-//发送:runtime 1 ,则开启函数执行时间统计功能
-//发送:runtime 0 ,则关闭函数执行时间统计功能
-///runtime统计功能,必须设置:USMART_ENTIMX_SCAN 为1,才可以使用!!
+//Version History:
+//V1.4 - Added string parameter support with enhanced functionality
+//V2.0 - Added list and id commands, improved parameter matching
+//V2.1 - Added dec/hex conversion commands  
+//V2.2 - Added void function support, default hex display
+//V2.3 - Fixed function parsing bugs
+//V2.4 - Improved command name parsing and TIM2 scan support
+//V2.5 - Modified usmart_init() with system clock parameter
+//V2.6 - Added read_addr/write_addr functions for memory access
+//V2.7 - Fixed return value display bugs
+//V2.8 - Fixed list command display issues
+//V2.9 - Fixed void*xxx(void) function recognition
+//V3.0 - Added enhanced string and conversion support
+//V3.1 - Added runtime measurement system for function execution timing
+//Usage: runtime 1 (enable timing), runtime 0 (disable timing)
+//Note: Runtime statistics require USMART_ENTIMX_SCAN = 1
 /////////////////////////////////////////////////////////////////////////////////////
-//系统命令
+
+// Case-insensitive string comparison function
+// Return value: 0 means equal, non-0 means different
+static u8 usmart_strcasecmp_impl(u8 *str1, u8 *str2)
+{
+	u8 c1, c2;
+	
+	while(*str1 && *str2)
+	{
+		c1 = *str1;
+		c2 = *str2;
+		
+		// Convert to lowercase for comparison
+		if(c1 >= 'A' && c1 <= 'Z') c1 += 32;
+		if(c2 >= 'A' && c2 <= 'Z') c2 += 32;
+		
+		if(c1 != c2) return 1;
+		
+		str1++;
+		str2++;
+	}
+	
+	// Check if the end characters are also equal
+	c1 = *str1;
+	c2 = *str2;
+	if(c1 >= 'A' && c1 <= 'Z') c1 += 32;
+	if(c2 >= 'A' && c2 <= 'Z') c2 += 32;
+	
+	return (c1 == c2) ? 0 : 1;
+}
+
+u8 usmart_strcasecmp(u8 *str1, u8 *str2)
+{
+	return usmart_strcasecmp_impl(str1, str2);
+}
+
+//System command table
 u8 *sys_cmd_tab[]=
 {
 	"?",
@@ -68,326 +78,396 @@ u8 *sys_cmd_tab[]=
 	"id",
 	"hex",
 	"dec",
-	"runtime",	   
+	"runtime",	  
+	"getip",
+	"setip",
+	"get_ip",
+	"set_ip"
 };	    
-//处理系统指令
-//0,成功处理;其他,错误代码;
+
+//Execute system commands
+//Return: 0,success; other,error code;
 u8 usmart_sys_cmd_exe(u8 *str)
 {
 	u8 i;
-	u8 sfname[MAX_FNAME_LEN];//存放本地函数名
+	u8 sfname[MAX_FNAME_LEN];//Temporary function name buffer
 	u8 pnum;
 	u8 rval;
 	u32 res;  
-	res=usmart_get_cmdname(str,sfname,&i,MAX_FNAME_LEN);//得到指令及指令长度
-	if(res)return USMART_FUNCERR;//错误的指令 
+	res=usmart_get_cmdname(str,sfname,&i,MAX_FNAME_LEN);//Get command name and length
+	if(res)return USMART_FUNCERR;//Error getting command 
 	str+=i;	 	 			    
-	for(i=0;i<sizeof(sys_cmd_tab)/4;i++)//支持的系统指令
+	for(i=0;i<sizeof(sys_cmd_tab)/4;i++)//Support system commands
 	{
-		if(usmart_strcmp(sfname,sys_cmd_tab[i])==0)break;
+		if(usmart_strcasecmp(sfname,sys_cmd_tab[i])==0)break;
 	}
 	switch(i)
 	{					   
 		case 0:
-		case 1://帮助指令
+		case 1://Help command
 			printf("\r\n");
 #if USMART_USE_HELP
 			printf("------------------------USMART V3.1------------------------ \r\n");
-			printf("    USMART是由ALIENTEK开发的一个灵巧的串口调试互交组件,通过 \r\n");
-			printf("它,你可以通过串口助手调用程序里面的任何函数,并执行.因此,你可\r\n");
-			printf("以随意更改函数的输入参数(支持数字(10/16进制)、字符串、函数入\r\n");	  
-			printf("口地址等作为参数),单个函数最多支持10个输入参数,并支持函数返 \r\n");
-			printf("回值显示.新增参数显示进制设置功能,新增进制转换功能.\r\n");
-			printf("技术支持:www.openedv.com\r\n");
-			printf("USMART有7个系统命令:\r\n");
-			printf("?:      获取帮助信息\r\n");
-			printf("help:   获取帮助信息\r\n");
-			printf("list:   可用的函数列表\r\n\n");
-			printf("id:     可用函数的ID列表\r\n\n");
-			printf("hex:    参数16进制显示,后跟空格+数字即执行进制转换\r\n\n");
-			printf("dec:    参数10进制显示,后跟空格+数字即执行进制转换\r\n\n");
-			printf("runtime:1,开启函数运行计时;0,关闭函数运行计时;\r\n\n");
-			printf("请按照程序编写格式输入函数名及参数并以回车键结束.\r\n");    
+			printf("    USMART is a smart serial debugging component developed by \r\n");
+			printf("ALIENTEK. Through it, you can call any function in the program \r\n");
+			printf("through serial assistant and execute it. Therefore, you can \r\n");
+			printf("arbitrarily change the input parameters of the function \r\n");
+			printf("(supporting numbers (10/16 base), strings, function entry \r\n");	  
+			printf("addresses, etc. as parameters). A single function supports up \r\n");
+			printf("to 10 input parameters and supports function return value \r\n");
+			printf("display. New feature: perfect support for function name and \r\n");
+			printf("parameter association. Convenient for user input.\r\n");
+			printf("Technical support: www.openedv.com\r\n");
+			printf("USMART has 9 system functions (case-insensitive input):\r\n");
+			printf("?:      Get help information\r\n");
+			printf("help:   Get help information\r\n");
+			printf("list:   Function list\r\n\n");
+			printf("id:     Function ID list\r\n\n");
+			printf("hex:    16-bit hexadecimal display, followed by space+number\r\n");
+			printf("        to perform base conversion\r\n\n");
+			printf("dec:    10-bit decimal display, followed by space+number\r\n");
+			printf("        to perform base conversion\r\n\n");
+			printf("runtime:1,enable function execution time statistics;\r\n");
+			printf("        0,disable function execution time statistics;\r\n\n");
+			printf("getip:  Get local IP address (case-insensitive)\r\n");
+			printf("        Supports: getip/GETIP/GetIP/get_ip/GET_IP\r\n");
+			printf("setip:  Set local IP address (e.g: setip 192.168.0.30)\r\n");
+			printf("        Supports: setip/SETIP/SetIP/set_ip/SET_IP\r\n");
+			printf("Note: IP address must be valid, otherwise setting fails.\r\n");
+			printf("System commands support case-insensitive input.\r\n");
+			printf("USMART Usage:\r\n");
+			printf("Please input function name and parameters in C function\r\n");
+			printf("format, and end with Enter key.\r\n");    
 			printf("--------------------------ALIENTEK------------------------- \r\n");
 #else
-			printf("指令失效\r\n");
+			printf("Command disabled\r\n");	
 #endif
 			break;
-		case 2://查询指令
+		case 2://Query command
 			printf("\r\n");
-			printf("-------------------------函数清单--------------------------- \r\n");
+			printf("-------------------------Function List--------------------------- \r\n");
 			for(i=0;i<usmart_dev.fnum;i++)printf("%s\r\n",usmart_dev.funs[i].name);
 			printf("\r\n");
 			break;	 
-		case 3://查询ID
+		case 3://Query ID
 			printf("\r\n");
-			printf("-------------------------函数 ID --------------------------- \r\n");
+			printf("-------------------------Function ID --------------------------- \r\n");
 			for(i=0;i<usmart_dev.fnum;i++)
 			{
-				usmart_get_fname((u8*)usmart_dev.funs[i].name,sfname,&pnum,&rval);//得到本地函数名 
-				printf("%s id is:\r\n0X%08X\r\n",sfname,usmart_dev.funs[i].func); //显示ID
+				usmart_get_fname((u8*)usmart_dev.funs[i].name,sfname,&pnum,&rval);//get function name and parameters 
+				printf("%s id is:\r\n0X%08X\r\n",sfname,usmart_dev.funs[i].func); //show ID
 			}
 			printf("\r\n");
 			break;
-		case 4://hex指令
+		case 4://hex command
 			printf("\r\n");
 			usmart_get_aparm(str,sfname,&i);
-			if(i==0)//参数正常
+			if(i==0)//get parameters
 			{
-				i=usmart_str2num(sfname,&res);	   	//记录该参数	
-				if(i==0)						  	//进制转换功能
+				i=usmart_str2num(sfname,&res);	   	//record parameters	
+				if(i==0)						  	//conversion succeeds
 				{
-					printf("HEX:0X%X\r\n",res);	   	//转为16进制
-				}else if(i!=4)return USMART_PARMERR;//参数错误.
-				else 				   				//参数显示设定功能
+					printf("HEX:0X%X\r\n",res);	   	//convert to hexadecimal
+				}else if(i!=4)return USMART_PARMERR;//parameter error.
+				else 				   				//no parameter, set display parameter
 				{
-					printf("16进制参数显示!\r\n");
+					printf("16-bit hex parameter display!\r\n");
 					usmart_dev.sptype=SP_TYPE_HEX;  
 				}
 
-			}else return USMART_PARMERR;			//参数错误.
+			}else return USMART_PARMERR;			//parameter error.
 			printf("\r\n"); 
 			break;
-		case 5://dec指令
+		case 5://dec command
 			printf("\r\n");
 			usmart_get_aparm(str,sfname,&i);
-			if(i==0)//参数正常
+			if(i==0)//get parameters
 			{
-				i=usmart_str2num(sfname,&res);	   	//记录该参数	
-				if(i==0)						   	//进制转换功能
+				i=usmart_str2num(sfname,&res);	   	//record parameters	
+				if(i==0)						   	//conversion succeeds
 				{
-					printf("DEC:%lu\r\n",res);	   	//转为10进制
-				}else if(i!=4)return USMART_PARMERR;//参数错误.
-				else 				   				//参数显示设定功能
+					printf("DEC:%lu\r\n",res);	   	//convert to decimal
+				}else if(i!=4)return USMART_PARMERR;//parameter error.
+				else 				   				//no parameter, set display parameter
 				{
-					printf("10进制参数显示!\r\n");
+					printf("10-bit decimal parameter display!\r\n");
 					usmart_dev.sptype=SP_TYPE_DEC;  
 				}
 
-			}else return USMART_PARMERR;			//参数错误. 
+			}else return USMART_PARMERR;			//parameter error. 
 			printf("\r\n"); 
 			break;	 
-		case 6://runtime指令,设置是否显示函数执行时间
+		case 6://runtime command, control whether to display function execution time
 			printf("\r\n");
 			usmart_get_aparm(str,sfname,&i);
-			if(i==0)//参数正常
+			if(i==0)//get parameters
 			{
-				i=usmart_str2num(sfname,&res);	   		//记录该参数	
-				if(i==0)						   		//读取指定地址数据功能
+				i=usmart_str2num(sfname,&res);	   		//record parameters	
+				if(i==0)						   		//get command address data succeeded
 				{
-					if(USMART_ENTIMX_SCAN==0)printf("\r\nError! \r\nTo EN RunTime function,Please set USMART_ENTIMX_SCAN = 1 first!\r\n");//报错
+					if(USMART_ENTIMX_SCAN==0)printf("\r\nError! \r\nTo EN RunTime function,Please set USMART_ENTIMX_SCAN = 1 first!\r\n");//error
 					else
 					{
 						usmart_dev.runtimeflag=res;
 						if(usmart_dev.runtimeflag)printf("Run Time Calculation ON\r\n");
 						else printf("Run Time Calculation OFF\r\n"); 
 					}
-				}else return USMART_PARMERR;   			//未带参数,或者参数错误	 
- 			}else return USMART_PARMERR;				//参数错误. 
+				}else return USMART_PARMERR;   			//not set, or parameter error	 
+ 			}else return USMART_PARMERR;				//parameter error. 
 			printf("\r\n"); 
 			break;	    
-		default://非法指令
+		case 7://getip command, get IP address
+		case 9://get_ip command, get IP address (underscore format)
+			printf("\r\n");
+			// Manual clear array, avoid using memset
+			{
+				int j;
+				for(j = 0; j < sizeof(sfname); j++) sfname[j] = 0;
+			}
+			if(USMART_ENTIMX_SCAN==0)printf("\r\nError! \r\nTo EN Get IP function,Please set USMART_ENTIMX_SCAN = 1 first!\r\n");//error
+			else
+			{	
+				if(usmart_get_ip(sfname)==0)	//get IP address
+				{
+					printf("IP Address:%s\r\n",sfname);	//print IP address
+				}	
+				else
+				{
+					printf("Get IP Address Error!\r\n");	//get IP address error
+				}
+			}
+			printf("\r\n");
+			break;
+		case 8://setip command, set IP address
+		case 10://set_ip command, set IP address (underscore format)
+			printf("\r\n");
+			if(USMART_ENTIMX_SCAN==0)printf("\r\nError! \r\nTo EN Set IP function,Please set USMART_ENTIMX_SCAN = 1 first!\r\n");//error
+			else
+			{
+				if(usmart_set_ip(str)==0)	//set IP address
+				{
+					printf("Set IP Address Success!\r\n");	//set IP address success
+				}
+				else
+				{
+					printf("Set IP Address Error!\r\n");	//set IP address error
+				}
+			}
+			printf("\r\n");
+			break;
+		case 11://default handler, no additional commands
+		default://illegal command
 			return USMART_FUNCERR;
 	}
 	return 0;
 }
 ////////////////////////////////////////////////////////////////////////////////////////
-//移植注意:本例是以stm32为例,如果要移植到其他mcu,请做相应修改.
-//usmart_reset_runtime,清除函数运行时间,连同定时器的计数寄存器以及标志位一起清零.并设置重装载值为最大,以最大限度的延长计时时间.
-//usmart_get_runtime,获取函数运行时间,通过读取CNT值获取,由于usmart是通过中断调用的函数,所以定时器中断不再有效,此时最大限度
-//只能统计2次CNT的值,也就是清零后+溢出一次,当溢出超过2次,没法处理,所以最大延时,控制在:2*计数器CNT*0.1ms.对STM32来说,是:13.1s左右
-//其他的:TIM4_IRQHandler和Timer4_Init,需要根据MCU特点自行修改.确保计数器计数频率为:10Khz即可.另外,定时器不要开启自动重装载功能!!
+//Porting notes: This is tested on STM32, for other MCUs, corresponding changes needed.
+//usmart_reset_runtime: Clear function timing, set timer counter and overflow flag.
+//Timer reload value is maximum, to avoid overflow during measurement.
+//usmart_get_runtime: Get function execution time by reading CNT value.
+//Since usmart is called through interrupts, timing interrupts should be disabled
+//during timing to get accurate results. Time unit: 2 timer cycles * 0.1ms.
+//For STM32, max time: 13.1s
+//Note: TIM4_IRQHandler and Timer4_Init need to be modified for different MCUs.
+//Make sure timer frequency is 10Khz. Also, timing requires proper interrupt priority!
 
 #if USMART_ENTIMX_SCAN==1
-//复位runtime
-//需要根据所移植到的MCU的定时器参数进行修改
+//Reset runtime timing
+//This function needs to be modified for different MCU timer implementations
 void usmart_reset_runtime(void)
 {
-	TIM4->SR&=~(1<<0);	//清除中断标志位 
-	TIM4->ARR=0XFFFF;	//将重装载值设置到最大
-	TIM4->CNT=0;		//清空定时器的CNT
+	TIM4->SR&=~(1<<0);	//Clear interrupt flag 
+	TIM4->ARR=0XFFFF;	//Set reload value to maximum
+	TIM4->CNT=0;		//Reset counter CNT
 	usmart_dev.runtime=0;	
 }
-//获得runtime时间
-//返回值:执行时间,单位:0.1ms,最大延时时间为定时器CNT值的2倍*0.1ms
-//需要根据所移植到的MCU的定时器参数进行修改
+//Get runtime timing
+//Return: execution time, unit: 0.1ms, calculated as timer CNT value * 2 * 0.1ms
+//This function needs to be modified for different MCU timer implementations
 u32 usmart_get_runtime(void)
 {
-	if(TIM4->SR&0X0001)//在运行期间,产生了定时器溢出
+	if(TIM4->SR&0X0001)//Overflow occurred, add overflow time
 	{
 		usmart_dev.runtime+=0XFFFF;
 	}
 	usmart_dev.runtime+=TIM4->CNT;
-	return usmart_dev.runtime;		//返回计数值
+	return usmart_dev.runtime;		//Return total timing value
 }  
-//下面这两个函数,非USMART函数,放到这里,仅仅方便移植. 
-//定时器4中断服务程序	 
+//Timer4 interrupt handler, used by USMART, do not modify, needs MCU porting. 
+//Timer4 interrupt function	 
 void TIM4_IRQHandler(void)
 { 		    		  			    
-	if(TIM4->SR&0X0001)//溢出中断
+	if(TIM4->SR&0X0001)//Overflow interrupt
 	{
-		usmart_dev.scan();	//执行usmart扫描	
-		TIM4->CNT=0;		//清空定时器的CNT
-		TIM4->ARR=1000;		//恢复原来的设置		    				   				     	    	
+		usmart_dev.scan();	//Execute usmart scan	
+		TIM4->CNT=0;		//Reset counter CNT
+		TIM4->ARR=1000;		//Restore original reload value		    				   				     	    	
 	}				   
-	TIM4->SR&=~(1<<0);//清除中断标志位 	    
+	TIM4->SR&=~(1<<0);//Clear interrupt flag 	    
 }
-//使能定时器4,使能中断.
+//Enable Timer4, enable interrupts.
 void Timer4_Init(u16 arr,u16 psc)
 {
 	NVIC_InitTypeDef NVIC_InitStructure;
 	
-	RCC->APB1ENR|=1<<2;   	//TIM4 时钟使能      
- 	TIM4->ARR=arr;  		//设定计数器自动重装值  
-	TIM4->PSC=psc;  		//预分频器7200,得到10Khz的计数时钟 
-	TIM4->DIER|=1<<0;   	//允许更新中断	 
-	TIM4->CR1|=0x01;    	//使能定时器4
+	RCC->APB1ENR|=1<<2;   	//TIM4 clock enable      
+ 	TIM4->ARR=arr;  		//Set auto-reload value  
+	TIM4->PSC=psc;  		//Prescaler 7200, get 10Khz timer clock 
+	TIM4->DIER|=1<<0;   	//Enable update interrupt	 
+	TIM4->CR1|=0x01;    	//Enable Timer4
 	
 	NVIC_InitStructure.NVIC_IRQChannel = TIM4_IRQn;
 	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 3;
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 3;
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-	NVIC_Init(&NVIC_InitStructure);		//抢占3，子优先级3，组2(组2中优先级最低的)							 
+	NVIC_Init(&NVIC_InitStructure);		//Preemption priority 3, sub priority 3 (lower than group 2)							 
 }
 #endif
 ////////////////////////////////////////////////////////////////////////////////////////
-//初始化串口控制器
-//sysclk:系统时钟（Mhz）
+//Initialize USMART
+//sysclk: system clock in MHz
 void usmart_init(u8 sysclk)
 {
 #if USMART_ENTIMX_SCAN==1
-	Timer4_Init(1000,(u32)sysclk*100-1);//分频,时钟为10K ,100ms中断一次,注意,计数频率必须为10Khz,以和runtime单位(0.1ms)同步.
+	Timer4_Init(1000,(u32)sysclk*100-1);//Timer freq 10K, 100ms interrupt, note: timer freq must be 10Khz for runtime unit (0.1ms) consistency.
 #endif
-	usmart_dev.sptype=1;	//十六进制显示参数
+	usmart_dev.sptype=1;	//Hexadecimal parameter display mode
+	
+	// Initialize network detection for IP conflict checking
+	init_network_detection();
+				(int)((current_device_ip >> 24) & 0xFF),
+	
+	printf("USMART initialized with network detection.\r\n");
 }		
-//从str中获取函数名,id,及参数信息
-//*str:字符串指针.
-//返回值:0,识别成功;其他,错误代码.
+//Get function name, id, and parameter info from str
+//*str: string pointer.
+//Return: 0,recognized successfully; other,error code.
 u8 usmart_cmd_rec(u8*str) 
 {
-	u8 sta,i,rval;//状态	 
+	u8 sta,i,rval;//status	 
 	u8 rpnum,spnum;
-	u8 rfname[MAX_FNAME_LEN];//暂存空间,用于存放接收到的函数名  
-	u8 sfname[MAX_FNAME_LEN];//存放本地函数名
-	sta=usmart_get_fname(str,rfname,&rpnum,&rval);//得到接收到的数据的函数名及参数个数	  
-	if(sta)return sta;//错误
+	u8 rfname[MAX_FNAME_LEN];//Received buffer, used to store received function name  
+	u8 sfname[MAX_FNAME_LEN];//Temporary function name buffer
+	sta=usmart_get_fname(str,rfname,&rpnum,&rval);//Get function name, parameter count and return value from command string	  
+	if(sta)return sta;//Error
 	for(i=0;i<usmart_dev.fnum;i++)
 	{
-		sta=usmart_get_fname((u8*)usmart_dev.funs[i].name,sfname,&spnum,&rval);//得到本地函数名及参数个数
-		if(sta)return sta;//本地解析有误	  
-		if(usmart_strcmp(sfname,rfname)==0)//相等
+		sta=usmart_get_fname((u8*)usmart_dev.funs[i].name,sfname,&spnum,&rval);//Get function name and parameters from function table
+		if(sta)return sta;//Error getting function info	  
+		if(usmart_strcmp(sfname,rfname)==0)//Match found
 		{
-			if(spnum>rpnum)return USMART_PARMERR;//参数错误(输入参数比源函数参数少)
-			usmart_dev.id=i;//记录函数ID.
-			break;//跳出.
+			if(spnum>rpnum)return USMART_PARMERR;//Parameter error (received parameters less than required)
+			usmart_dev.id=i;//Record function ID.
+			break;//Found match.
 		}	
 	}
-	if(i==usmart_dev.fnum)return USMART_NOFUNCFIND;	//未找到匹配的函数
- 	sta=usmart_get_fparam(str,&i);					//得到函数参数个数	
-	if(sta)return sta;								//返回错误
-	usmart_dev.pnum=i;								//参数个数记录
+	if(i==usmart_dev.fnum)return USMART_NOFUNCFIND;	//No matching function found
+ 	sta=usmart_get_fparam(str,&i);					//Get function parameters	
+	if(sta)return sta;								//Parameter error
+	usmart_dev.pnum=i;								//Record parameter count
     return USMART_OK;
 }
-//usamrt执行函数
-//该函数用于最终执行从串口收到的有效函数.
-//最多支持10个参数的函数,更多的参数支持也很容易实现.不过用的很少.一般5个左右的参数的函数已经很少见了.
-//该函数会在串口打印执行情况.以:"函数名(参数1，参数2...参数N)=返回值".的形式打印.
-//当所执行的函数没有返回值的时候,所打印的返回值是一个无意义的数据.
+//usmart execution function
+//This function calls the function defined in the function table and executes it.
+//Maximum 10 input parameters supported, parameter values are converted to the appropriate type.
+//It will also print function execution info in the format: "function_name(param1,param2...paramN)=return_value".
+//If the function has no return value, only the semicolon is printed.
 void usmart_exe(void)
 {
 	u8 id,i;
 	u32 res;		   
-	u32 temp[MAX_PARM];//参数转换,使之支持了字符串 
-	u8 sfname[MAX_FNAME_LEN];//存放本地函数名
+	u32 temp[MAX_PARM];//Temporary conversion to support string parameters 
+	u8 sfname[MAX_FNAME_LEN];//Temporary function name buffer
 	u8 pnum,rval;
 	id=usmart_dev.id;
-	if(id>=usmart_dev.fnum)return;//不执行.
-	usmart_get_fname((u8*)usmart_dev.funs[id].name,sfname,&pnum,&rval);//得到本地函数名,及参数个数 
-	printf("\r\n%s(",sfname);//输出正要执行的函数名
-	for(i=0;i<pnum;i++)//输出参数
+	if(id>=usmart_dev.fnum)return;//Invalid function ID, do not execute.
+	usmart_get_fname((u8*)usmart_dev.funs[id].name,sfname,&pnum,&rval);//Get function name, parameter count and return flag 
+	printf("\r\n%s(",sfname);//Print function name being executed
+	for(i=0;i<pnum;i++)//Print parameters
 	{
-		if(usmart_dev.parmtype&(1<<i))//参数是字符串
+		if(usmart_dev.parmtype&(1<<i))//String parameter
 		{
 			printf("%c",'"');			 
 			printf("%s",usmart_dev.parm+usmart_get_parmpos(i));
 			printf("%c",'"');
 			temp[i]=(u32)&(usmart_dev.parm[usmart_get_parmpos(i)]);
-		}else						  //参数是数字
+		}else						  //Numeric parameter
 		{
 			temp[i]=*(u32*)(usmart_dev.parm+usmart_get_parmpos(i));
-			if(usmart_dev.sptype==SP_TYPE_DEC)printf("%lu",temp[i]);//10进制参数显示
-			else printf("0X%X",temp[i]);//16进制参数显示 	   
+			if(usmart_dev.sptype==SP_TYPE_DEC)printf("%lu",temp[i]);//Decimal display
+			else printf("0X%X",temp[i]);//Hexadecimal display 	   
 		}
 		if(i!=pnum-1)printf(",");
 	}
 	printf(")");
-	usmart_reset_runtime();	//计时器清零,开始计时
+	usmart_reset_runtime();	//Reset timing, start measurement
 	switch(usmart_dev.pnum)
 	{
-		case 0://无参数(void类型)											  
+		case 0://No parameters (void function)											  
 			res=(*(u32(*)())usmart_dev.funs[id].func)();
 			break;
-	    case 1://有1个参数
+	    case 1://1 parameter
 			res=(*(u32(*)())usmart_dev.funs[id].func)(temp[0]);
 			break;
-	    case 2://有2个参数
+	    case 2://2 parameters
 			res=(*(u32(*)())usmart_dev.funs[id].func)(temp[0],temp[1]);
 			break;
-	    case 3://有3个参数
+	    case 3://3 parameters
 			res=(*(u32(*)())usmart_dev.funs[id].func)(temp[0],temp[1],temp[2]);
 			break;
-	    case 4://有4个参数
+	    case 4://4 parameters
 			res=(*(u32(*)())usmart_dev.funs[id].func)(temp[0],temp[1],temp[2],temp[3]);
 			break;
-	    case 5://有5个参数
+	    case 5://5 parameters
 			res=(*(u32(*)())usmart_dev.funs[id].func)(temp[0],temp[1],temp[2],temp[3],temp[4]);
 			break;
-	    case 6://有6个参数
+	    case 6://6 parameters
 			res=(*(u32(*)())usmart_dev.funs[id].func)(temp[0],temp[1],temp[2],temp[3],temp[4],\
 			temp[5]);
 			break;
-	    case 7://有7个参数
+	    case 7://7 parameters
 			res=(*(u32(*)())usmart_dev.funs[id].func)(temp[0],temp[1],temp[2],temp[3],temp[4],\
 			temp[5],temp[6]);
 			break;
-	    case 8://有8个参数
+	    case 8://8 parameters
 			res=(*(u32(*)())usmart_dev.funs[id].func)(temp[0],temp[1],temp[2],temp[3],temp[4],\
 			temp[5],temp[6],temp[7]);
 			break;
-	    case 9://有9个参数
+	    case 9://9 parameters
 			res=(*(u32(*)())usmart_dev.funs[id].func)(temp[0],temp[1],temp[2],temp[3],temp[4],\
 			temp[5],temp[6],temp[7],temp[8]);
 			break;
-	    case 10://有10个参数
+	    case 10://10 parameters
 			res=(*(u32(*)())usmart_dev.funs[id].func)(temp[0],temp[1],temp[2],temp[3],temp[4],\
 			temp[5],temp[6],temp[7],temp[8],temp[9]);
 			break;
 	}
-	usmart_get_runtime();//获取函数执行时间
-	if(rval==1)//需要返回值.
+	usmart_get_runtime();//Get function execution time
+	if(rval==1)//Need to display return value.
 	{
-		if(usmart_dev.sptype==SP_TYPE_DEC)printf("=%lu;\r\n",res);//输出执行结果(10进制参数显示)
-		else printf("=0X%X;\r\n",res);//输出执行结果(16进制参数显示)	   
-	}else printf(";\r\n");		//不需要返回值,直接输出结束
-	if(usmart_dev.runtimeflag)	//需要显示函数执行时间
+		if(usmart_dev.sptype==SP_TYPE_DEC)printf("=%lu;\r\n",res);//Display return value in decimal format
+		else printf("=0X%X;\r\n",res);//Display return value in hexadecimal format	   
+	}else printf(";\r\n");		//No return value needed, directly print semicolon
+	if(usmart_dev.runtimeflag)	//Need to display function execution time
 	{ 
-		printf("Function Run Time:%d.%1dms\r\n",usmart_dev.runtime/10,usmart_dev.runtime%10);//打印函数执行时间 
+		printf("Function Run Time:%d.%1dms\r\n",usmart_dev.runtime/10,usmart_dev.runtime%10);//Print function execution time 
 	}	
 }
-//usmart扫描函数
-//通过调用该函数,实现usmart的各个控制.该函数需要每隔一定时间被调用一次
-//以及时执行从串口发过来的各个函数.
-//本函数可以在中断里面调用,从而实现自动管理.
-//如果非ALIENTEK用户,则USART_RX_STA和USART_RX_BUF[]需要用户自己实现
+//usmart scan function
+//Through this function, usmart functionality is realized. This function needs to be called
+//periodically or when there's time to implement real-time functionality.
+//This function is automatically called when using timer interrupts.
+//Note: This function is provided by ALIENTEK, USART_RX_STA and USART_RX_BUF[] need to be implemented by the user
 void usmart_scan(void)
 {
 	u8 sta,len;  
-	if(USART_RX_STA&0x8000)//串口接收完成？
+	if(USART_RX_STA&0x8000)//Data reception complete
 	{					   
-		len=USART_RX_STA&0x3fff;	//得到此次接收到的数据长度
-		USART_RX_BUF[len]='\0';	//在末尾加入结束符. 
-		sta=usmart_dev.cmd_rec(USART_RX_BUF);//得到函数各个信息
-		if(sta==0)usmart_dev.exe();	//执行函数 
+		len=USART_RX_STA&0x3fff;	//Get length of received data
+		USART_RX_BUF[len]='\0';	//Add string terminator at the end. 
+		sta=usmart_dev.cmd_rec(USART_RX_BUF);//Get command recognition info
+		if(sta==0)usmart_dev.exe();	//Execute function 
 		else 
 		{  
 			len=usmart_sys_cmd_exe(USART_RX_BUF);
@@ -397,36 +477,224 @@ void usmart_scan(void)
 				switch(sta)
 				{
 					case USMART_FUNCERR:
-						printf("函数错误!\r\n");   			
+						printf("Function Error!\r\n");   			
 						break;	
 					case USMART_PARMERR:
-						printf("参数错误!\r\n");   			
+						printf("Parameter Error!\r\n");   			
 						break;				
 					case USMART_PARMOVER:
-						printf("参数太多!\r\n");   			
+						printf("Too Many Parameters!\r\n");   			
 						break;		
 					case USMART_NOFUNCFIND:
-						printf("未找到匹配的函数!\r\n");   			
+						printf("Function Not Found!\r\n");   			
 						break;		
 				}
 			}
 		}
-		USART_RX_STA=0;//状态寄存器清空	    
+		USART_RX_STA=0;//Reset status flag	    
 	}
 }
 
-#if USMART_USE_WRFUNS==1 	//如果使能了读写操作
-//读取指定地址的值		 
+#if USMART_USE_WRFUNS==1 	//If read/write functions are enabled
+//Read value from specified address		 
 u32 read_addr(u32 addr)
 {
 	return *(u32*)addr;//	
 }
-//在指定地址写入指定的值		 
+//Write specified value to specified address		 
 void write_addr(u32 addr,u32 val)
 {
 	*(u32*)addr=val; 	
 }
 #endif
+
+// IP configuration function implementation, defined in SipMsgAnalysis.c
+u8 usmart_get_ip(u8 *ip_str)
+{
+	extern u32 current_device_ip;  // Defined in SipMsgAnalysis.c for current device IP
+	
+	if(ip_str == 0) return 1; // Parameter error
+	
+	// Convert IP address from u32 format to string format (Big Endian)
+	sprintf((char*)ip_str, "%d.%d.%d.%d", 
+		(int)((current_device_ip >> 24) & 0xFF),
+		(int)((current_device_ip >> 16) & 0xFF), 
+		(int)((current_device_ip >> 8) & 0xFF),
+		(int)(current_device_ip & 0xFF));
+	
+	return 0; // Success
+}
+
+// ARP detection function to check if IP is already in use
+// Returns: 0 = IP available, 1 = IP in use, 2 = detection failed
+u8 usmart_detect_ip_conflict(u32 target_ip)
+{
+	extern u32 current_device_ip;
+	extern u32 current_subnet_mask;  // Assume this is defined in SipMsgAnalysis.c
+	
+	u8 detection_result;
+	
+	printf("Starting IP conflict detection...\r\n");
+	
+	// Use the enhanced detection function
+	detection_result = usmart_detect_ip_conflict_enhanced(target_ip);
+	
+	switch(detection_result)
+	{
+		case ARP_STATUS_AVAILABLE:
+			printf("IP conflict detection: IP available\r\n");
+			return 0; // Available
+			
+		case ARP_STATUS_IN_USE:
+			printf("IP conflict detection: IP already in use\r\n");
+			return 1; // In use
+			
+		case ARP_STATUS_TIMEOUT:
+			printf("IP conflict detection: Timeout (assuming available)\r\n");
+			return 0; // Assume available on timeout
+			
+		case ARP_STATUS_ERROR:
+		default:
+			printf("IP conflict detection: Error occurred\r\n");
+			return 2; // Error
+	}
+}
+
+u8 usmart_set_ip(u8 *ip_cmd)
+{
+	extern u32 current_device_ip;  // Defined in SipMsgAnalysis.c for current device IP
+	u8 ip_parts[4];
+	int part_count = 0;
+	int current_part = 0;
+	int i;
+	u32 new_ip;
+	u8 conflict_result;
+	static u8 setting_in_progress = 0; /* Prevent re-entrance */
+	
+	/* Prevent re-entrance during setting process */
+	if(setting_in_progress)
+	{
+		printf("IP setting already in progress, please wait...\r\n");
+		return 1;
+	}
+	
+	setting_in_progress = 1; /* Set flag */
+	
+	if(ip_cmd == 0) 
+	{
+		setting_in_progress = 0;
+		return 1; // Parameter error
+	}
+	
+	// Skip leading spaces
+	while(*ip_cmd == ' ') ip_cmd++;
+	
+	// Parse IP address format (example: "192.168.1.100")
+	for(i = 0; ip_cmd[i] != '\0' && part_count < 4; i++)
+	{
+		if(ip_cmd[i] >= '0' && ip_cmd[i] <= '9')
+		{
+			current_part = current_part * 10 + (ip_cmd[i] - '0');
+			if(current_part > 255) 
+			{
+				printf("Invalid IP: Part %d out of range (0-255)\r\n", current_part);
+				setting_in_progress = 0;
+				return 1; // IP part value out of range
+			}
+		}
+		else if(ip_cmd[i] == '.')
+		{
+			ip_parts[part_count++] = current_part;
+			current_part = 0;
+		}
+		else
+		{
+			printf("Invalid character in IP address: '%c'\r\n", ip_cmd[i]);
+			setting_in_progress = 0;
+			return 1; // Invalid character
+		}
+	}
+	
+	// Check last part
+	if(current_part > 255) 
+	{
+		printf("Invalid IP: Last part %d out of range (0-255)\r\n", current_part);
+		setting_in_progress = 0;
+		return 1;
+	}
+	ip_parts[part_count++] = current_part;
+	
+	// Check if we have exactly 4 parts
+	if(part_count != 4) 
+	{
+		printf("Invalid IP format: Expected 4 parts, got %d\r\n", part_count);
+		setting_in_progress = 0;
+		return 1;
+	}
+	
+	// Validate IP ranges (avoid reserved addresses)
+	if(ip_parts[0] == 0 || ip_parts[0] >= 224)
+	{
+		printf("Invalid IP: First octet %d not allowed\r\n", ip_parts[0]);
+		setting_in_progress = 0;
+		return 1;
+	}
+	
+	if(ip_parts[3] == 0 || ip_parts[3] == 255)
+	{
+		printf("Invalid IP: Host part cannot be 0 or 255\r\n");
+		setting_in_progress = 0;
+		return 1;
+	}
+	
+	// Construct new IP address (Big Endian format)
+	new_ip = ((u32)ip_parts[0] << 24) | 
+			 ((u32)ip_parts[1] << 16) | 
+			 ((u32)ip_parts[2] << 8) | 
+			 ((u32)ip_parts[3]);
+	
+	printf("Validating IP: %d.%d.%d.%d (0x%08X)\r\n", 
+		ip_parts[0], ip_parts[1], ip_parts[2], ip_parts[3], new_ip);
+	
+	// Check for IP conflicts on network
+	conflict_result = usmart_detect_ip_conflict(new_ip);
+	
+	switch(conflict_result)
+	{
+		case 0: // IP available
+			printf("IP conflict check passed. Setting new IP...\r\n");
+			break;
+			
+		case 1: // IP in use
+			printf("Error: IP address already in use on network!\r\n");
+			printf("Cannot set IP %d.%d.%d.%d - conflict detected.\r\n",
+				ip_parts[0], ip_parts[1], ip_parts[2], ip_parts[3]);
+			setting_in_progress = 0;
+			return 1;
+			
+		case 2: // Detection failed
+			printf("Warning: IP conflict detection failed.\r\n");
+			printf("Proceeding with caution...\r\n");
+			break;
+			
+		default:
+			printf("Unknown conflict detection result: %d\r\n", conflict_result);
+			setting_in_progress = 0;
+			return 1;
+	}
+	
+	// Update global IP address
+	current_device_ip = new_ip;
+	
+	/* Mark IP as initialized */
+	ip_initialized = 1;
+	
+	printf("IP successfully set: %d.%d.%d.%d (0x%08X)\r\n", 
+		ip_parts[0], ip_parts[1], ip_parts[2], ip_parts[3], new_ip);
+	
+	setting_in_progress = 0; /* Clear flag */
+	return 0; // Success
+}
 
 
 

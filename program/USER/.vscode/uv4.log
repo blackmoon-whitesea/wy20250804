@@ -1,0 +1,75 @@
+*** Using Compiler 'V5.06 update 6 (build 750)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
+Build target 'Template'
+compiling flash_config.c...
+flash_config.c(13): warning:  #47-D: incompatible redefinition of macro "FLASH_KEY1"  (declared at line 385 of "..\FWLIB\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_flash.h")
+  #define FLASH_KEY1              0x45670123
+flash_config.c(14): warning:  #47-D: incompatible redefinition of macro "FLASH_KEY2"  (declared at line 386 of "..\FWLIB\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_flash.h")
+  #define FLASH_KEY2              0xCDEF89AB
+flash_config.c(17): warning:  #47-D: incompatible redefinition of macro "FLASH_Sector_0"  (declared at line 131 of "..\FWLIB\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_flash.h")
+  #define FLASH_Sector_0          0x00000000
+flash_config.c(18): warning:  #47-D: incompatible redefinition of macro "FLASH_Sector_1"  (declared at line 132 of "..\FWLIB\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_flash.h")
+  #define FLASH_Sector_1          0x00000008
+flash_config.c(19): warning:  #47-D: incompatible redefinition of macro "FLASH_Sector_2"  (declared at line 133 of "..\FWLIB\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_flash.h")
+  #define FLASH_Sector_2          0x00000010
+flash_config.c(20): warning:  #47-D: incompatible redefinition of macro "FLASH_Sector_3"  (declared at line 134 of "..\FWLIB\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_flash.h")
+  #define FLASH_Sector_3          0x00000018
+flash_config.c(21): warning:  #47-D: incompatible redefinition of macro "FLASH_Sector_4"  (declared at line 135 of "..\FWLIB\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_flash.h")
+  #define FLASH_Sector_4          0x00000020
+flash_config.c(22): warning:  #47-D: incompatible redefinition of macro "FLASH_Sector_5"  (declared at line 136 of "..\FWLIB\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_flash.h")
+  #define FLASH_Sector_5          0x00000028
+flash_config.c(23): warning:  #47-D: incompatible redefinition of macro "FLASH_Sector_6"  (declared at line 137 of "..\FWLIB\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_flash.h")
+  #define FLASH_Sector_6          0x00000030
+flash_config.c(24): warning:  #47-D: incompatible redefinition of macro "FLASH_Sector_7"  (declared at line 138 of "..\FWLIB\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_flash.h")
+  #define FLASH_Sector_7          0x00000038
+flash_config.c(25): warning:  #47-D: incompatible redefinition of macro "FLASH_Sector_8"  (declared at line 139 of "..\FWLIB\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_flash.h")
+  #define FLASH_Sector_8          0x00000040
+flash_config.c(26): warning:  #47-D: incompatible redefinition of macro "FLASH_Sector_9"  (declared at line 140 of "..\FWLIB\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_flash.h")
+  #define FLASH_Sector_9          0x00000048
+flash_config.c(27): warning:  #47-D: incompatible redefinition of macro "FLASH_Sector_10"  (declared at line 141 of "..\FWLIB\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_flash.h")
+  #define FLASH_Sector_10         0x00000050
+flash_config.c(28): warning:  #47-D: incompatible redefinition of macro "FLASH_Sector_11"  (declared at line 142 of "..\FWLIB\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_flash.h")
+  #define FLASH_Sector_11         0x00000058
+flash_config.c(31): warning:  #47-D: incompatible redefinition of macro "VoltageRange_1"  (declared at line 115 of "..\FWLIB\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_flash.h")
+  #define VoltageRange_1          0x00000000
+flash_config.c(32): warning:  #47-D: incompatible redefinition of macro "VoltageRange_2"  (declared at line 116 of "..\FWLIB\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_flash.h")
+  #define VoltageRange_2          0x00000100
+flash_config.c(33): warning:  #47-D: incompatible redefinition of macro "VoltageRange_3"  (declared at line 117 of "..\FWLIB\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_flash.h")
+  #define VoltageRange_3          0x00000200
+flash_config.c(34): warning:  #47-D: incompatible redefinition of macro "VoltageRange_4"  (declared at line 118 of "..\FWLIB\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_flash.h")
+  #define VoltageRange_4          0x00000300
+flash_config.c(37): warning:  #47-D: incompatible redefinition of macro "FLASH_FLAG_EOP"  (declared at line 352 of "..\FWLIB\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_flash.h")
+  #define FLASH_FLAG_EOP          0x00000001  /* End of operation flag */
+flash_config.c(38): warning:  #47-D: incompatible redefinition of macro "FLASH_FLAG_OPERR"  (declared at line 353 of "..\FWLIB\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_flash.h")
+  #define FLASH_FLAG_OPERR        0x00000002  /* Operation error flag */
+flash_config.c(39): warning:  #47-D: incompatible redefinition of macro "FLASH_FLAG_WRPERR"  (declared at line 354 of "..\FWLIB\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_flash.h")
+  #define FLASH_FLAG_WRPERR       0x00000010  /* Write protection error flag */
+flash_config.c(40): warning:  #47-D: incompatible redefinition of macro "FLASH_FLAG_PGAERR"  (declared at line 355 of "..\FWLIB\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_flash.h")
+  #define FLASH_FLAG_PGAERR       0x00000020  /* Program alignment error flag */
+flash_config.c(41): warning:  #47-D: incompatible redefinition of macro "FLASH_FLAG_PGPERR"  (declared at line 356 of "..\FWLIB\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_flash.h")
+  #define FLASH_FLAG_PGPERR       0x00000040  /* Program parallelism error flag */
+flash_config.c(42): warning:  #47-D: incompatible redefinition of macro "FLASH_FLAG_PGSERR"  (declared at line 357 of "..\FWLIB\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_flash.h")
+  #define FLASH_FLAG_PGSERR       0x00000080  /* Program sequence error flag */
+flash_config.c(43): warning:  #47-D: incompatible redefinition of macro "FLASH_FLAG_BSY"  (declared at line 359 of "..\FWLIB\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_flash.h")
+  #define FLASH_FLAG_BSY          0x00010000  /* Busy flag */
+flash_config.c(46): warning:  #47-D: incompatible redefinition of macro "FLASH_CR_PG"  (declared at line 4055 of "..\USER\stm32f4xx.h")
+  #define FLASH_CR_PG             0x00000001
+flash_config.c(47): warning:  #47-D: incompatible redefinition of macro "FLASH_CR_SER"  (declared at line 4056 of "..\USER\stm32f4xx.h")
+  #define FLASH_CR_SER            0x00000002
+flash_config.c(48): warning:  #47-D: incompatible redefinition of macro "FLASH_CR_MER"  (declared at line 4057 of "..\USER\stm32f4xx.h")
+  #define FLASH_CR_MER            0x00000004
+flash_config.c(51): warning:  #47-D: incompatible redefinition of macro "FLASH_CR_STRT"  (declared at line 4069 of "..\USER\stm32f4xx.h")
+  #define FLASH_CR_STRT           0x00010000
+flash_config.c(52): warning:  #47-D: incompatible redefinition of macro "FLASH_CR_EOPIE"  (declared at line 4070 of "..\USER\stm32f4xx.h")
+  #define FLASH_CR_EOPIE          0x01000000
+flash_config.c(53): warning:  #47-D: incompatible redefinition of macro "FLASH_CR_LOCK"  (declared at line 4071 of "..\USER\stm32f4xx.h")
+  #define FLASH_CR_LOCK           0x80000000
+flash_config.c(74): error:  #147-D: declaration is incompatible with "FLASH_Status FLASH_WaitForLastOperation(void)"  (declared at line 472 of "..\FWLIB\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_flash.h")
+  static u8 FLASH_WaitForLastOperation(u32 timeout)
+flash_config.c(113): error:  #147-D: declaration is incompatible with "FLASH_Status FLASH_EraseSector(uint32_t, uint8_t)"  (declared at line 437 of "..\FWLIB\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_flash.h")
+  static u8 FLASH_EraseSector(u32 FLASH_Sector, u32 VoltageRange)
+flash_config.c: 31 warnings, 2 errors
+compiling usmart_network.c...
+compiling usmart.c...
+"..\OBJ\Template.axf" - 2 Error(s), 31 Warning(s).
+Target not created.
+Build Time Elapsed:  00:00:04

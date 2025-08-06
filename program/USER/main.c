@@ -22,104 +22,122 @@
 #include "cw2015.h"
 #include "usart3_FSK.h"
 #include "dtmf_rx.h"
+#include "usmart.h"       // æ·»åŠ USMARTå¤´æ–‡ä»¶
+#include "ip_config.h"    // æ·»åŠ IPé…ç½®å¤´æ–‡ä»¶
 
 #include "stm32f4xx_iwdg.h"
+// struct stTimer3 å·²åœ¨ timer.h ä¸­å£°æ˜
 
-// ¶ÀÁ¢¿´ÃÅ¹·³õÊ¼»¯º¯Êı
+// åˆå§‹åŒ–ç›¸å…³å˜é‡
 //void IWDG_Init(void)
 //{
-//	IWDG_WriteAccessCmd(IWDG_WriteAccess_Enable); // Ê¹ÄÜĞ´·ÃÎÊ
-//	IWDG_SetPrescaler(IWDG_Prescaler_64);         // ÉèÖÃ·ÖÆµÏµÊı64
-//	IWDG_SetReload(1250);                         // ÉèÖÃÖØÔØÖµ1250 (Ô¼2.5Ãë³¬Ê±)
-//	IWDG_ReloadCounter();                         // ÖØÔØ¼ÆÊıÆ÷
-//	IWDG_Enable();                                // Ê¹ÄÜIWDG
+//	IWDG_WriteAccessCmd(IWDG_WriteAccess_Enable); // ä½¿èƒ½å†™è®¿é—®
+//	IWDG_SetPrescaler(IWDG_Prescaler_64);         // è®¾ç½®åˆ†é¢‘å€¼64
+//	IWDG_SetReload(1250);                         // è®¾ç½®é‡è£…è½½å€¼1250 (çº¦2.5ç§’)
+//	IWDG_ReloadCounter();                         // ï¿½ï¿½ï¿½Ø¼ï¿½ï¿½ï¿½ï¿½ï¿½
+//	IWDG_Enable();                                // Ê¹ï¿½ï¿½IWDG
 //}
 
 int main(void)
 {
 //	u8 key;
-	//ÏµÍ³³õÊ¼»¯
-	delay_init(168);       	//ÑÓÊ±³õÊ¼»¯
-	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);	//ÖĞ¶Ï·Ö×éÅäÖÃ	
-	mymem_init(SRAMIN);		//³õÊ¼»¯ÄÚ²¿ÄÚ´æ³Ø
-	mymem_init(SRAMCCM);	//³õÊ¼»¯CCMÄÚ´æ³Ø		
-	ETH_MemMalloc();;		//ÄÚ´æÉêÇëÊ§°Ü
-	lwip_comm_mem_malloc();	//ÄÚ´æÉêÇëÊ§°Ü
-	NET_MemMalloc();			//·ÖÅäÊÕ·¢ÄÚ´æ	
-	uart_init(115200);   	//´®¿Ú²¨ÌØÂÊÉèÖÃ
+	//ç³»ç»Ÿåˆå§‹åŒ–
+	delay_init(168);       	//å»¶æ—¶åˆå§‹åŒ–
+	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);	//ä¸­æ–­åˆ†ç»„é…ç½®	
+	mymem_init(SRAMIN);		//åˆå§‹åŒ–å†…éƒ¨å†…å­˜æ± 
+	mymem_init(SRAMCCM);	//åˆå§‹åŒ–CCMå†…å­˜æ± 		
+	ETH_MemMalloc();;		//å†…å­˜ç”³è¯·å¤±è´¥
+	lwip_comm_mem_malloc();	//å†…å­˜ç”³è¯·å¤±è´¥
+	NET_MemMalloc();			//åˆ†é…æ”¶å‘å†…å­˜	
+	uart_init(115200);   	//ä¸²å£æ³¢ç‰¹ç‡è®¾ç½®
+
+	// LED0 = 0;  // ç‚¹äº®LED0ï¼ˆå‡è®¾LED0ä½ç”µå¹³æœ‰æ•ˆï¼‰
+	// delay_ms(500);
+	// LED0 = 1;  // ç†„ç­LED0
+
 	USART3_Init(1200);
-	//GPIO³õÊ¼»¯
+	//GPIOåˆå§‹åŒ–
 	//GPIO_Init();
-	LED_Init();  					//LED³õÊ¼»¯
-	KEY_Init();  					//°´¼ü³õÊ¼»¯
-	AT24CXX_Init();				//³õÊ¼»¯IIC½Ó¿Ú 
-	//TIM3_Int_Init(999,839); //100khzµÄÆµÂÊ,¼ÆÊı1000Îª10ms
-	TIM3_Int_Init(999,83); //100khzµÄÆµÂÊ,¼ÆÊı100Îª1ms	
+	LED_Init();  					//LEDåˆå§‹åŒ–
+	KEY_Init();  					//æŒ‰é”®åˆå§‹åŒ–
+	AT24CXX_Init();				//åˆå§‹åŒ–IICæ¥å£ 
+	//TIM3_Int_Init(999,839); //100khzçš„é¢‘ç‡,è®¡æ•°1000ä¸º10ms
+	TIM3_Int_Init(999,83); //100khzçš„é¢‘ç‡,è®¡æ•°100ä¸º1ms	
 	EEPROM_Read();			
-	WM8978_Init();				//³õÊ¼»¯WM8978	
+	WM8978_Init();				//åˆå§‹åŒ–WM8978	
 	AUDIO_Init();
 	TEL_PinInit();
 	NET_VariateInit();
 	HHDX_VariateInit();
 	ANALYSIS_RxParamInit();
 	TEL_OffInit();
-	IIC1_Init();				//IIC³õÊ¼»¯
-	CW2015_Init();	   	//CW2015³õÊ¼»¯
+	IIC1_Init();				//IICåˆå§‹åŒ–
+	CW2015_Init();	   	//CW2015åˆå§‹åŒ–
 	DTMF_OE =1;
 	DTMF_Init();
 	
-	// ³õÊ¼»¯¶¯Ì¬¶Ë¿ÚĞ­ÉÌ×´Ì¬
+	// åˆå§‹åŒ–åŠ¨æ€ç«¯å£åå•†çŠ¶æ€
 	gpsUaInfo->dynamic_port = 0;
 	gpsUaInfo->port_negotiated = 0;
 	gpsUaInfo->port_verified = 0;
 	gpsUaInfo->port_request_timer = 0;
 	gpsUaInfo->port_request_retry = 0;
 	
+	// åˆå§‹åŒ–USMARTè°ƒè¯•ç³»ç»Ÿ
+	usmart_init(168);  // 168MHzç³»ç»Ÿæ—¶é’Ÿ
+	printf("USMART Debug System Initialized\r\n");
+	
+	// åˆå§‹åŒ–IPé…ç½®ç³»ç»Ÿ
+	ip_config_init();
+	
 	if(lwip_comm_init())
-	{ //lwip³õÊ¼»¯
-		printf("LWIP³õÊ¼»¯Ê§°Ü£¡\r\n");
+	{ //lwipåˆå§‹åŒ–
+		printf("LWIPåˆå§‹åŒ–å¤±è´¥ï¼\r\n");
 		gsNetFlag.netok =0;
 	}
 	else
 	{
 		gsNetFlag.netok =1;
-		printf("LWIP³õÊ¼»¯³É¹¦£¡\r\n");
+		printf("LWIPåˆå§‹åŒ–æˆåŠŸï¼\r\n");
 	}	
 
-	// ³õÊ¼»¯¶ÀÁ¢¿´ÃÅ¹·
+	// åˆå§‹åŒ–ç‹¬ç«‹çœ‹é—¨ç‹—
 	//IWDG_Init();
 		
 #if LWIP_DHCP
 	if(gsNetFlag.netok ==1){
-		while((lwipdev.dhcpstatus!=2)&&(lwipdev.dhcpstatus!=0XFF))//µÈ´ıDHCP»ñÈ¡³É¹¦/³¬Ê±Òç³ö
+		while((lwipdev.dhcpstatus!=2)&&(lwipdev.dhcpstatus!=0XFF))//ç­‰å¾…DHCPè·å–æˆåŠŸ/è¶…æ—¶æº¢å‡º
 		{
 			lwip_periodic_handle();
 		}
 	}
 #endif	
 	SIP_UainfoInit();		
-	gsNetFlag.netlink =KEY_NETLINK;	//¶ÁÈ¡net link pin
+	gsNetFlag.netlink =KEY_NETLINK;	//è¯»å–net link pin
 	
+
+	printf("åˆå§‹åŒ–å·²å®Œæˆï¼\r\n");
+
 	while(1)
 	{
 		
-//1. Ö»ÓĞÍøÂç³õÊ¼»¯³É¹¦ºó²ÅÓĞµÄ¹¦ÄÜ
+//1. åªæœ‰ç½‘ç»œåˆå§‹åŒ–æˆåŠŸåæ‰æœ‰çš„åŠŸèƒ½
 		if(gsNetFlag.netok ==1){	
 
-	//1.1. ÄÚ´æ¶¯Ì¬·ÖÅäÖ»ÄÜÒ»´Î
+	//1.1. å†…å­˜åŠ¨æ€åˆ†é…åªèƒ½ä¸€æ¬¡
 			if(gsNetFlag.udppcb_new ==0){	
 				gsNetFlag.udppcb_new =1;
-				NET_UdppcbNew();		//×¢£ºÖ»ÓĞÍøÂç³õÊ¼»¯³É¹¦²Å½¨Á¢new udppcb
+				NET_UdppcbNew();		//æ³¨ï¼šåªæœ‰ç½‘ç»œåˆå§‹åŒ–æˆåŠŸæ‰å»ºç«‹new udppcb
 			}			
 			
-	//1.2. lwip±ØĞëÖÜÆÚ´¦Àí
+	//1.2. lwipå¿…é¡»å‘¨æœŸå¤„ç†
 			lwip_periodic_handle();
 	
-	//1.3. Á¬½Ó²¢×¢²ásip sever ip(½öÒ»´Î)		
+	//1.3. è¿æ¥å¹¶æ³¨å†Œsip sever ip(ä»…ä¸€æ¬¡)		
 			if(gsNetFlag.bind ==0){
 				gsNetFlag.bind =1;	
 				NET_UdppcbConnect(gpsaUdppcb[0],gpsEeprom->sv_ip,SIP_PORT,SIP_PORT);				
-				// ¸ù¾İ¶¯Ì¬¶Ë¿ÚÉèÖÃRTPÁ¬½Ó
+				// æ ¹æ®åŠ¨æ€ç«¯å£è®¾ç½®RTPè¿æ¥
 				if(gpsUaInfo->dynamic_port > 0)
 				{
 					NET_UdppcbConnect(gpsaUdppcb[1],gpsEeprom->sv_ip,gpsUaInfo->dynamic_port,gpsUaInfo->dynamic_port);
@@ -131,7 +149,7 @@ int main(void)
 			}
 		}
 			
-//2. NETÊı¾İÊÕ·¢		
+//2. NETæ•°æ®æ”¶å‘		
 	//----------------- TX -----------------
 		if(gpsNetTx->rd != gpsNetTx->wr){	
 			//0: SIP		1: RTP		2: Manage software
@@ -147,24 +165,46 @@ int main(void)
 			gpsNetRx->rd &= (~NET_RXBUFNB);
 		}
 	
-//3. É¨Ãè°´¼ü		
+//3. æ‰«ææŒ‰é”®		
 		KEY_reset_scan();
 		KEY_netlink_scan();
 		
-//4. Sip register		
+//4. USMARTè°ƒè¯•ç³»ç»Ÿå¤„ç† (é›†æˆIPé…ç½®åŠŸèƒ½)
+		// æ£€æŸ¥æ˜¯å¦åªæœ‰å›è½¦ç¬¦ï¼Œæ²¡æœ‰æ¢è¡Œç¬¦çš„æƒ…å†µ
+		if((USART_RX_STA & 0x4000) && !(USART_RX_STA & 0x8000))
+		{
+			static u16 wait_counter = 0;
+			wait_counter++;
+			if(wait_counter > 10) // ç­‰å¾…100ms
+			{
+				USART_RX_STA |= 0x8000; // æ‰‹åŠ¨è®¾ç½®å®Œæˆæ ‡å¿—
+				wait_counter = 0;
+			}
+		}
+		else
+		{
+			static u16 wait_counter = 0;
+			wait_counter = 0;
+		}
+		
+		usmart_scan();
+		
+		delay_ms(10);  // å»¶æ—¶10msï¼Œé¿å…è¿‡å¿«æ‰«æå¯¼è‡´CPUå ç”¨è¿‡é«˜
+		
+//5. Sip register		
 		gSipRamdom1 ++;
 		gSipRamdom2 ++;
 		//SIP_RegisterTx();
 
-//5. Ö»ÓĞsip×¢²á³É¹¦ºó²ÅÖ´ĞĞ		
+//5. åªæœ‰sipæ³¨å†ŒæˆåŠŸåæ‰æ‰§è¡Œ		
 		if(gsSipRxFlag.ok_reg){
 			SIP_TxFlow();
 		}
 		
-//6. ÊÕµ½SDPĞ­Òé
+//6. æ”¶åˆ°SDPåè®®
 		if(gsSipRxFlag.sdp ==1){
 			gsSipRxFlag.sdp =0;			
-			// ¸ù¾İ¶¯Ì¬¶Ë¿ÚÖØĞÂÁ¬½ÓRTP
+			// æ ¹æ®åŠ¨æ€ç«¯å£é‡æ–°è¿æ¥RTP
 			if(gpsUaInfo->dynamic_port > 0)
 			{
 				NET_UdppcbConnect(gpsaUdppcb[1],gpsEeprom->sv_ip,gpsUaInfo->rtp_port,gpsUaInfo->dynamic_port);
@@ -175,16 +215,16 @@ int main(void)
 			}
 		}
 
-//7. ·¢ËÍrtp
+//7. å‘é€rtp
 		RTP_tx();		
 
-//8. Ğ´AT24C02 EEPROM   
-		EEPROM_Write();	//×¢£ºÖ»ÓĞÔÚ¿ÕÏĞÊ±²ÅĞ´EEPROM£¿£¿£¿£¿£¿
+//8. å†™AT24C02 EEPROM   
+		EEPROM_Write();	//æ³¨ï¼šåªæœ‰åœ¨ç©ºé—²æ—¶æ‰å†™EEPROMï¼Ÿï¼Ÿï¼Ÿï¼Ÿï¼Ÿ
 
-//9. Õª¹Ò»úÏÂ¹¦ÄÜ
+//9. æ‘˜æŒ‚æœºä¸‹åŠŸèƒ½
 		TEL_OnOffFunc();		
 
-//10. µç³Ø²ÉÑù
+//10. ç”µæ± é‡‡æ ·
 		CW2015_BatSample();
 		FSK_ringing();		
 		//CID_print();
@@ -198,8 +238,8 @@ int main(void)
 
 			SIP_date();	
 
-			//Î¹¹·
-		//	IWDG_ReloadCounter();  // Î¹¹·£¬·ÀÖ¹¸´Î»
+			//å–‚ç‹—
+		//	IWDG_ReloadCounter();  // å–‚ç‹—ï¼Œé˜²æ­¢å¤ä½
 		}
 	}
 }
