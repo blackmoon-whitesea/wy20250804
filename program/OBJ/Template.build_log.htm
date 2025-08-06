@@ -1,0 +1,78 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Tool Versions:</h2>
+IDE-Version: ¶ÃVision V5.29.0.0
+Copyright (C) 2019 ARM Ltd and ARM Germany GmbH. All rights reserved.
+License Information: ye wang, huangheng, LIC=585FJ-UAWEZ-63EMB-2LC82-WAZNU-KTD4N
+ 
+Tool Versions:
+Toolchain:       MDK-ARM Plus  Version: 5.29.0.0
+Toolchain Path:  C:\Keil_v5\ARM\ARMCC\Bin
+C Compiler:      Armcc.exe V5.06 update 6 (build 750)
+Assembler:       Armasm.exe V5.06 update 6 (build 750)
+Linker/Locator:  ArmLink.exe V5.06 update 6 (build 750)
+Library Manager: ArmAr.exe V5.06 update 6 (build 750)
+Hex Converter:   FromElf.exe V5.06 update 6 (build 750)
+CPU DLL:         SARMCM3.DLL V5.29.0.0
+Dialog DLL:      DCM.DLL V1.17.3.0
+Target DLL:      UL2CM3.DLL V1.163.0.0
+Dialog DLL:      TCM.DLL V1.36.5.0
+ 
+<h2>Project:</h2>
+c:\my_studio\wy\¿¥œ‘”Ô“Ùwy20250804\program\USER\Template.uvprojx
+Project File Date:  08/06/2025
+
+<h2>Output:</h2>
+*** Using Compiler 'V5.06 update 6 (build 750)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
+Build target 'Template'
+compiling usmart.c...
+..\USMART\usmart.c(235): warning:  #223-D: function "usmart_get_ipparm" declared implicitly
+  			res=usmart_get_ipparm(str,sfname,&i);
+..\USMART\usmart.c(242): warning:  #167-D: argument of type "u8 *" is incompatible with parameter of type "const char *"
+  					p=strchr(sfname,'.');
+..\USMART\usmart.c(247): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
+  						usmart_str2num(p,&res);
+..\USMART\usmart.c(251): warning:  #167-D: argument of type "u8 *" is incompatible with parameter of type "char *restrict"
+  					strcpy(sfname,p);
+..\USMART\usmart.c(264): warning:  #167-D: argument of type "u8 *" is incompatible with parameter of type "const char *"
+  					p=strchr(sfname,'.');
+..\USMART\usmart.c(269): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
+  						usmart_str2num(p,&res);
+..\USMART\usmart.c(273): warning:  #167-D: argument of type "u8 *" is incompatible with parameter of type "char *restrict"
+  					strcpy(sfname,p);
+..\USMART\usmart.c(284): warning:  #167-D: argument of type "u8 *" is incompatible with parameter of type "const char *"
+  					p=strchr(sfname,'.');
+..\USMART\usmart.c(289): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
+  						usmart_str2num(p,&res);
+..\USMART\usmart.c(293): warning:  #167-D: argument of type "u8 *" is incompatible with parameter of type "char *restrict"
+  					strcpy(sfname,p);
+..\USMART\usmart.c(328): warning:  #167-D: argument of type "u8 *" is incompatible with parameter of type "const char *"
+  					p=strchr(sfname,'.');
+..\USMART\usmart.c(333): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
+  						usmart_str2num(p,&res);
+..\USMART\usmart.c(338): warning:  #167-D: argument of type "u8 *" is incompatible with parameter of type "char *restrict"
+  					strcpy(sfname,p);
+..\USMART\usmart.c: 13 warnings, 0 errors
+linking...
+Program Size: Code=75290 RO-data=2246 RW-data=3468 ZI-data=375036  
+FromELF: creating hex file...
+After Build - User command #1: C:\Keil_v5\ARM\ARMCC\bin\fromelf.exe --bin -o ..\OBJ\phone.bin ..\OBJ\Template.axf
+"..\OBJ\Template.axf" - 0 Error(s), 13 Warning(s).
+
+<h2>Software Packages used:</h2>
+
+Package Vendor: Keil
+                https://www.keil.com/pack/Keil.STM32F4xx_DFP.3.1.0.pack
+                Keil.STM32F4xx_DFP.3.1.0
+                STMicroelectronics STM32F4 Series Device Support
+
+<h2>Collection of Component include folders:</h2>
+  .\RTE\_Template
+
+<h2>Collection of Component Files used:</h2>
+Build Time Elapsed:  00:00:04
+</pre>
+</body>
+</html>

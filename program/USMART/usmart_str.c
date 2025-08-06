@@ -1,356 +1,378 @@
 #include "usmart_str.h"
 #include "usmart.h"		   
 //////////////////////////////////////////////////////////////////////////////////	 
-//±¾³ÌÐòÖ»¹©Ñ§Ï°Ê¹ÓÃ£¬Î´¾­×÷ÕßÐí¿É£¬²»µÃÓÃÓÚÆäËüÈÎºÎÓÃÍ¾
-//ALIENTEK STM32¿ª·¢°å	   
-//ÕýµãÔ­×Ó@ALIENTEK
-//¼¼ÊõÂÛÌ³:www.openedv.com 
-//°æ±¾£ºV3.1
-//°æÈ¨ËùÓÐ£¬µÁ°æ±Ø¾¿¡£
-//Copyright(C) ÕýµãÔ­×Ó 2011-2021
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö»ï¿½ï¿½Ñ§Ï°Ê¹ï¿½Ã£ï¿½Î´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îºï¿½ï¿½ï¿½Í¾
+//ALIENTEK STM32ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½	   
+//ï¿½ï¿½ï¿½ï¿½Ô­ï¿½ï¿½@ALIENTEK
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì³:www.openedv.com 
+//ï¿½æ±¾ï¿½ï¿½V3.1
+//ï¿½ï¿½È¨ï¿½ï¿½ï¿½Ð£ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ï¿½ï¿½
+//Copyright(C) ï¿½ï¿½ï¿½ï¿½Ô­ï¿½ï¿½ 2011-2021
 //All rights reserved
 //********************************************************************************
-//Éý¼¶ËµÃ÷
+//ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½
 //V1.4
-//Ôö¼ÓÁË¶Ô²ÎÊýÎªstringÀàÐÍµÄº¯ÊýµÄÖ§³Ö.ÊÊÓÃ·¶Î§´ó´óÌá¸ß.
-//ÓÅ»¯ÁËÄÚ´æÕ¼ÓÃ,¾²Ì¬ÄÚ´æÕ¼ÓÃÎª79¸ö×Ö½Ú@10¸ö²ÎÊý.¶¯Ì¬ÊÊÓ¦Êý×Ö¼°×Ö·û´®³¤¶È
+//ï¿½ï¿½ï¿½ï¿½ï¿½Ë¶Ô²ï¿½ï¿½ï¿½Îªstringï¿½ï¿½ï¿½ÍµÄºï¿½ï¿½ï¿½ï¿½ï¿½Ö§ï¿½ï¿½.ï¿½ï¿½ï¿½Ã·ï¿½Î§ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
+//ï¿½Å»ï¿½ï¿½ï¿½ï¿½Ú´ï¿½Õ¼ï¿½ï¿½,ï¿½ï¿½Ì¬ï¿½Ú´ï¿½Õ¼ï¿½ï¿½Îª79ï¿½ï¿½ï¿½Ö½ï¿½@10ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.ï¿½ï¿½Ì¬ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½Ö¼ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 //V2.0 
-//1,ÐÞ¸ÄÁËlistÖ¸Áî,´òÓ¡º¯ÊýµÄÍêÕû±í´ïÊ½.
-//2,Ôö¼ÓÁËidÖ¸Áî,´òÓ¡Ã¿¸öº¯ÊýµÄÈë¿ÚµØÖ·.
-//3,ÐÞ¸ÄÁË²ÎÊýÆ¥Åä,Ö§³Öº¯Êý²ÎÊýµÄµ÷ÓÃ(ÊäÈëÈë¿ÚµØÖ·).
-//4,Ôö¼ÓÁËº¯ÊýÃû³¤¶Èºê¶¨Òå.	
+//1,ï¿½Þ¸ï¿½ï¿½ï¿½listÖ¸ï¿½ï¿½,ï¿½ï¿½Ó¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê½.
+//2,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½idÖ¸ï¿½ï¿½,ï¿½ï¿½Ó¡Ã¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½Ö·.
+//3,ï¿½Þ¸ï¿½ï¿½Ë²ï¿½ï¿½ï¿½Æ¥ï¿½ï¿½,Ö§ï¿½Öºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Äµï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½Ö·).
+//4,ï¿½ï¿½ï¿½ï¿½ï¿½Ëºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Èºê¶¨ï¿½ï¿½.	
 //V2.1 20110707		 
-//1,Ôö¼Ódec,hexÁ½¸öÖ¸Áî,ÓÃÓÚÉèÖÃ²ÎÊýÏÔÊ¾½øÖÆ,¼°Ö´ÐÐ½øÖÆ×ª»».
-//×¢:µ±dec,hex²»´ø²ÎÊýµÄÊ±ºò,¼´Éè¶¨ÏÔÊ¾²ÎÊý½øÖÆ.µ±ºó¸ú²ÎÊýµÄÊ±ºò,¼´Ö´ÐÐ½øÖÆ×ª»».
-//Èç:"dec 0XFF" Ôò»á½«0XFF×ªÎª255,ÓÉ´®¿Ú·µ»Ø.
-//Èç:"hex 100" 	Ôò»á½«100×ªÎª0X64,ÓÉ´®¿Ú·µ»Ø
-//2,ÐÂÔöusmart_get_cmdnameº¯Êý,ÓÃÓÚ»ñÈ¡Ö¸ÁîÃû×Ö.
+//1,ï¿½ï¿½ï¿½ï¿½dec,hexï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã²ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½,ï¿½ï¿½Ö´ï¿½Ð½ï¿½ï¿½ï¿½×ªï¿½ï¿½.
+//×¢:ï¿½ï¿½dec,hexï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½,ï¿½ï¿½ï¿½è¶¨ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½,ï¿½ï¿½Ö´ï¿½Ð½ï¿½ï¿½ï¿½×ªï¿½ï¿½.
+//ï¿½ï¿½:"dec 0XFF" ï¿½ï¿½á½«0XFF×ªÎª255,ï¿½É´ï¿½ï¿½Ú·ï¿½ï¿½ï¿½.
+//ï¿½ï¿½:"hex 100" 	ï¿½ï¿½á½«100×ªÎª0X64,ï¿½É´ï¿½ï¿½Ú·ï¿½ï¿½ï¿½
+//2,ï¿½ï¿½ï¿½ï¿½usmart_get_cmdnameï¿½ï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½Ú»ï¿½È¡Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
 //V2.2 20110726	
-//1,ÐÞÕýÁËvoidÀàÐÍ²ÎÊýµÄ²ÎÊýÍ³¼Æ´íÎó.
-//2,ÐÞ¸ÄÊý¾ÝÏÔÊ¾¸ñÊ½Ä¬ÈÏÎª16½øÖÆ.
+//1,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½voidï¿½ï¿½ï¿½Í²ï¿½ï¿½ï¿½ï¿½Ä²ï¿½ï¿½ï¿½Í³ï¿½Æ´ï¿½ï¿½ï¿½.
+//2,ï¿½Þ¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½Ê½Ä¬ï¿½ï¿½Îª16ï¿½ï¿½ï¿½ï¿½.
 //V2.3 20110815
-//1,È¥µôÁËº¯ÊýÃûºó±ØÐë¸ú"("µÄÏÞÖÆ.
-//2,ÐÞÕýÁË×Ö·û´®²ÎÊýÖÐ²»ÄÜÓÐ"("µÄbug.
-//3,ÐÞ¸ÄÁËº¯ÊýÄ¬ÈÏÏÔÊ¾²ÎÊý¸ñÊ½µÄÐÞ¸Ä·½Ê½. 
+//1,È¥ï¿½ï¿½ï¿½Ëºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½"("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
+//2,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð²ï¿½ï¿½ï¿½ï¿½ï¿½"("ï¿½ï¿½bug.
+//3,ï¿½Þ¸ï¿½ï¿½Ëºï¿½ï¿½ï¿½Ä¬ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê½ï¿½ï¿½ï¿½Þ¸Ä·ï¿½Ê½. 
 //V2.4 20110905
-//1,ÐÞ¸ÄÁËusmart_get_cmdnameº¯Êý,Ôö¼Ó×î´ó²ÎÊý³¤¶ÈÏÞÖÆ.±ÜÃâÁËÊäÈë´íÎó²ÎÊýÊ±µÄËÀ»úÏÖÏó.
-//2,Ôö¼ÓUSMART_ENTIM2_SCANºê¶¨Òå,ÓÃÓÚÅäÖÃÊÇ·ñÊ¹ÓÃTIM2¶¨Ê±Ö´ÐÐscanº¯Êý.
+//1,ï¿½Þ¸ï¿½ï¿½ï¿½usmart_get_cmdnameï¿½ï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
+//2,ï¿½ï¿½ï¿½ï¿½USMART_ENTIM2_SCANï¿½ê¶¨ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½Ê¹ï¿½ï¿½TIM2ï¿½ï¿½Ê±Ö´ï¿½ï¿½scanï¿½ï¿½ï¿½ï¿½.
 //V2.5 20110930
-//1,ÐÞ¸Äusmart_initº¯ÊýÎªvoid usmart_init(u8 sysclk),¿ÉÒÔ¸ù¾ÝÏµÍ³ÆµÂÊ×Ô¶¯Éè¶¨É¨ÃèÊ±¼ä.(¹Ì¶¨100ms)
-//2,È¥µôÁËusmart_initº¯ÊýÖÐµÄuart_initº¯Êý,´®¿Ú³õÊ¼»¯±ØÐëÔÚÍâ²¿³õÊ¼»¯,·½±ãÓÃ»§×ÔÐÐ¹ÜÀí.
+//1,ï¿½Þ¸ï¿½usmart_initï¿½ï¿½ï¿½ï¿½Îªvoid usmart_init(u8 sysclk),ï¿½ï¿½ï¿½Ô¸ï¿½ï¿½ï¿½ÏµÍ³Æµï¿½ï¿½ï¿½Ô¶ï¿½ï¿½è¶¨É¨ï¿½ï¿½Ê±ï¿½ï¿½.(ï¿½Ì¶ï¿½100ms)
+//2,È¥ï¿½ï¿½ï¿½ï¿½usmart_initï¿½ï¿½ï¿½ï¿½ï¿½Ðµï¿½uart_initï¿½ï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½Ú³ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½â²¿ï¿½ï¿½Ê¼ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½Ð¹ï¿½ï¿½ï¿½.
 //V2.6 20111009
-//1,Ôö¼ÓÁËread_addrºÍwrite_addrÁ½¸öº¯Êý.¿ÉÒÔÀûÓÃÕâÁ½¸öº¯Êý¶ÁÐ´ÄÚ²¿ÈÎÒâµØÖ·(±ØÐëÊÇÓÐÐ§µØÖ·).¸ü¼Ó·½±ãµ÷ÊÔ.
-//2,read_addrºÍwrite_addrÁ½¸öº¯Êý¿ÉÒÔÍ¨¹ýÉèÖÃUSMART_USE_WRFUNSÎªÀ´Ê¹ÄÜºÍ¹Ø±Õ.
-//3,ÐÞ¸ÄÁËusmart_strcmp,Ê¹Æä¹æ·¶»¯.			  
+//1,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½read_addrï¿½ï¿½write_addrï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð´ï¿½Ú²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð§ï¿½ï¿½Ö·).ï¿½ï¿½ï¿½Ó·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
+//2,read_addrï¿½ï¿½write_addrï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½USMART_USE_WRFUNSÎªï¿½ï¿½Ê¹ï¿½ÜºÍ¹Ø±ï¿½.
+//3,ï¿½Þ¸ï¿½ï¿½ï¿½usmart_strcmp,Ê¹ï¿½ï¿½æ·¶ï¿½ï¿½.			  
 //V2.7 20111024
-//1,ÐÞÕýÁË·µ»ØÖµ16½øÖÆÏÔÊ¾Ê±²»»»ÐÐµÄbug.
-//2,Ôö¼ÓÁËº¯ÊýÊÇ·ñÓÐ·µ»ØÖµµÄÅÐ¶Ï,Èç¹ûÃ»ÓÐ·µ»ØÖµ,Ôò²»»áÏÔÊ¾.ÓÐ·µ»ØÖµÊ±²ÅÏÔÊ¾Æä·µ»ØÖµ.
+//1,ï¿½ï¿½ï¿½ï¿½ï¿½Ë·ï¿½ï¿½ï¿½Öµ16ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾Ê±ï¿½ï¿½ï¿½ï¿½ï¿½Ðµï¿½bug.
+//2,ï¿½ï¿½ï¿½ï¿½ï¿½Ëºï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½Ð·ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½Ð¶ï¿½,ï¿½ï¿½ï¿½Ã»ï¿½Ð·ï¿½ï¿½ï¿½Öµ,ï¿½ò²»»ï¿½ï¿½ï¿½Ê¾.ï¿½Ð·ï¿½ï¿½ï¿½ÖµÊ±ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ä·µï¿½ï¿½Öµ.
 //V2.8 20111116
-//1,ÐÞÕýÁËlistµÈ²»´ø²ÎÊýµÄÖ¸Áî·¢ËÍºó¿ÉÄÜµ¼ÖÂËÀ»úµÄbug.
+//1,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½listï¿½È²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½î·¢ï¿½Íºï¿½ï¿½ï¿½Üµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½bug.
 //V2.9 20120917
-//1,ÐÞ¸ÄÁËÐÎÈç£ºvoid*xxx(void)ÀàÐÍº¯Êý²»ÄÜÊ¶±ðµÄbug¡£
+//1,ï¿½Þ¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ç£ºvoid*xxx(void)ï¿½ï¿½ï¿½Íºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¶ï¿½ï¿½ï¿½bugï¿½ï¿½
 //V3.0 20130425
-//1,ÐÂÔöÁË×Ö·û´®²ÎÊý¶Ô×ªÒå·ûµÄÖ§³Ö¡£
+//1,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½ï¿½Ö§ï¿½Ö¡ï¿½
 //V3.1 20131120
-//1,Ôö¼ÓruntimeÏµÍ³Ö¸Áî,¿ÉÒÔÓÃÓÚÍ³¼Æº¯ÊýÖ´ÐÐÊ±¼ä.
-//ÓÃ·¨:
-//·¢ËÍ:runtime 1 ,Ôò¿ªÆôº¯ÊýÖ´ÐÐÊ±¼äÍ³¼Æ¹¦ÄÜ
-//·¢ËÍ:runtime 0 ,Ôò¹Ø±Õº¯ÊýÖ´ÐÐÊ±¼äÍ³¼Æ¹¦ÄÜ
-///runtimeÍ³¼Æ¹¦ÄÜ,±ØÐëÉèÖÃ:USMART_ENTIMX_SCAN Îª1,²Å¿ÉÒÔÊ¹ÓÃ!!
+//1,ï¿½ï¿½ï¿½ï¿½runtimeÏµÍ³Ö¸ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í³ï¿½Æºï¿½ï¿½ï¿½Ö´ï¿½ï¿½Ê±ï¿½ï¿½.
+//ï¿½Ã·ï¿½:
+//ï¿½ï¿½ï¿½ï¿½:runtime 1 ,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ï¿½Ê±ï¿½ï¿½Í³ï¿½Æ¹ï¿½ï¿½ï¿½
+//ï¿½ï¿½ï¿½ï¿½:runtime 0 ,ï¿½ï¿½Ø±Õºï¿½ï¿½ï¿½Ö´ï¿½ï¿½Ê±ï¿½ï¿½Í³ï¿½Æ¹ï¿½ï¿½ï¿½
+///runtimeÍ³ï¿½Æ¹ï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:USMART_ENTIMX_SCAN Îª1,ï¿½Å¿ï¿½ï¿½ï¿½Ê¹ï¿½ï¿½!!
 /////////////////////////////////////////////////////////////////////////////////////
   
-//¶Ô±È×Ö·û´®str1ºÍstr2
-//*str1:×Ö·û´®1Ö¸Õë
-//*str2:×Ö·û´®2Ö¸Õë
-//·µ»ØÖµ:0£¬ÏàµÈ;1£¬²»ÏàµÈ;
+//ï¿½Ô±ï¿½ï¿½Ö·ï¿½ï¿½ï¿½str1ï¿½ï¿½str2
+//*str1:ï¿½Ö·ï¿½ï¿½ï¿½1Ö¸ï¿½ï¿½
+//*str2:ï¿½Ö·ï¿½ï¿½ï¿½2Ö¸ï¿½ï¿½
+//ï¿½ï¿½ï¿½ï¿½Öµ:0ï¿½ï¿½ï¿½ï¿½ï¿½;1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½;
 u8 usmart_strcmp(u8 *str1,u8 *str2)
 {
 	while(1)
 	{
-		if(*str1!=*str2)return 1;//²»ÏàµÈ
-		if(*str1=='\0')break;//¶Ô±ÈÍê³ÉÁË.
+		if(*str1!=*str2)return 1;//ï¿½ï¿½ï¿½ï¿½ï¿½
+		if(*str1=='\0')break;//ï¿½Ô±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
 		str1++;
 		str2++;
 	}
-	return 0;//Á½¸ö×Ö·û´®ÏàµÈ
+	return 0;//ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 }
-//°Ñstr1µÄÄÚÈÝcopyµ½str2
-//*str1:×Ö·û´®1Ö¸Õë
-//*str2:×Ö·û´®2Ö¸Õë			   
+//ï¿½ï¿½str1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½copyï¿½ï¿½str2
+//*str1:ï¿½Ö·ï¿½ï¿½ï¿½1Ö¸ï¿½ï¿½
+//*str2:ï¿½Ö·ï¿½ï¿½ï¿½2Ö¸ï¿½ï¿½			   
 void usmart_strcopy(u8*str1,u8 *str2)
 {
 	while(1)
 	{										   
-		*str2=*str1;	//¿½±´
-		if(*str1=='\0')break;//¿½±´Íê³ÉÁË.
+		*str2=*str1;	//ï¿½ï¿½ï¿½ï¿½
+		if(*str1=='\0')break;//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
 		str1++;
 		str2++;
 	}
 }
-//µÃµ½×Ö·û´®µÄ³¤¶È(×Ö½Ú)
-//*str:×Ö·û´®Ö¸Õë
-//·µ»ØÖµ:×Ö·û´®µÄ³¤¶È		   
+//ï¿½Ãµï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½Ä³ï¿½ï¿½ï¿½(ï¿½Ö½ï¿½)
+//*str:ï¿½Ö·ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½
+//ï¿½ï¿½ï¿½ï¿½Öµ:ï¿½Ö·ï¿½ï¿½ï¿½ï¿½Ä³ï¿½ï¿½ï¿½		   
 u8 usmart_strlen(u8*str)
 {
 	u8 len=0;
 	while(1)
 	{							 
-		if(*str=='\0')break;//¿½±´Íê³ÉÁË.
+		if(*str=='\0')break;//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
 		len++;
 		str++;
 	}
 	return len;
 }
-//m^nº¯Êý
-//·µ»ØÖµ:m^n´Î·½
+//m^nï¿½ï¿½ï¿½ï¿½
+//ï¿½ï¿½ï¿½ï¿½Öµ:m^nï¿½Î·ï¿½
 u32 usmart_pow(u8 m,u8 n)
 {
 	u32 result=1;	 
 	while(n--)result*=m;    
 	return result;
 }	    
-//°Ñ×Ö·û´®×ªÎªÊý×Ö
-//Ö§³Ö16½øÖÆ×ª»»,µ«ÊÇ16½øÖÆ×ÖÄ¸±ØÐëÊÇ´óÐ´µÄ,ÇÒ¸ñÊ½ÎªÒÔ0X¿ªÍ·µÄ.
-//²»Ö§³Ö¸ºÊý 
-//*str:Êý×Ö×Ö·û´®Ö¸Õë
-//*res:×ª»»ÍêµÄ½á¹û´æ·ÅµØÖ·.
-//·µ»ØÖµ:0£¬³É¹¦×ª»»Íê³É.ÆäËû,´íÎó´úÂë.
-//1,Êý¾Ý¸ñÊ½´íÎó.2,16½øÖÆÎ»ÊýÎª0.3,ÆðÊ¼¸ñÊ½´íÎó.4,Ê®½øÖÆÎ»ÊýÎª0.
+//ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½×ªÎªï¿½ï¿½ï¿½ï¿½
+//Ö§ï¿½ï¿½16ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½16ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¸ï¿½ï¿½ï¿½ï¿½ï¿½Ç´ï¿½Ð´ï¿½ï¿½,ï¿½Ò¸ï¿½Ê½Îªï¿½ï¿½0Xï¿½ï¿½Í·ï¿½ï¿½.
+//ï¿½ï¿½Ö§ï¿½Ö¸ï¿½ï¿½ï¿½ 
+//*str:ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½
+//*res:×ªï¿½ï¿½ï¿½ï¿½Ä½ï¿½ï¿½ï¿½ï¿½Åµï¿½Ö·.
+//ï¿½ï¿½ï¿½ï¿½Öµ:0ï¿½ï¿½ï¿½É¹ï¿½×ªï¿½ï¿½ï¿½ï¿½ï¿½.ï¿½ï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
+//1,ï¿½ï¿½ï¿½Ý¸ï¿½Ê½ï¿½ï¿½ï¿½ï¿½.2,16ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½Îª0.3,ï¿½ï¿½Ê¼ï¿½ï¿½Ê½ï¿½ï¿½ï¿½ï¿½.4,Ê®ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½Îª0.
 u8 usmart_str2num(u8*str,u32 *res)
 {
 	u32 t;
-	u8 bnum=0;	//Êý×ÖµÄÎ»Êý
+	u8 bnum=0;	//ï¿½ï¿½ï¿½Öµï¿½Î»ï¿½ï¿½
 	u8 *p;		  
-	u8 hexdec=10;//Ä¬ÈÏÎªÊ®½øÖÆÊý¾Ý
+	u8 hexdec=10;//Ä¬ï¿½ï¿½ÎªÊ®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	p=str;
-	*res=0;//ÇåÁã.
+	*res=0;//ï¿½ï¿½ï¿½ï¿½.
 	while(1)
 	{
-		if((*p<='9'&&*p>='0')||(*p<='F'&&*p>='A')||(*p=='X'&&bnum==1))//²ÎÊýºÏ·¨
+		if((*p<='9'&&*p>='0')||(*p<='F'&&*p>='A')||(*p=='X'&&bnum==1))//ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½
 		{
-			if(*p>='A')hexdec=16;	//×Ö·û´®ÖÐ´æÔÚ×ÖÄ¸,Îª16½øÖÆ¸ñÊ½.
-			bnum++;					//Î»ÊýÔö¼Ó.
-		}else if(*p=='\0')break;	//Åöµ½½áÊø·û,ÍË³ö.
-		else return 1;				//²»È«ÊÇÊ®½øÖÆ»òÕß16½øÖÆÊý¾Ý.
+			if(*p>='A')hexdec=16;	//ï¿½Ö·ï¿½ï¿½ï¿½ï¿½Ð´ï¿½ï¿½ï¿½ï¿½ï¿½Ä¸,Îª16ï¿½ï¿½ï¿½Æ¸ï¿½Ê½.
+			bnum++;					//Î»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
+		}else if(*p=='\0')break;	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,ï¿½Ë³ï¿½.
+		else return 1;				//ï¿½ï¿½È«ï¿½ï¿½Ê®ï¿½ï¿½ï¿½Æ»ï¿½ï¿½ï¿½16ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
 		p++; 
 	} 
-	p=str;			    //ÖØÐÂ¶¨Î»µ½×Ö·û´®¿ªÊ¼µÄµØÖ·.
-	if(hexdec==16)		//16½øÖÆÊý¾Ý
+	p=str;			    //ï¿½ï¿½ï¿½Â¶ï¿½Î»ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½Äµï¿½Ö·.
+	if(hexdec==16)		//16ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	{
-		if(bnum<3)return 2;			//Î»ÊýÐ¡ÓÚ3£¬Ö±½ÓÍË³ö.ÒòÎª0X¾ÍÕ¼ÁË2¸ö,Èç¹û0XºóÃæ²»¸úÊý¾Ý,Ôò¸ÃÊý¾Ý·Ç·¨.
-		if(*p=='0' && (*(p+1)=='X'))//±ØÐëÒÔ'0X'¿ªÍ·.
+		if(bnum<3)return 2;			//Î»ï¿½ï¿½Ð¡ï¿½ï¿½3ï¿½ï¿½Ö±ï¿½ï¿½ï¿½Ë³ï¿½.ï¿½ï¿½Îª0Xï¿½ï¿½Õ¼ï¿½ï¿½2ï¿½ï¿½,ï¿½ï¿½ï¿½0Xï¿½ï¿½ï¿½æ²»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý·Ç·ï¿½.
+		if(*p=='0' && (*(p+1)=='X'))//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½'0X'ï¿½ï¿½Í·.
 		{
-			p+=2;	//Æ«ÒÆµ½Êý¾ÝÆðÊ¼µØÖ·.
-			bnum-=2;//¼õÈ¥Æ«ÒÆÁ¿	 
-		}else return 3;//ÆðÊ¼Í·µÄ¸ñÊ½²»¶Ô
-	}else if(bnum==0)return 4;//Î»ÊýÎª0£¬Ö±½ÓÍË³ö.	  
+			p+=2;	//Æ«ï¿½Æµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½Ö·.
+			bnum-=2;//ï¿½ï¿½È¥Æ«ï¿½ï¿½ï¿½ï¿½	 
+		}else return 3;//ï¿½ï¿½Ê¼Í·ï¿½Ä¸ï¿½Ê½ï¿½ï¿½ï¿½ï¿½
+	}else if(bnum==0)return 4;//Î»ï¿½ï¿½Îª0ï¿½ï¿½Ö±ï¿½ï¿½ï¿½Ë³ï¿½.	  
 	while(1)
 	{
 		if(bnum)bnum--;
-		if(*p<='9'&&*p>='0')t=*p-'0';	//µÃµ½Êý×ÖµÄÖµ
-		else t=*p-'A'+10;				//µÃµ½A~F¶ÔÓ¦µÄÖµ	    
+		if(*p<='9'&&*p>='0')t=*p-'0';	//ï¿½Ãµï¿½ï¿½ï¿½ï¿½Öµï¿½Öµ
+		else t=*p-'A'+10;				//ï¿½Ãµï¿½A~Fï¿½ï¿½Ó¦ï¿½ï¿½Öµ	    
 		*res+=t*usmart_pow(hexdec,bnum);		   
 		p++;
-		if(*p=='\0')break;//Êý¾Ý¶¼²éÍêÁË.	
+		if(*p=='\0')break;//ï¿½ï¿½ï¿½Ý¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.	
 	}
-	return 0;//³É¹¦×ª»»
+	return 0;//ï¿½É¹ï¿½×ªï¿½ï¿½
 }
-//µÃµ½Ö¸ÁîÃû
-//*str:Ô´×Ö·û´®
-//*cmdname:Ö¸ÁîÃû
-//*nlen:Ö¸ÁîÃû³¤¶È		
-//maxlen:×î´ó³¤¶È(×öÏÞÖÆ,Ö¸Áî²»¿ÉÄÜÌ«³¤µÄ)	
-//·µ»ØÖµ:0,³É¹¦;ÆäËû,Ê§°Ü.	  
+//ï¿½Ãµï¿½Ö¸ï¿½ï¿½ï¿½ï¿½
+//*str:Ô´ï¿½Ö·ï¿½ï¿½ï¿½
+//*cmdname:Ö¸ï¿½ï¿½ï¿½ï¿½
+//*nlen:Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½		
+//maxlen:ï¿½ï¿½ó³¤¶ï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,Ö¸ï¿½î²»ï¿½ï¿½ï¿½ï¿½Ì«ï¿½ï¿½ï¿½ï¿½)	
+//ï¿½ï¿½ï¿½ï¿½Öµ:0,ï¿½É¹ï¿½;ï¿½ï¿½ï¿½ï¿½,Ê§ï¿½ï¿½.	  
 u8 usmart_get_cmdname(u8*str,u8*cmdname,u8 *nlen,u8 maxlen)
 {
 	*nlen=0;
- 	while(*str!=' '&&*str!='\0') //ÕÒµ½¿Õ¸ñ»òÕß½áÊø·ûÔòÈÏÎª½áÊøÁË
+ 	while(*str!=' '&&*str!='\0') //ï¿½Òµï¿½ï¿½Õ¸ï¿½ï¿½ï¿½ß½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	{
 		*cmdname=*str;
 		str++;
 		cmdname++;
-		(*nlen)++;//Í³¼ÆÃüÁî³¤¶È
-		if(*nlen>=maxlen)return 1;//´íÎóµÄÖ¸Áî
+		(*nlen)++;//Í³ï¿½ï¿½ï¿½ï¿½ï¿½î³¤ï¿½ï¿½
+		if(*nlen>=maxlen)return 1;//ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½
 	}
-	*cmdname='\0';//¼ÓÈë½áÊø·û
-	return 0;//Õý³£·µ»Ø
+	*cmdname='\0';//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	return 0;//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 }
-//»ñÈ¡ÏÂÒ»¸ö×Ö·û£¨µ±ÖÐ¼äÓÐºÜ¶à¿Õ¸ñµÄÊ±ºò£¬´Ëº¯ÊýÖ±½ÓºöÂÔ¿Õ¸ñ£¬ÕÒµ½¿Õ¸ñÖ®ºóµÄµÚÒ»¸ö×Ö·û£©
-//str:×Ö·û´®Ö¸Õë	
-//·µ»ØÖµ:ÏÂÒ»¸ö×Ö·û
+//ï¿½ï¿½È¡ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¼ï¿½ï¿½ÐºÜ¶ï¿½Õ¸ï¿½ï¿½Ê±ï¿½ò£¬´Ëºï¿½ï¿½ï¿½Ö±ï¿½Óºï¿½ï¿½Ô¿Õ¸ï¿½ï¿½Òµï¿½ï¿½Õ¸ï¿½Ö®ï¿½ï¿½Äµï¿½Ò»ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½
+//str:ï¿½Ö·ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½	
+//ï¿½ï¿½ï¿½ï¿½Öµ:ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Ö·ï¿½
 u8 usmart_search_nextc(u8* str)
 {		   	 	
 	str++;
 	while(*str==' '&&str!='\0')str++;
 	return *str;
 } 
-//´ÓstrÖÐµÃµ½º¯ÊýÃû
-//*str:Ô´×Ö·û´®Ö¸Õë
-//*fname:»ñÈ¡µ½µÄº¯ÊýÃû×ÖÖ¸Õë
-//*pnum:º¯ÊýµÄ²ÎÊý¸öÊý
-//*rval:ÊÇ·ñÐèÒªÏÔÊ¾·µ»ØÖµ(0,²»ÐèÒª;1,ÐèÒª)
-//·µ»ØÖµ:0,³É¹¦;ÆäËû,´íÎó´úÂë.
+//ï¿½ï¿½strï¿½ÐµÃµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+//*str:Ô´ï¿½Ö·ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½
+//*fname:ï¿½ï¿½È¡ï¿½ï¿½ï¿½Äºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½
+//*pnum:ï¿½ï¿½ï¿½ï¿½ï¿½Ä²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+//*rval:ï¿½Ç·ï¿½ï¿½ï¿½Òªï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½Öµ(0,ï¿½ï¿½ï¿½ï¿½Òª;1,ï¿½ï¿½Òª)
+//ï¿½ï¿½ï¿½ï¿½Öµ:0,ï¿½É¹ï¿½;ï¿½ï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
 u8 usmart_get_fname(u8*str,u8*fname,u8 *pnum,u8 *rval)
 {
 	u8 res;
-	u8 fover=0;	  //À¨ºÅÉî¶È
+	u8 fover=0;	  //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	u8 *strtemp;
 	u8 offset=0;  
 	u8 parmnum=0;
 	u8 temp=1;
 	u8 fpname[6];//void+X+'/0'
-	u8 fplcnt=0; //µÚÒ»¸ö²ÎÊýµÄ³¤¶È¼ÆÊýÆ÷
-	u8 pcnt=0;	 //²ÎÊý¼ÆÊýÆ÷
+	u8 fplcnt=0; //ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä³ï¿½ï¿½È¼ï¿½ï¿½ï¿½ï¿½ï¿½
+	u8 pcnt=0;	 //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	u8 nchar;
-	//ÅÐ¶Ïº¯ÊýÊÇ·ñÓÐ·µ»ØÖµ
+	//ï¿½Ð¶Ïºï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½Ð·ï¿½ï¿½ï¿½Öµ
 	strtemp=str;
-	while(*strtemp!='\0')//Ã»ÓÐ½áÊø
+	while(*strtemp!='\0')//Ã»ï¿½Ð½ï¿½ï¿½ï¿½
 	{
-		if(*strtemp!=' '&&(pcnt&0X7F)<5)//×î¶à¼ÇÂ¼5¸ö×Ö·û
+		if(*strtemp!=' '&&(pcnt&0X7F)<5)//ï¿½ï¿½ï¿½ï¿½Â¼5ï¿½ï¿½ï¿½Ö·ï¿½
 		{	
-			if(pcnt==0)pcnt|=0X80;//ÖÃÎ»×î¸ßÎ»,±ê¼Ç¿ªÊ¼½ÓÊÕ·µ»ØÖµÀàÐÍ
-			if(((pcnt&0x7f)==4)&&(*strtemp!='*'))break;//×îºóÒ»¸ö×Ö·û,±ØÐëÊÇ*
-			fpname[pcnt&0x7f]=*strtemp;//¼ÇÂ¼º¯ÊýµÄ·µ»ØÖµÀàÐÍ
+			if(pcnt==0)pcnt|=0X80;//ï¿½ï¿½Î»ï¿½ï¿½ï¿½Î»,ï¿½ï¿½Ç¿ï¿½Ê¼ï¿½ï¿½ï¿½Õ·ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½
+			if(((pcnt&0x7f)==4)&&(*strtemp!='*'))break;//ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Ö·ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*
+			fpname[pcnt&0x7f]=*strtemp;//ï¿½ï¿½Â¼ï¿½ï¿½ï¿½ï¿½ï¿½Ä·ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½
 			pcnt++;
 		}else if(pcnt==0X85)break;
 		strtemp++; 
 	} 
-	if(pcnt)//½ÓÊÕÍêÁË
+	if(pcnt)//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	{
-		fpname[pcnt&0x7f]='\0';//¼ÓÈë½áÊø·û
-		if(usmart_strcmp(fpname,"void")==0)*rval=0;//²»ÐèÒª·µ»ØÖµ
-		else *rval=1;							   //ÐèÒª·µ»ØÖµ
+		fpname[pcnt&0x7f]='\0';//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		if(usmart_strcmp(fpname,"void")==0)*rval=0;//ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½Öµ
+		else *rval=1;							   //ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½Öµ
 		pcnt=0;
 	} 
 	res=0;
 	strtemp=str;
-	while(*strtemp!='('&&*strtemp!='\0') //´Ë´úÂëÕÒµ½º¯ÊýÃûµÄÕæÕýÆðÊ¼Î»ÖÃ
+	while(*strtemp!='('&&*strtemp!='\0') //ï¿½Ë´ï¿½ï¿½ï¿½ï¿½Òµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼Î»ï¿½ï¿½
 	{  
 		strtemp++;
 		res++;
 		if(*strtemp==' '||*strtemp=='*')
 		{
-			nchar=usmart_search_nextc(strtemp);		//»ñÈ¡ÏÂÒ»¸ö×Ö·û
-			if(nchar!='('&&nchar!='*')offset=res;	//Ìø¹ý¿Õ¸ñºÍ*ºÅ
+			nchar=usmart_search_nextc(strtemp);		//ï¿½ï¿½È¡ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Ö·ï¿½
+			if(nchar!='('&&nchar!='*')offset=res;	//ï¿½ï¿½ï¿½ï¿½ï¿½Õ¸ï¿½ï¿½*ï¿½ï¿½
 		}
 	}	 
 	strtemp=str;
-	if(offset)strtemp+=offset+1;//Ìøµ½º¯ÊýÃû¿ªÊ¼µÄµØ·½	   
+	if(offset)strtemp+=offset+1;//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ÄµØ·ï¿½	   
 	res=0;
-	nchar=0;//ÊÇ·ñÕýÔÚ×Ö·û´®ÀïÃæµÄ±êÖ¾,0£¬²»ÔÚ×Ö·û´®;1£¬ÔÚ×Ö·û´®;
+	nchar=0;//ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä±ï¿½Ö¾,0ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½;1ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½;
 	while(1)
 	{
 		if(*strtemp==0)
 		{
-			res=USMART_FUNCERR;//º¯Êý´íÎó
+			res=USMART_FUNCERR;//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			break;
-		}else if(*strtemp=='('&&nchar==0)fover++;//À¨ºÅÉî¶ÈÔö¼ÓÒ»¼¶	 
+		}else if(*strtemp=='('&&nchar==0)fover++;//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½	 
 		else if(*strtemp==')'&&nchar==0)
 		{
 			if(fover)fover--;
-			else res=USMART_FUNCERR;//´íÎó½áÊø,Ã»ÊÕµ½'('
-			if(fover==0)break;//µ½Ä©Î²ÁË,ÍË³ö	    
+			else res=USMART_FUNCERR;//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,Ã»ï¿½Õµï¿½'('
+			if(fover==0)break;//ï¿½ï¿½Ä©Î²ï¿½ï¿½,ï¿½Ë³ï¿½	    
 		}else if(*strtemp=='"')nchar=!nchar;
 
-		if(fover==0)//º¯ÊýÃû»¹Ã»½ÓÊÕÍê
+		if(fover==0)//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		{
-			if(*strtemp!=' ')//¿Õ¸ñ²»ÊôÓÚº¯ÊýÃû
+			if(*strtemp!=' ')//ï¿½Õ¸ï¿½ï¿½ï¿½ï¿½Úºï¿½ï¿½ï¿½ï¿½ï¿½
 			{
-				*fname=*strtemp;//µÃµ½º¯ÊýÃû
+				*fname=*strtemp;//ï¿½Ãµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 				fname++;
 			}
-		}else //ÒÑ¾­½ÓÊÜÍêÁËº¯ÊýÃûÁË.
+		}else //ï¿½Ñ¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ëºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
 		{
 			if(*strtemp==',')
 			{
-				temp=1;		//Ê¹ÄÜÔö¼ÓÒ»¸ö²ÎÊý
+				temp=1;		//Ê¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 				pcnt++;	
 			}else if(*strtemp!=' '&&*strtemp!='(')
 			{
-				if(pcnt==0&&fplcnt<5)		//µ±µÚÒ»¸ö²ÎÊýÀ´Ê±,ÎªÁË±ÜÃâÍ³¼ÆvoidÀàÐÍµÄ²ÎÊý,±ØÐë×öÅÐ¶Ï.
+				if(pcnt==0&&fplcnt<5)		//ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±,Îªï¿½Ë±ï¿½ï¿½ï¿½Í³ï¿½ï¿½voidï¿½ï¿½ï¿½ÍµÄ²ï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¶ï¿½.
 				{
-					fpname[fplcnt]=*strtemp;//¼ÇÂ¼²ÎÊýÌØÕ÷.
+					fpname[fplcnt]=*strtemp;//ï¿½ï¿½Â¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
 					fplcnt++;
 				}
-				temp++;	//µÃµ½ÓÐÐ§²ÎÊý(·Ç¿Õ¸ñ)
+				temp++;	//ï¿½Ãµï¿½ï¿½ï¿½Ð§ï¿½ï¿½ï¿½ï¿½(ï¿½Ç¿Õ¸ï¿½)
 			}
 			if(fover==1&&temp==2)
 			{
-				temp++;		//·ÀÖ¹ÖØ¸´Ôö¼Ó
-				parmnum++; 	//²ÎÊýÔö¼ÓÒ»¸ö
+				temp++;		//ï¿½ï¿½Ö¹ï¿½Ø¸ï¿½ï¿½ï¿½ï¿½ï¿½
+				parmnum++; 	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½
 			}
 		}
 		strtemp++; 			
 	}   
-	if(parmnum==1)//Ö»ÓÐ1¸ö²ÎÊý.
+	if(parmnum==1)//Ö»ï¿½ï¿½1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
 	{
-		fpname[fplcnt]='\0';//¼ÓÈë½áÊø·û
-		if(usmart_strcmp(fpname,"void")==0)parmnum=0;//²ÎÊýÎªvoid,±íÊ¾Ã»ÓÐ²ÎÊý.
+		fpname[fplcnt]='\0';//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		if(usmart_strcmp(fpname,"void")==0)parmnum=0;//ï¿½ï¿½ï¿½ï¿½Îªvoid,ï¿½ï¿½Ê¾Ã»ï¿½Ð²ï¿½ï¿½ï¿½.
 	}
-	*pnum=parmnum;	//¼ÇÂ¼²ÎÊý¸öÊý
-	*fname='\0';	//¼ÓÈë½áÊø·û
-	return res;		//·µ»ØÖ´ÐÐ½á¹û
+	*pnum=parmnum;	//ï¿½ï¿½Â¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	*fname='\0';	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	return res;		//ï¿½ï¿½ï¿½ï¿½Ö´ï¿½Ð½ï¿½ï¿½
+}
+
+u8 usmart_get_ipparm(u8 *str,u8 *fparm,u8 *ptype)
+{
+  int i=0;
+  if (*str)
+  {
+    // Extract IP address parameters
+    while (*str && *str != ' ')
+    {
+      *fparm++ = *str++;
+	  i++;
+    }
+    *fparm = '\0';
+
+
+    *ptype = 1;  // String
+    
+    return i;
+  }
+  return 0;  // Error
 }
 
 
-//´ÓstrÖÐµÃµ½Ò»¸öº¯ÊýµÄ²ÎÊý
-//*str:Ô´×Ö·û´®Ö¸Õë
-//*fparm:²ÎÊý×Ö·û´®Ö¸Õë
-//*ptype:²ÎÊýÀàÐÍ 0£¬Êý×Ö;1£¬×Ö·û´®;0XFF£¬²ÎÊý´íÎó
-//·µ»ØÖµ:0,ÒÑ¾­ÎÞ²ÎÊýÁË;ÆäËû,ÏÂÒ»¸ö²ÎÊýµÄÆ«ÒÆÁ¿.
+
+//ï¿½ï¿½strï¿½ÐµÃµï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä²ï¿½ï¿½ï¿½
+//*str:Ô´ï¿½Ö·ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½
+//*fparm:ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½
+//*ptype:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 0ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½;1ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½;0XFFï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+//ï¿½ï¿½ï¿½ï¿½Öµ:0,ï¿½Ñ¾ï¿½ï¿½Þ²ï¿½ï¿½ï¿½ï¿½ï¿½;ï¿½ï¿½ï¿½ï¿½,ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ«ï¿½ï¿½ï¿½ï¿½.
 u8 usmart_get_aparm(u8 *str,u8 *fparm,u8 *ptype)
 {
 	u8 i=0;
 	u8 enout=0;
-	u8 type=0;//Ä¬ÈÏÊÇÊý×Ö
-	u8 string=0; //±ê¼ÇstrÊÇ·ñÕýÔÚ¶Á
+	u8 type=0;//Ä¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	u8 string=0; //ï¿½ï¿½ï¿½strï¿½Ç·ï¿½ï¿½ï¿½ï¿½Ú¶ï¿½
 	while(1)
 	{		    
-		if(*str==','&& string==0)enout=1;			//ÔÝ»ºÁ¢¼´ÍË³ö,Ä¿µÄÊÇÑ°ÕÒÏÂÒ»¸ö²ÎÊýµÄÆðÊ¼µØÖ·
-		if((*str==')'||*str=='\0')&&string==0)break;//Á¢¼´ÍË³ö±êÊ¶·û
-		if(type==0)//Ä¬ÈÏÊÇÊý×ÖµÄ
+		if(*str==','&& string==0)enout=1;			//ï¿½Ý»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë³ï¿½,Ä¿ï¿½ï¿½ï¿½ï¿½Ñ°ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½Ö·
+		if((*str==')'||*str=='\0')&&string==0)break;//ï¿½ï¿½ï¿½ï¿½ï¿½Ë³ï¿½ï¿½ï¿½Ê¶ï¿½ï¿½
+		if(type==0)//Ä¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½
 		{
-			if((*str>='0' && *str<='9')||(*str>='a' && *str<='f')||(*str>='A' && *str<='F')||*str=='X'||*str=='x')//Êý×Ö´®¼ì²â
+			if((*str>='0' && *str<='9')||(*str>='a' && *str<='f')||(*str>='A' && *str<='F')||*str=='X'||*str=='x')//ï¿½ï¿½ï¿½Ö´ï¿½ï¿½ï¿½ï¿½
 			{
-				if(enout)break;					//ÕÒµ½ÁËÏÂÒ»¸ö²ÎÊý,Ö±½ÓÍË³ö.
-				if(*str>='a')*fparm=*str-0X20;	//Ð¡Ð´×ª»»Îª´óÐ´
-				else *fparm=*str;		   		//Ð¡Ð´»òÕßÊý×Ö±£³Ö²»±ä
+				if(enout)break;					//ï¿½Òµï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,Ö±ï¿½ï¿½ï¿½Ë³ï¿½.
+				if(*str>='a')*fparm=*str-0X20;	//Ð¡Ð´×ªï¿½ï¿½Îªï¿½ï¿½Ð´
+				else *fparm=*str;		   		//Ð¡Ð´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö±ï¿½ï¿½Ö²ï¿½ï¿½ï¿½
 				fparm++;
-			}else if(*str=='"')//ÕÒµ½×Ö·û´®µÄ¿ªÊ¼±êÖ¾
+			}else if(*str=='"')//ï¿½Òµï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½Ê¼ï¿½ï¿½Ö¾
 			{
-				if(enout)break;//ÕÒµ½,ºó²ÅÕÒµ½",ÈÏÎª½áÊøÁË.
+				if(enout)break;//ï¿½Òµï¿½,ï¿½ï¿½ï¿½ï¿½Òµï¿½",ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
 				type=1;
-				string=1;//µÇ¼ÇSTRING ÕýÔÚ¶ÁÁË
-			}else if(*str!=' '&&*str!=',')//·¢ÏÖ·Ç·¨×Ö·û,²ÎÊý´íÎó
+				string=1;//ï¿½Ç¼ï¿½STRING ï¿½ï¿½ï¿½Ú¶ï¿½ï¿½ï¿½
+			}else if(*str!=' '&&*str!=',')//ï¿½ï¿½ï¿½Ö·Ç·ï¿½ï¿½Ö·ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			{
 				type=0XFF;
 				break;
 			}
-		}else//stringÀà
+		}else//stringï¿½ï¿½
 		{ 
 			if(*str=='"')string=0;
-			if(enout)break;			//ÕÒµ½ÁËÏÂÒ»¸ö²ÎÊý,Ö±½ÓÍË³ö.
-			if(string)				//×Ö·û´®ÕýÔÚ¶Á
+			if(enout)break;			//ï¿½Òµï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,Ö±ï¿½ï¿½ï¿½Ë³ï¿½.
+			if(string)				//ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú¶ï¿½
 			{	
-				if(*str=='\\')		//Óöµ½×ªÒå·û(²»¸´ÖÆ×ªÒå·û)
+				if(*str=='\\')		//ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½)
 				{ 
-					str++;			//Æ«ÒÆµ½×ªÒå·ûºóÃæµÄ×Ö·û,²»¹ÜÊ²Ã´×Ö·û,Ö±½ÓCOPY
+					str++;			//Æ«ï¿½Æµï¿½×ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½,ï¿½ï¿½ï¿½ï¿½Ê²Ã´ï¿½Ö·ï¿½,Ö±ï¿½ï¿½COPY
 					i++;
 				}					
-				*fparm=*str;		//Ð¡Ð´»òÕßÊý×Ö±£³Ö²»±ä
+				*fparm=*str;		//Ð¡Ð´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö±ï¿½ï¿½Ö²ï¿½ï¿½ï¿½
 				fparm++;
 			}	
 		}
-		i++;//Æ«ÒÆÁ¿Ôö¼Ó
+		i++;//Æ«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		str++;
 	}
-	*fparm='\0';	//¼ÓÈë½áÊø·û
-	*ptype=type;	//·µ»Ø²ÎÊýÀàÐÍ
-	return i;		//·µ»Ø²ÎÊý³¤¶È
+	*fparm='\0';	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	*ptype=type;	//ï¿½ï¿½ï¿½Ø²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	return i;		//ï¿½ï¿½ï¿½Ø²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 }
-//µÃµ½Ö¸¶¨²ÎÊýµÄÆðÊ¼µØÖ·
-//num:µÚnum¸ö²ÎÊý,·¶Î§0~9.
-//·µ»ØÖµ:¸Ã²ÎÊýµÄÆðÊ¼µØÖ·
+//ï¿½Ãµï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½Ö·
+//num:ï¿½ï¿½numï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,ï¿½ï¿½Î§0~9.
+//ï¿½ï¿½ï¿½ï¿½Öµ:ï¿½Ã²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½Ö·
 u8 usmart_get_parmpos(u8 num)
 {
 	u8 temp=0;
@@ -358,57 +380,57 @@ u8 usmart_get_parmpos(u8 num)
 	for(i=0;i<num;i++)temp+=usmart_dev.plentbl[i];
 	return temp;
 }
-//´ÓstrÖÐµÃµ½º¯Êý²ÎÊý
-//str:Ô´×Ö·û´®;
-//parn:²ÎÊýµÄ¶àÉÙ.0±íÊ¾ÎÞ²ÎÊý voidÀàÐÍ
-//·µ»ØÖµ:0,³É¹¦;ÆäËû,´íÎó´úÂë.
+//ï¿½ï¿½strï¿½ÐµÃµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+//str:Ô´ï¿½Ö·ï¿½ï¿½ï¿½;
+//parn:ï¿½ï¿½ï¿½ï¿½ï¿½Ä¶ï¿½ï¿½ï¿½.0ï¿½ï¿½Ê¾ï¿½Þ²ï¿½ï¿½ï¿½ voidï¿½ï¿½ï¿½ï¿½
+//ï¿½ï¿½ï¿½ï¿½Öµ:0,ï¿½É¹ï¿½;ï¿½ï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
 u8 usmart_get_fparam(u8*str,u8 *parn)
 {	
 	u8 i,type;  
 	u32 res;
 	u8 n=0;
 	u8 len;
-	u8 tstr[PARM_LEN+1];//×Ö½Ú³¤¶ÈµÄ»º´æ,×î¶à¿ÉÒÔ´æ·ÅPARM_LEN¸ö×Ö·ûµÄ×Ö·û´®
-	for(i=0;i<MAX_PARM;i++)usmart_dev.plentbl[i]=0;//Çå¿Õ²ÎÊý³¤¶È±í
-	while(*str!='(')//Æ«ÒÆµ½²ÎÊý¿ªÊ¼µÄµØ·½
+	u8 tstr[PARM_LEN+1];//ï¿½Ö½Ú³ï¿½ï¿½ÈµÄ»ï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½PARM_LENï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½
+	for(i=0;i<MAX_PARM;i++)usmart_dev.plentbl[i]=0;//ï¿½ï¿½Õ²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È±ï¿½
+	while(*str!='(')//Æ«ï¿½Æµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ÄµØ·ï¿½
 	{
 		str++;											    
-		if(*str=='\0')return USMART_FUNCERR;//Óöµ½½áÊø·ûÁË
+		if(*str=='\0')return USMART_FUNCERR;//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	}
-	str++;//Æ«ÒÆµ½"("Ö®ºóµÄµÚÒ»¸ö×Ö½Ú
+	str++;//Æ«ï¿½Æµï¿½"("Ö®ï¿½ï¿½Äµï¿½Ò»ï¿½ï¿½ï¿½Ö½ï¿½
 	while(1)
 	{
-		i=usmart_get_aparm(str,tstr,&type);	//µÃµ½µÚÒ»¸ö²ÎÊý  
-		str+=i;								//Æ«ÒÆ
+		i=usmart_get_aparm(str,tstr,&type);	//ï¿½Ãµï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½  
+		str+=i;								//Æ«ï¿½ï¿½
 		switch(type)
 		{
-			case 0:	//Êý×Ö
-				if(tstr[0]!='\0')				//½ÓÊÕµ½µÄ²ÎÊýÓÐÐ§
+			case 0:	//ï¿½ï¿½ï¿½ï¿½
+				if(tstr[0]!='\0')				//ï¿½ï¿½ï¿½Õµï¿½ï¿½Ä²ï¿½ï¿½ï¿½ï¿½ï¿½Ð§
 				{					    
-					i=usmart_str2num(tstr,&res);	//¼ÇÂ¼¸Ã²ÎÊý	 
-					if(i)return USMART_PARMERR;		//²ÎÊý´íÎó.
-					*(u32*)(usmart_dev.parm+usmart_get_parmpos(n))=res;//¼ÇÂ¼×ª»»³É¹¦µÄ½á¹û.
-					usmart_dev.parmtype&=~(1<<n);	//±ê¼ÇÊý×Ö
-					usmart_dev.plentbl[n]=4;		//¸Ã²ÎÊýµÄ³¤¶ÈÎª4  
-					n++;							//²ÎÊýÔö¼Ó  
-					if(n>MAX_PARM)return USMART_PARMOVER;//²ÎÊýÌ«¶à
+					i=usmart_str2num(tstr,&res);	//ï¿½ï¿½Â¼ï¿½Ã²ï¿½ï¿½ï¿½	 
+					if(i)return USMART_PARMERR;		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
+					*(u32*)(usmart_dev.parm+usmart_get_parmpos(n))=res;//ï¿½ï¿½Â¼×ªï¿½ï¿½ï¿½É¹ï¿½ï¿½Ä½ï¿½ï¿½.
+					usmart_dev.parmtype&=~(1<<n);	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+					usmart_dev.plentbl[n]=4;		//ï¿½Ã²ï¿½ï¿½ï¿½ï¿½Ä³ï¿½ï¿½ï¿½Îª4  
+					n++;							//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½  
+					if(n>MAX_PARM)return USMART_PARMOVER;//ï¿½ï¿½ï¿½ï¿½Ì«ï¿½ï¿½
 				}
 				break;
-			case 1://×Ö·û´®	 	
-				len=usmart_strlen(tstr)+1;	//°üº¬ÁË½áÊø·û'\0'
-				usmart_strcopy(tstr,&usmart_dev.parm[usmart_get_parmpos(n)]);//¿½±´tstrÊý¾Ýµ½usmart_dev.parm[n]
-				usmart_dev.parmtype|=1<<n;	//±ê¼Ç×Ö·û´® 
-				usmart_dev.plentbl[n]=len;	//¸Ã²ÎÊýµÄ³¤¶ÈÎªlen  
+			case 1://ï¿½Ö·ï¿½ï¿½ï¿½	 	
+				len=usmart_strlen(tstr)+1;	//ï¿½ï¿½ï¿½ï¿½ï¿½Ë½ï¿½ï¿½ï¿½ï¿½ï¿½'\0'
+				usmart_strcopy(tstr,&usmart_dev.parm[usmart_get_parmpos(n)]);//ï¿½ï¿½ï¿½ï¿½tstrï¿½ï¿½ï¿½Ýµï¿½usmart_dev.parm[n]
+				usmart_dev.parmtype|=1<<n;	//ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ 
+				usmart_dev.plentbl[n]=len;	//ï¿½Ã²ï¿½ï¿½ï¿½ï¿½Ä³ï¿½ï¿½ï¿½Îªlen  
 				n++;
-				if(n>MAX_PARM)return USMART_PARMOVER;//²ÎÊýÌ«¶à
+				if(n>MAX_PARM)return USMART_PARMOVER;//ï¿½ï¿½ï¿½ï¿½Ì«ï¿½ï¿½
 				break;
-			case 0XFF://´íÎó
-				return USMART_PARMERR;//²ÎÊý´íÎó	  
+			case 0XFF://ï¿½ï¿½ï¿½ï¿½
+				return USMART_PARMERR;//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½	  
 		}
-		if(*str==')'||*str=='\0')break;//²éµ½½áÊø±êÖ¾ÁË.
+		if(*str==')'||*str=='\0')break;//ï¿½éµ½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¾ï¿½ï¿½.
 	}
-	*parn=n;	//¼ÇÂ¼²ÎÊýµÄ¸öÊý
-	return USMART_OK;//ÕýÈ·µÃµ½ÁË²ÎÊý
+	*parn=n;	//ï¿½ï¿½Â¼ï¿½ï¿½ï¿½ï¿½ï¿½Ä¸ï¿½ï¿½ï¿½
+	return USMART_OK;//ï¿½ï¿½È·ï¿½Ãµï¿½ï¿½Ë²ï¿½ï¿½ï¿½
 }
 
 

@@ -3,7 +3,9 @@
 #include "sys.h" 
 #include "stdio.h"
 #include "string.h"
-#include "../USER/usmart_network.h"  // Include network detection functions
+//#include "../USER/usmart_network.h"  // Include network detection functions
+#include <24cxx.h>
+#include <HhdxMsg.h>
 
 //////////////////////////////////////////////////////////////////////////////////	 
 //This program is only for learning use, without author's permission, 
@@ -79,10 +81,9 @@ u8 *sys_cmd_tab[]=
 	"hex",
 	"dec",
 	"runtime",	  
-	"getip",
-	"setip",
-	"get_ip",
-	"set_ip"
+	"getip",//local:192.168.0.30 netmask:255.255.255.0 gw:192.168.0.1  server:192.168.0.10 port:5000
+	"setip",//192.168.0.30 2555.255.255.0 192.168.0.1
+	"setsvip",//192.168.0.10 5000
 };	    
 
 //Execute system commands
@@ -93,7 +94,9 @@ u8 usmart_sys_cmd_exe(u8 *str)
 	u8 sfname[MAX_FNAME_LEN];//Temporary function name buffer
 	u8 pnum;
 	u8 rval;
-	u32 res;  
+	u32 res;
+	int j;        // 添加变量声明用于for循环
+	char *p;      // 添加指针变量声明  
 	res=usmart_get_cmdname(str,sfname,&i,MAX_FNAME_LEN);//Get command name and length
 	if(res)return USMART_FUNCERR;//Error getting command 
 	str+=i;	 	 			    
@@ -129,10 +132,11 @@ u8 usmart_sys_cmd_exe(u8 *str)
 			printf("        to perform base conversion\r\n\n");
 			printf("runtime:1,enable function execution time statistics;\r\n");
 			printf("        0,disable function execution time statistics;\r\n\n");
-			printf("getip:  Get local IP address (case-insensitive)\r\n");
-			printf("        Supports: getip/GETIP/GetIP/get_ip/GET_IP\r\n");
-			printf("setip:  Set local IP address (e.g: setip 192.168.0.30)\r\n");
-			printf("        Supports: setip/SETIP/SetIP/set_ip/SET_IP\r\n");
+			printf("getip:  Get local IP address\r\n");
+			printf("        localip netmask gateway server\r\n");
+			printf("setip:  Set local IP address\r\n");
+			printf("        localip netmask gateway\r\n");
+			printf("setsvip:Set server IP address and port\r\n");
 			printf("Note: IP address must be valid, otherwise setting fails.\r\n");
 			printf("System commands support case-insensitive input.\r\n");
 			printf("USMART Usage:\r\n");
@@ -199,7 +203,7 @@ u8 usmart_sys_cmd_exe(u8 *str)
 			break;	 
 		case 6://runtime command, control whether to display function execution time
 			printf("\r\n");
-			usmart_get_aparm(str,sfname,&i);
+			res=usmart_get_aparm(str,sfname,&i);
 			if(i==0)//get parameters
 			{
 				i=usmart_str2num(sfname,&res);	   		//record parameters	
@@ -217,47 +221,141 @@ u8 usmart_sys_cmd_exe(u8 *str)
 			printf("\r\n"); 
 			break;	    
 		case 7://getip command, get IP address
-		case 9://get_ip command, get IP address (underscore format)
 			printf("\r\n");
-			// Manual clear array, avoid using memset
+			printf("Local IP Address: %d.%d.%d.%d\r\n",gpsEeprom->own_ip[0],gpsEeprom->own_ip[1],gpsEeprom->own_ip[2],gpsEeprom->own_ip[3]);
+			printf("Netmask: %d.%d.%d.%d\r\n",gpsEeprom->mask_ip[0],gpsEeprom->mask_ip[1],gpsEeprom->mask_ip[2],gpsEeprom->mask_ip[3]);
+			printf("Gateway: %d.%d.%d.%d\r\n",gpsEeprom->gw_ip[0],gpsEeprom->gw_ip[1],gpsEeprom->gw_ip[2],gpsEeprom->gw_ip[3]);
+			printf("Server: %d.%d.%d.%d Port: %d\r\n",gpsEeprom->sv_ip[0],gpsEeprom->sv_ip[1],gpsEeprom->sv_ip[2],gpsEeprom->sv_ip
+				[3],gpsEeprom->port);
+			printf("\r\n");	
+			break;
+		case 8://setip command, set IP addresss
+			printf("\r\n");
+			//localip
+			res=usmart_get_ipparm(str,sfname,&i);
+			str+=res; //point to next parameter
+			if(res==0)return USMART_FUNCERR;		//error getting parameters
+			if(i==1)//get parameters
 			{
-				int j;
-				for(j = 0; j < sizeof(sfname); j++) sfname[j] = 0;
-			}
-			if(USMART_ENTIMX_SCAN==0)printf("\r\nError! \r\nTo EN Get IP function,Please set USMART_ENTIMX_SCAN = 1 first!\r\n");//error
-			else
-			{	
-				if(usmart_get_ip(sfname)==0)	//get IP address
-				{
-					printf("IP Address:%s\r\n",sfname);	//print IP address
-				}	
-				else
-				{
-					printf("Get IP Address Error!\r\n");	//get IP address error
+				//处理sfname中ip地址
+				for(j=0;j<4;j++){
+					p=strchr(sfname,'.');
+					if(p!=NULL)
+					{
+						*p='\0';//将分隔符替换为结束符
+						p++;
+						usmart_str2num(p,&res);
+					}
+					gpsEeprom->own_ip[j]=res;
+					if(j==3) break;
+					strcpy(sfname,p);
 				}
-			}
+
+			}else return USMART_PARMERR;			//parameter error.		
+
+			//netmask
+			res=usmart_get_ipparm(str,sfname,&i);
+			str+=res; //point to next parameter
+			if(res==0)return USMART_FUNCERR;
+			if(i==1)//get parameters
+			{
+				//处理sfname中netmask地址
+				for(j=0;j<4;j++){
+					p=strchr(sfname,'.');
+					if(p!=NULL)
+					{
+						*p='\0';//将分隔符替换为结束符
+						p++;
+						usmart_str2num(p,&res);
+					}
+					gpsEeprom->mask_ip[j]=res;
+					if(j==3) break;
+					strcpy(sfname,p);
+				}
+			}else return USMART_PARMERR;			//parameter error.
+
+			//gw
+			res=usmart_get_ipparm(str,sfname,&i);
+			//if(res!=0)return USMART_FUNCERR;
+			if(i==1)//get parameters
+			{
+				//处理sfname中ip地址
+				for(j=0;j<4;j++){
+					p=strchr(sfname,'.');
+					if(p!=NULL)
+					{
+						*p='\0';//将分隔符替换为结束符
+						p++;
+						usmart_str2num(p,&res);
+					}
+					gpsEeprom->gw_ip[j]=res;
+					if(j==3) break;
+					strcpy(sfname,p);
+				}
+			}else return USMART_PARMERR;		 	//parameter error.
+
+			//save to eeprom
+			//AT24CXX_WriteLenByte(EEPROM_GPS_FLAG_ADDR,(u8*)&gpsEeprom->flag,sizeof(gpsEeprom->flag));
+			gsHhdxFlag.eepromwr =1;
+
+			// if(USMART_ENTIMX_SCAN==0)printf("\r\nError! \r\nTo EN Set IP function,Please set USMART_ENTIMX_SCAN = 1 first!\r\n");//error
+			// else
+			// {
+			// 	if(usmart_set_ip(str)==0)	//set IP address
+			// 	{
+			// 		printf("Set IP Address Success!\r\n");	//set IP address success
+			// 	}
+			// 	else
+			// 	{
+			// 		printf("Set IP Address Error!\r\n");	//set IP address error
+			// 	}
+			// }
 			printf("\r\n");
 			break;
-		case 8://setip command, set IP address
-		case 10://set_ip command, set IP address (underscore format)
+		case 9:
 			printf("\r\n");
-			if(USMART_ENTIMX_SCAN==0)printf("\r\nError! \r\nTo EN Set IP function,Please set USMART_ENTIMX_SCAN = 1 first!\r\n");//error
-			else
+			//svip
+			res=usmart_get_ipparm(str,sfname,&i);
+			str+=res; //point to next parameter
+			printf("ip%s %d %d\r\n",sfname,i,res);
+			if(res==0)return USMART_FUNCERR;
+			
+			if(i==1)//get parameters
 			{
-				if(usmart_set_ip(str)==0)	//set IP address
-				{
-					printf("Set IP Address Success!\r\n");	//set IP address success
+				printf("ip%s\r\n",sfname);
+				//处理sfname中svip地址
+				for(j=0;j<4;j++){
+					p=strchr(sfname,'.');
+					if(p!=NULL)
+					{
+						*p='\0';//将分隔符替换为结束符
+						p++;
+						usmart_str2num(p,&res);
+						printf("res=%d\r\n",res);
+					}
+					gpsEeprom->sv_ip[j]=res;
+					if(j==3) break;
+					strcpy(sfname,p);
 				}
-				else
+			}else return USMART_PARMERR;			//parameter error.
+			//port
+			res=usmart_get_aparm(str,sfname,&i);
+			//if(res!=0)return USMART_FUNCERR;
+			if(i==0)//get parameters
+			{
+				i=usmart_str2num(sfname,&res);	   		//record parameters
+				if(i==0)						   		//get command address data succeeded
 				{
-					printf("Set IP Address Error!\r\n");	//set IP address error
-				}
-			}
-			printf("\r\n");
+					gpsEeprom->port=res;
+				}else return USMART_PARMERR;   			//not set, or parameter error
+ 			}else return USMART_PARMERR;				//parameter error.
+			//save to eeprom
+			//AT24CXX_WriteLenByte(EEPROM_GPS_FLAG_ADDR,(u8*)&gpsEeprom->flag,sizeof(gpsEeprom->flag));
+	        gsHhdxFlag.eepromwr =1;
 			break;
-		case 11://default handler, no additional commands
 		default://illegal command
-			return USMART_FUNCERR;
+			//return USMART_FUNCERR;
+			return 0;
 	}
 	return 0;
 }
@@ -334,9 +432,6 @@ void usmart_init(u8 sysclk)
 #endif
 	usmart_dev.sptype=1;	//Hexadecimal parameter display mode
 	
-	// Initialize network detection for IP conflict checking
-	init_network_detection();
-				(int)((current_device_ip >> 24) & 0xFF),
 	
 	printf("USMART initialized with network detection.\r\n");
 }		
@@ -508,193 +603,178 @@ void write_addr(u32 addr,u32 val)
 }
 #endif
 
-// IP configuration function implementation, defined in SipMsgAnalysis.c
-u8 usmart_get_ip(u8 *ip_str)
-{
-	extern u32 current_device_ip;  // Defined in SipMsgAnalysis.c for current device IP
-	
-	if(ip_str == 0) return 1; // Parameter error
-	
-	// Convert IP address from u32 format to string format (Big Endian)
-	sprintf((char*)ip_str, "%d.%d.%d.%d", 
-		(int)((current_device_ip >> 24) & 0xFF),
-		(int)((current_device_ip >> 16) & 0xFF), 
-		(int)((current_device_ip >> 8) & 0xFF),
-		(int)(current_device_ip & 0xFF));
-	
-	return 0; // Success
-}
 
-// ARP detection function to check if IP is already in use
-// Returns: 0 = IP available, 1 = IP in use, 2 = detection failed
-u8 usmart_detect_ip_conflict(u32 target_ip)
-{
-	extern u32 current_device_ip;
-	extern u32 current_subnet_mask;  // Assume this is defined in SipMsgAnalysis.c
-	
-	u8 detection_result;
-	
-	printf("Starting IP conflict detection...\r\n");
-	
-	// Use the enhanced detection function
-	detection_result = usmart_detect_ip_conflict_enhanced(target_ip);
-	
-	switch(detection_result)
-	{
-		case ARP_STATUS_AVAILABLE:
-			printf("IP conflict detection: IP available\r\n");
-			return 0; // Available
-			
-		case ARP_STATUS_IN_USE:
-			printf("IP conflict detection: IP already in use\r\n");
-			return 1; // In use
-			
-		case ARP_STATUS_TIMEOUT:
-			printf("IP conflict detection: Timeout (assuming available)\r\n");
-			return 0; // Assume available on timeout
-			
-		case ARP_STATUS_ERROR:
-		default:
-			printf("IP conflict detection: Error occurred\r\n");
-			return 2; // Error
-	}
-}
 
-u8 usmart_set_ip(u8 *ip_cmd)
-{
-	extern u32 current_device_ip;  // Defined in SipMsgAnalysis.c for current device IP
-	u8 ip_parts[4];
-	int part_count = 0;
-	int current_part = 0;
-	int i;
-	u32 new_ip;
-	u8 conflict_result;
-	static u8 setting_in_progress = 0; /* Prevent re-entrance */
+// // ARP detection function to check if IP is already in use
+// // Returns: 0 = IP available, 1 = IP in use, 2 = detection failed
+// u8 usmart_detect_ip_conflict(u32 target_ip)
+// {
+// 	extern u32 current_device_ip;
+// 	extern u32 current_subnet_mask;  // Assume this is defined in SipMsgAnalysis.c
 	
-	/* Prevent re-entrance during setting process */
-	if(setting_in_progress)
-	{
-		printf("IP setting already in progress, please wait...\r\n");
-		return 1;
-	}
+// 	u8 detection_result;
 	
-	setting_in_progress = 1; /* Set flag */
+// 	printf("Starting IP conflict detection...\r\n");
 	
-	if(ip_cmd == 0) 
-	{
-		setting_in_progress = 0;
-		return 1; // Parameter error
-	}
+// 	// Use the enhanced detection function
+// 	detection_result = usmart_detect_ip_conflict_enhanced(target_ip);
 	
-	// Skip leading spaces
-	while(*ip_cmd == ' ') ip_cmd++;
-	
-	// Parse IP address format (example: "192.168.1.100")
-	for(i = 0; ip_cmd[i] != '\0' && part_count < 4; i++)
-	{
-		if(ip_cmd[i] >= '0' && ip_cmd[i] <= '9')
-		{
-			current_part = current_part * 10 + (ip_cmd[i] - '0');
-			if(current_part > 255) 
-			{
-				printf("Invalid IP: Part %d out of range (0-255)\r\n", current_part);
-				setting_in_progress = 0;
-				return 1; // IP part value out of range
-			}
-		}
-		else if(ip_cmd[i] == '.')
-		{
-			ip_parts[part_count++] = current_part;
-			current_part = 0;
-		}
-		else
-		{
-			printf("Invalid character in IP address: '%c'\r\n", ip_cmd[i]);
-			setting_in_progress = 0;
-			return 1; // Invalid character
-		}
-	}
-	
-	// Check last part
-	if(current_part > 255) 
-	{
-		printf("Invalid IP: Last part %d out of range (0-255)\r\n", current_part);
-		setting_in_progress = 0;
-		return 1;
-	}
-	ip_parts[part_count++] = current_part;
-	
-	// Check if we have exactly 4 parts
-	if(part_count != 4) 
-	{
-		printf("Invalid IP format: Expected 4 parts, got %d\r\n", part_count);
-		setting_in_progress = 0;
-		return 1;
-	}
-	
-	// Validate IP ranges (avoid reserved addresses)
-	if(ip_parts[0] == 0 || ip_parts[0] >= 224)
-	{
-		printf("Invalid IP: First octet %d not allowed\r\n", ip_parts[0]);
-		setting_in_progress = 0;
-		return 1;
-	}
-	
-	if(ip_parts[3] == 0 || ip_parts[3] == 255)
-	{
-		printf("Invalid IP: Host part cannot be 0 or 255\r\n");
-		setting_in_progress = 0;
-		return 1;
-	}
-	
-	// Construct new IP address (Big Endian format)
-	new_ip = ((u32)ip_parts[0] << 24) | 
-			 ((u32)ip_parts[1] << 16) | 
-			 ((u32)ip_parts[2] << 8) | 
-			 ((u32)ip_parts[3]);
-	
-	printf("Validating IP: %d.%d.%d.%d (0x%08X)\r\n", 
-		ip_parts[0], ip_parts[1], ip_parts[2], ip_parts[3], new_ip);
-	
-	// Check for IP conflicts on network
-	conflict_result = usmart_detect_ip_conflict(new_ip);
-	
-	switch(conflict_result)
-	{
-		case 0: // IP available
-			printf("IP conflict check passed. Setting new IP...\r\n");
-			break;
+// 	switch(detection_result)
+// 	{
+// 		case ARP_STATUS_AVAILABLE:
+// 			printf("IP conflict detection: IP available\r\n");
+// 			return 0; // Available
 			
-		case 1: // IP in use
-			printf("Error: IP address already in use on network!\r\n");
-			printf("Cannot set IP %d.%d.%d.%d - conflict detected.\r\n",
-				ip_parts[0], ip_parts[1], ip_parts[2], ip_parts[3]);
-			setting_in_progress = 0;
-			return 1;
+// 		case ARP_STATUS_IN_USE:
+// 			printf("IP conflict detection: IP already in use\r\n");
+// 			return 1; // In use
 			
-		case 2: // Detection failed
-			printf("Warning: IP conflict detection failed.\r\n");
-			printf("Proceeding with caution...\r\n");
-			break;
+// 		case ARP_STATUS_TIMEOUT:
+// 			printf("IP conflict detection: Timeout (assuming available)\r\n");
+// 			return 0; // Assume available on timeout
 			
-		default:
-			printf("Unknown conflict detection result: %d\r\n", conflict_result);
-			setting_in_progress = 0;
-			return 1;
-	}
+// 		case ARP_STATUS_ERROR:
+// 		default:
+// 			printf("IP conflict detection: Error occurred\r\n");
+// 			return 2; // Error
+// 	}
+// }
+
+// u8 usmart_set_ip(u8 *ip_cmd)
+// {
+// 	extern u32 current_device_ip;  // Defined in SipMsgAnalysis.c for current device IP
+// 	u8 ip_parts[4];
+// 	int part_count = 0;
+// 	int current_part = 0;
+// 	int i;
+// 	u32 new_ip;
+// 	u8 conflict_result;
+// 	static u8 setting_in_progress = 0; /* Prevent re-entrance */
 	
-	// Update global IP address
-	current_device_ip = new_ip;
+// 	/* Prevent re-entrance during setting process */
+// 	if(setting_in_progress)
+// 	{
+// 		printf("IP setting already in progress, please wait...\r\n");
+// 		return 1;
+// 	}
 	
-	/* Mark IP as initialized */
-	ip_initialized = 1;
+// 	setting_in_progress = 1; /* Set flag */
 	
-	printf("IP successfully set: %d.%d.%d.%d (0x%08X)\r\n", 
-		ip_parts[0], ip_parts[1], ip_parts[2], ip_parts[3], new_ip);
+// 	if(ip_cmd == 0) 
+// 	{
+// 		setting_in_progress = 0;
+// 		return 1; // Parameter error
+// 	}
 	
-	setting_in_progress = 0; /* Clear flag */
-	return 0; // Success
-}
+// 	// Skip leading spaces
+// 	while(*ip_cmd == ' ') ip_cmd++;
+	
+// 	// Parse IP address format (example: "192.168.1.100")
+// 	for(i = 0; ip_cmd[i] != '\0' && part_count < 4; i++)
+// 	{
+// 		if(ip_cmd[i] >= '0' && ip_cmd[i] <= '9')
+// 		{
+// 			current_part = current_part * 10 + (ip_cmd[i] - '0');
+// 			if(current_part > 255) 
+// 			{
+// 				printf("Invalid IP: Part %d out of range (0-255)\r\n", current_part);
+// 				setting_in_progress = 0;
+// 				return 1; // IP part value out of range
+// 			}
+// 		}
+// 		else if(ip_cmd[i] == '.')
+// 		{
+// 			ip_parts[part_count++] = current_part;
+// 			current_part = 0;
+// 		}
+// 		else
+// 		{
+// 			printf("Invalid character in IP address: '%c'\r\n", ip_cmd[i]);
+// 			setting_in_progress = 0;
+// 			return 1; // Invalid character
+// 		}
+// 	}
+	
+// 	// Check last part
+// 	if(current_part > 255) 
+// 	{
+// 		printf("Invalid IP: Last part %d out of range (0-255)\r\n", current_part);
+// 		setting_in_progress = 0;
+// 		return 1;
+// 	}
+// 	ip_parts[part_count++] = current_part;
+	
+// 	// Check if we have exactly 4 parts
+// 	if(part_count != 4) 
+// 	{
+// 		printf("Invalid IP format: Expected 4 parts, got %d\r\n", part_count);
+// 		setting_in_progress = 0;
+// 		return 1;
+// 	}
+	
+// 	// Validate IP ranges (avoid reserved addresses)
+// 	if(ip_parts[0] == 0 || ip_parts[0] >= 224)
+// 	{
+// 		printf("Invalid IP: First octet %d not allowed\r\n", ip_parts[0]);
+// 		setting_in_progress = 0;
+// 		return 1;
+// 	}
+	
+// 	if(ip_parts[3] == 0 || ip_parts[3] == 255)
+// 	{
+// 		printf("Invalid IP: Host part cannot be 0 or 255\r\n");
+// 		setting_in_progress = 0;
+// 		return 1;
+// 	}
+	
+// 	// Construct new IP address (Big Endian format)
+// 	new_ip = ((u32)ip_parts[0] << 24) | 
+// 			 ((u32)ip_parts[1] << 16) | 
+// 			 ((u32)ip_parts[2] << 8) | 
+// 			 ((u32)ip_parts[3]);
+	
+// 	printf("Validating IP: %d.%d.%d.%d (0x%08X)\r\n", 
+// 		ip_parts[0], ip_parts[1], ip_parts[2], ip_parts[3], new_ip);
+	
+// 	// Check for IP conflicts on network
+// 	conflict_result = usmart_detect_ip_conflict(new_ip);
+	
+// 	switch(conflict_result)
+// 	{
+// 		case 0: // IP available
+// 			printf("IP conflict check passed. Setting new IP...\r\n");
+// 			break;
+			
+// 		case 1: // IP in use
+// 			printf("Error: IP address already in use on network!\r\n");
+// 			printf("Cannot set IP %d.%d.%d.%d - conflict detected.\r\n",
+// 				ip_parts[0], ip_parts[1], ip_parts[2], ip_parts[3]);
+// 			setting_in_progress = 0;
+// 			return 1;
+			
+// 		case 2: // Detection failed
+// 			printf("Warning: IP conflict detection failed.\r\n");
+// 			printf("Proceeding with caution...\r\n");
+// 			break;
+			
+// 		default:
+// 			printf("Unknown conflict detection result: %d\r\n", conflict_result);
+// 			setting_in_progress = 0;
+// 			return 1;
+// 	}
+	
+// 	// Update global IP address
+// 	current_device_ip = new_ip;
+	
+// 	/* Mark IP as initialized */
+// 	ip_initialized = 1;
+	
+// 	printf("IP successfully set: %d.%d.%d.%d (0x%08X)\r\n", 
+// 		ip_parts[0], ip_parts[1], ip_parts[2], ip_parts[3], new_ip);
+	
+// 	setting_in_progress = 0; /* Clear flag */
+// 	return 0; // Success
+// }
 
 
 

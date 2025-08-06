@@ -132,7 +132,7 @@ void USART1_IRQHandler(void)                	//串口1中断服务程序
 		Res =USART_ReceiveData(USART1);//(USART1->DR);	//读取接收到的数据
 		
 		// 调用IP配置处理函数
-		uart_rx_interrupt_handler(Res);
+		//uart_rx_interrupt_handler(Res);
 		
 		if((USART_RX_STA&0x8000)==0)//接收未完成
 		{

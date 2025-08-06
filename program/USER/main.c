@@ -88,7 +88,7 @@ int main(void)
 	printf("USMART Debug System Initialized\r\n");
 	
 	// 初始化IP配置系统
-	ip_config_init();
+	//ip_config_init();
 	
 	if(lwip_comm_init())
 	{ //lwip初始化

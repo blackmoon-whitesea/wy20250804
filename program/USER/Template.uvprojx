@@ -858,19 +858,9 @@
               <FilePath>..\USMART\usmart_str.c</FilePath>
             </File>
             <File>
-              <FileName>usmart_network.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\usmart_network.c</FilePath>
-            </File>
-            <File>
               <FileName>network_config.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\network_config.c</FilePath>
-            </File>
-            <File>
-              <FileName>flash_config.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\flash_config.c</FilePath>
             </File>
           </Files>
         </Group>

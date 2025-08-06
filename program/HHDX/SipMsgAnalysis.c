@@ -11,18 +11,11 @@
 #include "i2s.h"
 #include "24cxx.h"
 
-// ´®¿ÚIPÅäÖÃÏà¹Ø±äÁ¿
-char uart_rx_buffer[256];  // ´®¿Ú½ÓÊÕ»º³åÇø
-u8 uart_rx_index = 0;      // ½ÓÊÕË÷Òý
-u8 uart_cmd_ready = 0;     // ÃüÁî×¼±¸±êÖ¾
 
-// È«¾ÖIPÅäÖÃ±äÁ¿
-u32 current_device_ip = 0xC0A80164;  // Ä¬ÈÏIP: 192.168.1.100
-
-// Íâ²¿º¯ÊýÉùÃ÷ (ÔÚSipMsgBuilding.cÖÐ¶¨Òå)
+// ï¿½â²¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½SipMsgBuilding.cï¿½Ð¶ï¿½ï¿½ï¿½)
 void BUILD_port_verify(u16 port);
 
-// Èç¹ûatoi²»¿ÉÓÃ£¬Ìá¹©Ò»¸ö¼òµ¥µÄÊµÏÖ
+// ï¿½ï¿½ï¿½atoiï¿½ï¿½ï¿½ï¿½ï¿½Ã£ï¿½ï¿½á¹©Ò»ï¿½ï¿½ï¿½òµ¥µï¿½Êµï¿½ï¿½
 #ifndef atoi
 int simple_atoi(const char* str)
 {
@@ -50,10 +43,10 @@ extern struct stUaInfo *gpsUaInfo;struct stMsg gsMsg;
 struct stSipRxFlag gsSipRxFlag;
 struct stSipTxFlag gsSipTxFlag;
 
-// ·þÎñÆ÷ÏìÓ¦´¦Àíº¯Êý
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 void handle_server_response(void)
 {
-    // ÊÕµ½·þÎñÆ÷ÏìÓ¦£¬Çå³ýÖØ´«±êÖ¾
+    // ï¿½Õµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø´ï¿½ï¿½ï¿½Ö¾
     if(gpsUaInfo->waiting_response)
     {
         gpsUaInfo->waiting_response = 0;
@@ -62,19 +55,19 @@ void handle_server_response(void)
     }
 }
 
-// ¶¯Ì¬¶Ë¿ÚÏìÓ¦½âÎöº¯Êý
+// ï¿½ï¿½Ì¬ï¿½Ë¿ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 void parse_port_response(char* response_data, int data_len)
 {
     char *port_start, *port_end;
     char port_str[8];
     int port_len;
-    unsigned int temp_port;  // ÒÆµ½º¯Êý¿ªÍ·ÉùÃ÷
+    unsigned int temp_port;  // ï¿½Æµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í·ï¿½ï¿½ï¿½ï¿½
     
-    // ²éÕÒ "port":"xxxx" ¸ñÊ½
+    // ï¿½ï¿½ï¿½ï¿½ "port":"xxxx" ï¿½ï¿½Ê½
     port_start = strstr(response_data, "\"port\":\"");
     if(port_start != NULL)
     {
-        port_start += 8;  // Ìø¹ý "port":"
+        port_start += 8;  // ï¿½ï¿½ï¿½ï¿½ "port":"
         port_end = strchr(port_start, '"');
         if(port_end != NULL)
         {
@@ -84,7 +77,7 @@ void parse_port_response(char* response_data, int data_len)
                 strncpy(port_str, port_start, port_len);
                 port_str[port_len] = '\0';
                 
-                // ×ª»»¶Ë¿ÚºÅ²¢±£´æ
+                // ×ªï¿½ï¿½ï¿½Ë¿ÚºÅ²ï¿½ï¿½ï¿½ï¿½ï¿½
                 String2Int(&temp_port, port_str);
                 gpsUaInfo->dynamic_port = (u16)temp_port;
                 gpsUaInfo->port_negotiated = 1;
@@ -92,17 +85,17 @@ void parse_port_response(char* response_data, int data_len)
                 
                 printf("Received dynamic port: %d\r\n", gpsUaInfo->dynamic_port);
                 
-                // ÑéÖ¤¶Ë¿Ú¿ÉÓÃÐÔ
+                // ï¿½ï¿½Ö¤ï¿½Ë¿Ú¿ï¿½ï¿½ï¿½ï¿½ï¿½
                 BUILD_port_verify(gpsUaInfo->dynamic_port);
             }
         }
     }
 }
 
-// ¶Ë¿ÚÑéÖ¤ÏìÓ¦½âÎöº¯Êý
+// ï¿½Ë¿ï¿½ï¿½ï¿½Ö¤ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 void parse_port_verify_response(char* response_data, int data_len)
 {
-    // ²éÕÒÑéÖ¤³É¹¦±êÖ¾
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¤ï¿½É¹ï¿½ï¿½ï¿½Ö¾
     if(strstr(response_data, "\"status\":\"success\"") != NULL)
     {
         gpsUaInfo->port_verified = 1;
@@ -111,13 +104,13 @@ void parse_port_verify_response(char* response_data, int data_len)
     else
     {
         printf("Port verification failed\r\n");
-        // ÖØÐÂÇëÇó¶Ë¿Ú
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë¿ï¿½
         gpsUaInfo->port_negotiated = 0;
         gpsUaInfo->port_verified = 0;
     }
 }
 
-// ÎÄ¼þ´«ÊäÏìÓ¦½âÎöº¯Êý
+// ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 void parse_file_transfer_response(char* response_data, int data_len)
 {
     if(strstr(response_data, "\"type\":\"file_ack\"") != NULL)
@@ -126,259 +119,41 @@ void parse_file_transfer_response(char* response_data, int data_len)
     }
 }
 
-// IPv4µØÖ·Ð£Ñéº¯Êý
-u8 validate_ipv4(const char* ip_str)
-{
-    char ip_copy[32];
-    char *token;
-    int octet;
-    int count = 0;
-    
-    if(strlen(ip_str) > 15 || strlen(ip_str) < 7) // ×î¶Ìx.x.x.x£¬×î³¤xxx.xxx.xxx.xxx
-        return 0;
-    
-    strcpy(ip_copy, ip_str);
-    token = strtok(ip_copy, ".");
-    
-    while(token != NULL && count < 4)
-    {
-        int i;
-        // ¼ì²éÊÇ·ñÎª´¿Êý×Ö
-        for(i = 0; i < strlen(token); i++)
-        {
-            if(token[i] < '0' || token[i] > '9')
-                return 0;
-        }
-        
-        // ×ª»»ÎªÕûÊý²¢¼ì²é·¶Î§
-        octet = simple_atoi(token);
-        if(octet < 0 || octet > 255)
-            return 0;
-            
-        // ¼ì²éÇ°µ¼Áã£¨³ýÁËµ¥¶ÀµÄ0£©
-        if(strlen(token) > 1 && token[0] == '0')
-            return 0;
-            
-        count++;
-        token = strtok(NULL, ".");
-    }
-    
-    return (count == 4 && token == NULL) ? 1 : 0;
-}
 
-// ½«×Ö·û´®IP×ª»»Îª32Î»ÕûÊý
-u32 str_to_ip(const char* ip_str)
-{
-    u32 ip = 0;
-    char ip_copy[32];
-    char *token;
-    int octet;
-    int shift = 24;
-    
-    strcpy(ip_copy, ip_str);
-    token = strtok(ip_copy, ".");
-    
-    while(token != NULL && shift >= 0)
-    {
-        octet = simple_atoi(token);
-        ip |= ((u32)octet << shift);
-        shift -= 8;
-        token = strtok(NULL, ".");
-    }
-    
-    return ip;
-}
-
-// ARP³åÍ»¼ì²âº¯Êý
-u8 check_ip_conflict(u32 target_ip)
-{
-    char ip_str[16];  // ±äÁ¿ÉùÃ÷ÒÆµ½º¯Êý¿ªÍ·
-    
-    // ÕâÀïÓ¦¸ÃÊµÏÖARPÇëÇó¼ì²â
-    // ¼ò»¯°æ±¾£º·¢ËÍARPÇëÇó²¢µÈ´ýÏìÓ¦
-    printf("Checking IP conflict for: ");
-    sprintf(ip_str, "%d.%d.%d.%d", 
-            (int)((target_ip >> 24) & 0xFF),
-            (int)((target_ip >> 16) & 0xFF), 
-            (int)((target_ip >> 8) & 0xFF),
-            (int)(target_ip & 0xFF));
-    printf("%s\r\n", ip_str);
-    
-    // Êµ¼ÊÏîÄ¿ÖÐÕâÀïÓ¦¸Ãµ÷ÓÃLWIPµÄARPº¯Êý
-    // ÔÝÊ±·µ»Ø0±íÊ¾ÎÞ³åÍ»
-    return 0;
-}
-
-// ±£´æIPÅäÖÃµ½Flash/EEPROM
-void save_ip_config(u32 new_ip)
-{
-    // ¸üÐÂÈ«¾ÖIP±äÁ¿
-    current_device_ip = new_ip;
-    
-    // ¶ÁÈ¡µ±Ç°EEPROMÅäÖÃ
-    // ÐÞ¸ÄIPµØÖ·
-    // Ð´»ØEEPROM
-    printf("Saving IP config to EEPROM: %08X\r\n", (unsigned int)new_ip);
-    
-    // ÕâÀïÓ¦¸Ãµ÷ÓÃAT24CXXÐ´Èëº¯Êý
-    // AT24CXX_Write(IP_ADDR_OFFSET, (u8*)&new_ip, 4);
-    
-    printf("IP configuration saved successfully\r\n");
-}
-
-// ´¦Àí´®¿ÚIPÅäÖÃÃüÁî
-void process_ip_config_command(char* cmd)
-{
-    char ip_str[32];
-    u32 new_ip;
-    
-    // ½âÎöÃüÁî¸ñÊ½£ºSET_IP:192.168.1.100
-    if(strncmp(cmd, "SET_IP:", 7) == 0)
-    {
-        strcpy(ip_str, cmd + 7);  // ÌáÈ¡IPµØÖ·²¿·Ö
-        
-        printf("Received IP config command: %s\r\n", ip_str);
-        
-        // 1. Ð£ÑéIPµØÖ·¸ñÊ½
-        if(!validate_ipv4(ip_str))
-        {
-            printf("ERROR: Invalid IPv4 address format\r\n");
-            return;
-        }
-        
-        // 2. ×ª»»IPµØÖ·
-        new_ip = str_to_ip(ip_str);
-        
-        // 3. ¼ì²éIP³åÍ»
-        if(check_ip_conflict(new_ip))
-        {
-            printf("ERROR: IP address conflict detected\r\n");
-            return;
-        }
-        
-        // 4. ±£´æÅäÖÃ
-        save_ip_config(new_ip);
-        
-        // 5. Ó¦ÓÃÐÂÅäÖÃ£¨ÐèÒªÖØÆôÍøÂç½Ó¿Ú£©
-        printf("SUCCESS: IP address updated to %s\r\n", ip_str);
-        printf("Please restart the device to apply new IP configuration\r\n");
-    }
-    else if(strncmp(cmd, "GET_IP", 6) == 0)
-    {
-        char current_ip[16];
-        
-        // »ñÈ¡µ±Ç°IPµØÖ· - Ê¹ÓÃsprintfº¯Êý×ª»»
-        sprintf(current_ip, "%d.%d.%d.%d",
-                (int)((current_device_ip >> 24) & 0xFF),
-                (int)((current_device_ip >> 16) & 0xFF),
-                (int)((current_device_ip >> 8) & 0xFF),
-                (int)(current_device_ip & 0xFF));
-        
-        printf("Current IP: %s\r\n", current_ip);
-    }
-    else
-    {
-        printf("ERROR: Unknown command. Use SET_IP:x.x.x.x or GET_IP\r\n");
-    }
-}
-
-// ´®¿Ú½ÓÊÕÖÐ¶Ï´¦Àíº¯Êý
-void uart_rx_interrupt_handler(u8 received_char)
-{
-    // ´¦Àí½ÓÊÕµ½µÄ×Ö·û
-    if(received_char == '\r' || received_char == '\n')
-    {
-        if(uart_rx_index > 0)
-        {
-            uart_rx_buffer[uart_rx_index] = '\0';  // ×Ö·û´®½áÊø·û
-            uart_cmd_ready = 1;  // ÃüÁî×¼±¸¾ÍÐ÷
-        }
-    }
-    else if(uart_rx_index < sizeof(uart_rx_buffer) - 1)
-    {
-        uart_rx_buffer[uart_rx_index++] = received_char;
-    }
-    else
-    {
-        // »º³åÇøÒç³ö£¬ÖØÖÃ
-        uart_rx_index = 0;
-        printf("ERROR: UART buffer overflow\r\n");
-    }
-}
-
-// ´¦Àí´®¿ÚÃüÁî£¨ÔÚÖ÷Ñ­»·ÖÐµ÷ÓÃ£©
-void process_uart_commands(void)
-{
-    if(uart_cmd_ready)
-    {
-        uart_cmd_ready = 0;
-        process_ip_config_command(uart_rx_buffer);
-        uart_rx_index = 0;  // ÖØÖÃ½ÓÊÕË÷Òý
-    }
-}
-
-// »ñÈ¡µ±Ç°IPÅäÖÃ×Ö·û´®
-void get_current_ip_string(char* ip_buffer, int buffer_size)
-{
-    if(ip_buffer != NULL && buffer_size >= 16)
-    {
-        sprintf(ip_buffer, "%d.%d.%d.%d",
-                (int)((current_device_ip >> 24) & 0xFF),
-                (int)((current_device_ip >> 16) & 0xFF),
-                (int)((current_device_ip >> 8) & 0xFF),
-                (int)(current_device_ip & 0xFF));
-    }
-}
-
-// IPÅäÖÃÏµÍ³³õÊ¼»¯
-void ip_config_init(void)
-{
-    char ip_str[16];  // ±äÁ¿ÉùÃ÷ÒÆµ½º¯Êý¿ªÍ·
-    
-    uart_rx_index = 0;
-    uart_cmd_ready = 0;
-    printf("IP Configuration System Initialized\r\n");
-    printf("Default IP: ");
-    
-    get_current_ip_string(ip_str, sizeof(ip_str));
-    printf("%s\r\n", ip_str);
-    
-    printf("Commands: SET_IP:x.x.x.x or GET_IP\r\n");
-}
 /*
 1. Request-Line: INVITE sip:3051@172.16.16.60:5060 SIP/2.0
 2. Status-Line: SIP/2.0 200 OK
 3. Status-Line: SIP/2.0 183 Session Progress
 */
-//ÅÐ¶ÏÇëÇóÃüÁî»¹ÊÇ×´Ì¬ÃüÁî
+//ï¿½Ð¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½î»¹ï¿½ï¿½×´Ì¬ï¿½ï¿½ï¿½ï¿½
 int ANALYSIS_line(char *p_line)
 {
 	unsigned int i,result;
-	int j=0;	//×Ö¶Î³¤¶È
-	int k=0;	//xxx-Line ' '¿Õ¸ñÊý
-	char ibuffer[20]; // SIPÊý¾Ý»º´æ 
+	int j=0;	//ï¿½Ö¶Î³ï¿½ï¿½ï¿½
+	int k=0;	//xxx-Line ' 'ï¿½Õ¸ï¿½ï¿½ï¿½
+	char ibuffer[20]; // SIPï¿½ï¿½ï¿½Ý»ï¿½ï¿½ï¿½ 
 	char *lp_line=p_line;	
 	for(i=0;i<20;i++)
 	{
-//1. µÚÒ»¸ö×Ö½Ú³õÊ¼»¯ibuffer		
+//1. ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Ö½Ú³ï¿½Ê¼ï¿½ï¿½ibuffer		
 		if(j==0) ibuffer[0]='\0';
-//2. µÚÒ»¸ö' ' ²¢ÅÐ¶Ï Request-Line: xxxx»òStatus-Line: SIP/2.0 			
+//2. ï¿½ï¿½Ò»ï¿½ï¿½' ' ï¿½ï¿½ï¿½Ð¶ï¿½ Request-Line: xxxxï¿½ï¿½Status-Line: SIP/2.0 			
     if(*(p_line+j)==' '&&k==0)			
 		{
 			p_line=p_line+j+1;
 			ibuffer[j]='\0';
-		//2.1. ÊÇ"SIP/2.0"ÔòÕÒµÚ¶þ¸ö' '
+		//2.1. ï¿½ï¿½"SIP/2.0"ï¿½ï¿½ï¿½ÒµÚ¶ï¿½ï¿½ï¿½' '
 			if(!strcmp(ibuffer,"SIP/2.0")){
-				k++;	//µÚ¶þ¸ö' '
-				j=0;	//µÚ¶þ¸ö' 'µØÖ·¹é0
+				k++;	//ï¿½Ú¶ï¿½ï¿½ï¿½' '
+				j=0;	//ï¿½Ú¶ï¿½ï¿½ï¿½' 'ï¿½ï¿½Ö·ï¿½ï¿½0
 				continue;
 			}
-		//2.1. ÊÇRequest-Line,ÔòÖ±½ÓÍË³öfor
+		//2.1. ï¿½ï¿½Request-Line,ï¿½ï¿½Ö±ï¿½ï¿½ï¿½Ë³ï¿½for
 			else
 				break;
 		}
-//3. µÚ¶þ¸ö' ' 		
-    if(*(p_line+j)==' '&&k==1)	//Status-Line µÚ¶þ¸ö' ',Èç180/183 200
+//3. ï¿½Ú¶ï¿½ï¿½ï¿½' ' 		
+    if(*(p_line+j)==' '&&k==1)	//Status-Line ï¿½Ú¶ï¿½ï¿½ï¿½' ',ï¿½ï¿½180/183 200
 		{
       ibuffer[j]='\0';
       break;
@@ -388,7 +163,7 @@ int ANALYSIS_line(char *p_line)
 		if(j==20)
 			j=0;
 	}
-//È¡µÃRequest-Line»òStatus-LineÃû³Æ
+//È¡ï¿½ï¿½Request-Lineï¿½ï¿½Status-Lineï¿½ï¿½ï¿½ï¿½
 	if(i!=20)
 	{
 		result=ANALYSIS_get_lname(ibuffer);
@@ -398,7 +173,7 @@ int ANALYSIS_line(char *p_line)
 }
 
 /*
- È¡µÃRequest-Line»òStatus-LineÃû³Æ
+ È¡ï¿½ï¿½Request-Lineï¿½ï¿½Status-Lineï¿½ï¿½ï¿½ï¿½
 */
 int ANALYSIS_get_lname(char *p_line_name)
 {
@@ -431,11 +206,11 @@ int ANALYSIS_get_lname(char *p_line_name)
 }		
 
 /*
- ¸ù¾Ý½ÓÊÕµ½lineÃû,ÅÐ¶¨Òª·ÖÎöÄÄÐ©message header
-Èë¿Ú²ÎÊý 
-	line_name: µÚÒ»ÐÐÃû³Æ
-	p_msg: µÚÒ»ÐÐµÚÒ»×Ö½ÚµØÖ·
-	msg_len: Õû¸ösip°ü³¤¶È
+ ï¿½ï¿½ï¿½Ý½ï¿½ï¿½Õµï¿½lineï¿½ï¿½,ï¿½Ð¶ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð©message header
+ï¿½ï¿½Ú²ï¿½ï¿½ï¿½ 
+	line_name: ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	p_msg: ï¿½ï¿½Ò»ï¿½Ðµï¿½Ò»ï¿½Ö½Úµï¿½Ö·
+	msg_len: ï¿½ï¿½ï¿½ï¿½sipï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 */
 void ANALYSIS_line_to_msg(int line_name,char *p_msg,int msg_len)
 {
@@ -444,15 +219,15 @@ void ANALYSIS_line_to_msg(int line_name,char *p_msg,int msg_len)
 	{
 		case 0:
 			break;
-//1. ±»½ÐÊÕµ½INVITE
+//1. ï¿½ï¿½ï¿½ï¿½ï¿½Õµï¿½INVITE
 		case INVITE:
 //			ANALYSIS_RxParamInit();			
 			gsSipRxFlag.invite =1;
 			gSipMechanism = RX_INVITE;
 			gSipTxFlow =TX_INVITE_100_TRYING;
 			len =ANALYSIS_message(p_msg, msg_len);
-			ANALYSIS_cseq(gsMsg.cseq,0);	//È¡µ½CSeqÖÐxxx
-			if(msg_len-len>20){	//ËµÃ÷ÓÐsdpÄÚÈÝ
+			ANALYSIS_cseq(gsMsg.cseq,0);	//È¡ï¿½ï¿½CSeqï¿½ï¿½xxx
+			if(msg_len-len>20){	//Ëµï¿½ï¿½ï¿½ï¿½sdpï¿½ï¿½ï¿½ï¿½
 				ANALYSIS_sdp(p_msg+len, msg_len-len);
 			}
 			break;
@@ -484,7 +259,7 @@ void ANALYSIS_line_to_msg(int line_name,char *p_msg,int msg_len)
 			if(gsSipRxFlag.rec ==1){
 				gsSipRxFlag.rec =0;
 				len =ANALYSIS_message(p_msg, msg_len);
-				if(msg_len-len>20){	//ËµÃ÷ÓÐsdpÄÚÈÝ
+				if(msg_len-len>20){	//Ëµï¿½ï¿½ï¿½ï¿½sdpï¿½ï¿½ï¿½ï¿½
 					ANALYSIS_sdp(p_msg+len, msg_len-len);
 				}
 			}
@@ -493,7 +268,7 @@ void ANALYSIS_line_to_msg(int line_name,char *p_msg,int msg_len)
 			gSipMechanism =RX_487;			
 			gSipTxFlow =TX_ACK;	
 			len =ANALYSIS_message(p_msg, msg_len);
-			ANALYSIS_cseq(gsMsg.cseq,0);	//È¡µ½CSeqÖÐxxx
+			ANALYSIS_cseq(gsMsg.cseq,0);	//È¡ï¿½ï¿½CSeqï¿½ï¿½xxx
 		case PROXY:
 			gsSipRxFlag.proxy =1;
 			break;	
@@ -505,7 +280,7 @@ void ANALYSIS_line_to_msg(int line_name,char *p_msg,int msg_len)
 }
 
 /*
- 200 OKÖÐÓÐÒÔÏÂ¼¸¸öÇé¿ö
+ 200 OKï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 */
 void ANALYSIS_cseq_type(char *p_msg_name)
 {
@@ -514,28 +289,28 @@ void ANALYSIS_cseq_type(char *p_msg_name)
 		gSipTxFlow =TX_ACK;
 		gsSipRxFlag.ok_inv =1;
 		gsSipRxFlag.rec =1;
-		//Ìí¼Ó·þÎñÆ÷ÏìÓ¦´¦Àí
+		//ï¿½ï¿½ï¿½Ó·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½
 		handle_server_response();
 	}
   	if(!strcmp(p_msg_name,"BYE")){
   		gSipMechanism = RX_BYE_200_OK;
   		gsSipRxFlag.ok_bye =1;
-		// Ìí¼Ó·þÎñÆ÷ÏìÓ¦´¦Àí
+		// ï¿½ï¿½ï¿½Ó·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½
     	handle_server_response();
 	}
 	if(!strcmp(p_msg_name,"CANCEL")){
 		gSipMechanism = RX_CANCEL_200_OK;
 		gsSipRxFlag.ok_cel =1;
-		// Ìí¼Ó·þÎñÆ÷ÏìÓ¦´¦Àí
+		// ï¿½ï¿½ï¿½Ó·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½
     	handle_server_response();
 	}
 	if(!strcmp(p_msg_name,"REGISTER")){
 		gSipMechanism = RX_BYE_200_OK;
 		gsSipRxFlag.ok_reg =1;
-		// Ìí¼Ó·þÎñÆ÷ÏìÓ¦´¦Àí
+		// ï¿½ï¿½ï¿½Ó·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½
     	handle_server_response();
 	}
-	// ´¦Àí¶¯Ì¬¶Ë¿ÚÏìÓ¦ÏûÏ¢
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì¬ï¿½Ë¿ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½Ï¢
 	if(!strcmp(p_msg_name,"PORT_RESPONSE")){
 		printf("Received PORT_RESPONSE message\r\n");
 		handle_server_response();
@@ -551,10 +326,10 @@ void ANALYSIS_cseq_type(char *p_msg_name)
 }
 
 /*
-1. ·ÖÎöÕû¸öMessage Header
-2. ÏÈÒÔ"\r\n"Îª·Ö½áÊø·û£¬È¡µÃÃ¿¶Îibuffer[]
-3. ÔÙ·ÖÎöÃ¿×Ö¶Î
-4. ·µ»Ø»¹Ê£¶àÉÙ
+1. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Message Header
+2. ï¿½ï¿½ï¿½ï¿½"\r\n"Îªï¿½Ö½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¡ï¿½ï¿½Ã¿ï¿½ï¿½ibuffer[]
+3. ï¿½Ù·ï¿½ï¿½ï¿½Ã¿ï¿½Ö¶ï¿½
+4. ï¿½ï¿½ï¿½Ø»ï¿½Ê£ï¿½ï¿½ï¿½ï¿½
 Message Header
     Via: SIP/2.0/UDP 172.16.1.135:5060
     Via: SIP/2.0/UDP 172.16.66.80:5060;branch=z9hG4bK3606831015
@@ -573,10 +348,10 @@ Message Header
 int ANALYSIS_message(char *p_msg,int msg_len)
 {
 	int i;		
-	int j=0;	//Ã¿ÐÐ³¤¶È£¬µ«²»°üº¬'\r\n'Á½×Ö½Ú
-	int k=0;	//µÚ¼¸¸ö'\r\n'
-	char ibuffer[300]; //Ã¿ÐÐmessage headerÊý¾Ý»º´æ 
-	char *lp_msg=p_msg;	//µÚÒ»ÐÐlineÊ×µØÖ·	
+	int j=0;	//Ã¿ï¿½Ð³ï¿½ï¿½È£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½'\r\n'ï¿½ï¿½ï¿½Ö½ï¿½
+	int k=0;	//ï¿½Ú¼ï¿½ï¿½ï¿½'\r\n'
+	char ibuffer[300]; //Ã¿ï¿½ï¿½message headerï¿½ï¿½ï¿½Ý»ï¿½ï¿½ï¿½ 
+	char *lp_msg=p_msg;	//ï¿½ï¿½Ò»ï¿½ï¿½lineï¿½×µï¿½Ö·	
 	gsMsg.via_num =0;
 	gsMsg.re_route_num =0;
 	for(i=0;i<msg_len;i++)
@@ -585,12 +360,12 @@ int ANALYSIS_message(char *p_msg,int msg_len)
 			ibuffer[0]='\0';
 		if((*(p_msg+j)=='\r')&&(*(p_msg+j+1)=='\n'))
 		{
-			p_msg=p_msg+j+2;	//ÏÂÒ»¸ölineÊ×µØÖ·
-	    if(j==0)					//Á½¸ö'\r\n\r\n': ±íÊ¾Message Header½áÊø
+			p_msg=p_msg+j+2;	//ï¿½ï¿½Ò»ï¿½ï¿½lineï¿½×µï¿½Ö·
+	    if(j==0)					//ï¿½ï¿½ï¿½ï¿½'\r\n\r\n': ï¿½ï¿½Ê¾Message Headerï¿½ï¿½ï¿½ï¿½
 				break;					
 			ibuffer[j]='\0';
 //			printf("%s",ibuffer);
-			if(k!=0)		//k=0ÊÇRequest-Line»òStatus-LineÒÑ·ÖÎö
+			if(k!=0)		//k=0ï¿½ï¿½Request-Lineï¿½ï¿½Status-Lineï¿½Ñ·ï¿½ï¿½ï¿½
 			   ANALYSIS_msghdr(ibuffer,j);
 			/////////////////////////////
 			k++;
@@ -598,37 +373,37 @@ int ANALYSIS_message(char *p_msg,int msg_len)
 			j=0;
 		  continue;
 		}
-    ibuffer[j]= *(lp_msg+i); // ½«Ã¿lineÄÚÈÝ°áµ½ibuffer[j]ÖÐ
+    ibuffer[j]= *(lp_msg+i); // ï¿½ï¿½Ã¿lineï¿½ï¿½ï¿½Ý°áµ½ibuffer[j]ï¿½ï¿½
 		j++;
 		if(j==300)
 			j=0;
 	}
   ibuffer[0]='\0';
-	return i;			//·µ»Ø³¤¶È
+	return i;			//ï¿½ï¿½ï¿½Ø³ï¿½ï¿½ï¿½
 }
 
 
 /*
-1. ·ÖÎöÃ¿ÐÐ×Ö¶Î
+1. ï¿½ï¿½ï¿½ï¿½Ã¿ï¿½ï¿½ï¿½Ö¶ï¿½
     Via: SIP/2.0/UDP 172.16.66.80:5060;branch=z9hG4bK3606831015
     From: <sip:7000@172.16.1.135>;tag=1302917275
     To: <sip:5000@172.16.1.135:5060>
     Call-ID: 1578683025@172.16.66.80
     ...
     
-2. ¼ÇÂ¼Via¡¢From¡¢To¡¢Call-ID¡¢CSeq¡¢Record-RouteÕûÐÐ
+2. ï¿½ï¿½Â¼Viaï¿½ï¿½Fromï¿½ï¿½Toï¿½ï¿½Call-IDï¿½ï¿½CSeqï¿½ï¿½Record-Routeï¿½ï¿½ï¿½ï¿½
 */
 void ANALYSIS_msghdr(char *p_msg, int len)
 {
 	int i=0;
-	char ibuffer[20]; //message headerÃû³Æ»º´æ	
+	char ibuffer[20]; //message headerï¿½ï¿½ï¿½Æ»ï¿½ï¿½ï¿½	
 	while(i<len)
 	{
 		if((*(p_msg+i)==':')&&(*(p_msg+i+1)==' ')){
-	// Ã¿Ò»¸öÏûÏ¢Í·¶¼×ñÑ­ÒÔÏÂ¸ñÊ½£ºÊ×ÏÈÊÇÍ·×Ö¶ÎÃû£¨ÈçVia¡¢FromµÈ£©£¬
-	// ºóÃæÊÇÃ°ºÅ£»È»ºó½ô½ÓÎªÒ»¸ö»ñ¶à¸öÇ°µ¼¿Õ¸ñ£¬ºóÃæÎª×Ö¶ÎÖµ:
+	// Ã¿Ò»ï¿½ï¿½ï¿½ï¿½Ï¢Í·ï¿½ï¿½ï¿½ï¿½Ñ­ï¿½ï¿½ï¿½Â¸ï¿½Ê½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í·ï¿½Ö¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Viaï¿½ï¿½Fromï¿½È£ï¿½ï¿½ï¿½
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã°ï¿½Å£ï¿½È»ï¿½ï¿½ï¿½ï¿½ï¿½ÎªÒ»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç°ï¿½ï¿½ï¿½Õ¸ñ£¬ºï¿½ï¿½ï¿½Îªï¿½Ö¶ï¿½Öµ:
 	// header-header = field-name: SP [field-value] CRLF
-			ibuffer[i]='\0'; 				//×Ö·û´®½áÊø·û
+			ibuffer[i]='\0'; 				//ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			switch(ANALYSIS_get_msgname(ibuffer))
 			{
 				case VIA:	
@@ -673,9 +448,9 @@ void ANALYSIS_msghdr(char *p_msg, int len)
 				default:
 					break;
 			}	
-			break;	//·ÖÎöÃ¿¸ö×Ö¶Î¾Í½áÊø
+			break;	//ï¿½ï¿½ï¿½ï¿½Ã¿ï¿½ï¿½ï¿½Ö¶Î¾Í½ï¿½ï¿½ï¿½
 		}
-   	ibuffer[i]=*(p_msg+i);	// ½«×Ö¶ÎÃûcopyµ½ibuffer[i]
+   	ibuffer[i]=*(p_msg+i);	// ï¿½ï¿½ï¿½Ö¶ï¿½ï¿½ï¿½copyï¿½ï¿½ibuffer[i]
 		i++;
 	}
 	ibuffer[0]='\0';
@@ -683,7 +458,7 @@ void ANALYSIS_msghdr(char *p_msg, int len)
 }
 
 /*
- È¡µÃMessage HeaderÃû³Æ
+ È¡ï¿½ï¿½Message Headerï¿½ï¿½ï¿½ï¿½
 */
 int ANALYSIS_get_msgname(char *p_msg_name)
 {		
@@ -736,17 +511,17 @@ void ANALYSIS_sdp(char *p_sdp, int sdp_len)
 {	
 	int i=0;
 	int j=0;
-	int k=0;	//×Ö¶Î±êÖ¾
-	char ibuffer[20]; //message headerÃû³Æ»º´æ
+	int k=0;	//ï¿½Ö¶Î±ï¿½Ö¾
+	char ibuffer[20]; //message headerï¿½ï¿½ï¿½Æ»ï¿½ï¿½ï¿½
 	for(i=0;i<sdp_len;i++)
 	{
 		if(*(p_sdp+i)=='\n'){
-			j=0;			//Ã¿¸ö×Ö¶ÎÃû¿ªÊ¼
-			k=0;			//Ã¿ÐÐ' '´Ó0¿ªÊ¼¼ÆËã
-			continue;	//Ìø¹ý'\n'£¬²»½«ÆäÐ´Èëibuffer[j]
+			j=0;			//Ã¿ï¿½ï¿½ï¿½Ö¶ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼
+			k=0;			//Ã¿ï¿½ï¿½' 'ï¿½ï¿½0ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½
+			continue;	//ï¿½ï¿½ï¿½ï¿½'\n'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð´ï¿½ï¿½ibuffer[j]
 		}	
-//1. ²éÕÒÓÐÓÃÁ½ÐÐ
-    if(*(p_sdp+i)==' '&&k==0){	//µÚÒ»¸ö' '
+//1. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    if(*(p_sdp+i)==' '&&k==0){	//ï¿½ï¿½Ò»ï¿½ï¿½' '
     	ibuffer[j] ='\0';
     	if(!strcmp(ibuffer,"c=IN")){
 				k=1;
@@ -757,14 +532,14 @@ void ANALYSIS_sdp(char *p_sdp, int sdp_len)
     	else{
     		k=0;
     	}
-			j=0;			//Ã¿¸ö×Ö¶ÎÃû¿ªÊ¼
-			continue;	//Ìø¹ý' '
+			j=0;			//Ã¿ï¿½ï¿½ï¿½Ö¶ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼
+			continue;	//ï¿½ï¿½ï¿½ï¿½' '
 		}
 //2. c=IN IP4 172.16.66.185		
 		if(*(p_sdp+i)==' '&&k==1){	//c=IN IP4 
 		  k=2;
-    	j=0;			//Ã¿¸ö×Ö¶ÎÃû¿ªÊ¼
-			continue;	//Ìø¹ý' '
+    	j=0;			//Ã¿ï¿½ï¿½ï¿½Ö¶ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼
+			continue;	//ï¿½ï¿½ï¿½ï¿½' '
 		}
     if(*(p_sdp+i)=='\r'&&k==2){	//c=IN IP4 172.16.66.185
 		  ibuffer[j] ='\0';
@@ -773,8 +548,8 @@ void ANALYSIS_sdp(char *p_sdp, int sdp_len)
 		  //	printf("ip=%s\r\n",gpsUaInfo->rtp_ip);
 		  }
 		  k=0;
-    	j=0;			//Ã¿¸ö×Ö¶ÎÃû¿ªÊ¼
-			continue;	//Ìø¹ý' '
+    	j=0;			//Ã¿ï¿½ï¿½ï¿½Ö¶ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼
+			continue;	//ï¿½ï¿½ï¿½ï¿½' '
 		}	
 //3. m=audio 20000
 		if(*(p_sdp+i)==' '&&k==3){
@@ -786,7 +561,7 @@ void ANALYSIS_sdp(char *p_sdp, int sdp_len)
 		  }	
 			break;
 		}
-		ibuffer[j]=*(p_sdp+i);	// ½«×Ö¶ÎÃûcopyµ½ibuffer[j]		
+		ibuffer[j]=*(p_sdp+i);	// ï¿½ï¿½ï¿½Ö¶ï¿½ï¿½ï¿½copyï¿½ï¿½ibuffer[j]		
 		j++;
 		if(j==20)
 			j=0;
@@ -795,34 +570,34 @@ void ANALYSIS_sdp(char *p_sdp, int sdp_len)
 
 
 /*
- 1. ±È½ÏÕû¸ömessage header
- 2. ÕÒ³öCSeq: 
- 3. ·µ»ØCSeq: µØÖ·
+ 1. ï¿½È½ï¿½ï¿½ï¿½ï¿½ï¿½message header
+ 2. ï¿½Ò³ï¿½CSeq: 
+ 3. ï¿½ï¿½ï¿½ï¿½CSeq: ï¿½ï¿½Ö·
 */
 
 void ANALYSIS_get_cseq(char *p_msg,int msg_len)
 {
 	int i=0;
 	int j=0;
-	char ibuffer[20]; //message headerÃû³Æ»º´æ
+	char ibuffer[20]; //message headerï¿½ï¿½ï¿½Æ»ï¿½ï¿½ï¿½
 	for(i=0;i<msg_len;i++)
 	{
 		if(*(p_msg+i)=='\n'){
-			j=0;	//Ã¿¸ö×Ö¶ÎÃû¿ªÊ¼
+			j=0;	//Ã¿ï¿½ï¿½ï¿½Ö¶ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼
 			continue;
 		}
 		
 		if((*(p_msg+i)==':')&&(*(p_msg+i+1)==' ')){
-	// Ã¿Ò»¸öÏûÏ¢Í·¶¼×ñÑ­ÒÔÏÂ¸ñÊ½£ºÊ×ÏÈÊÇÍ·×Ö¶ÎÃû£¨ÈçVia¡¢FromµÈ£©£¬
-	// ºóÃæÊÇÃ°ºÅ£»È»ºó½ô½ÓÎªÒ»¸ö»ñ¶à¸öÇ°µ¼¿Õ¸ñ£¬ºóÃæÎª×Ö¶ÎÖµ:
+	// Ã¿Ò»ï¿½ï¿½ï¿½ï¿½Ï¢Í·ï¿½ï¿½ï¿½ï¿½Ñ­ï¿½ï¿½ï¿½Â¸ï¿½Ê½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í·ï¿½Ö¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Viaï¿½ï¿½Fromï¿½È£ï¿½ï¿½ï¿½
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã°ï¿½Å£ï¿½È»ï¿½ï¿½ï¿½ï¿½ï¿½ÎªÒ»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç°ï¿½ï¿½ï¿½Õ¸ñ£¬ºï¿½ï¿½ï¿½Îªï¿½Ö¶ï¿½Öµ:
 	// header-header = field-name: SP [field-value] CRLF
-			ibuffer[j]='\0'; 				//×Ö·û´®½áÊø·û
+			ibuffer[j]='\0'; 				//ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			if(!strcmp(ibuffer,"CSeq")){
-				ANALYSIS_cseq(p_msg+i+1,1);	//´Ó' '¿ªÊ¼
+				ANALYSIS_cseq(p_msg+i+1,1);	//ï¿½ï¿½' 'ï¿½ï¿½Ê¼
 				break;
 			}	
 		}			
-		ibuffer[j]=*(p_msg+i);	// ½«×Ö¶ÎÃûcopyµ½ibuffer[j]		
+		ibuffer[j]=*(p_msg+i);	// ï¿½ï¿½ï¿½Ö¶ï¿½ï¿½ï¿½copyï¿½ï¿½ibuffer[j]		
 		j++;
 		if(j==20)
 			j=0;
@@ -832,24 +607,24 @@ void ANALYSIS_get_cseq(char *p_msg,int msg_len)
 /*
 	CSeq: 1 INVITE
 
-	1. num_name=0: Ö»Ðècseq num 
+	1. num_name=0: Ö»ï¿½ï¿½cseq num 
 */
 void ANALYSIS_cseq(char *p_cseq,char num_name)
 {
 	unsigned int i;
-	int k=0;	//xxx-Line ' '¿Õ¸ñÊý
-	int j=0;	//×Ö¶Î³¤¶È
-	char ibuffer[20]; // cseqÀàÐÍÊý¾Ý
-	for(i=0;i<30;i++)	// ¼Ù¶¨CSeq:ÐÐ²»¿ÉÄÜ´óÓÚ30
+	int k=0;	//xxx-Line ' 'ï¿½Õ¸ï¿½ï¿½ï¿½
+	int j=0;	//ï¿½Ö¶Î³ï¿½ï¿½ï¿½
+	char ibuffer[20]; // cseqï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	for(i=0;i<30;i++)	// ï¿½Ù¶ï¿½CSeq:ï¿½Ð²ï¿½ï¿½ï¿½ï¿½Ü´ï¿½ï¿½ï¿½30
 	{
-//1. µÚÒ»¸ö' 'Ìø¹ýCSeq: 		
+//1. ï¿½ï¿½Ò»ï¿½ï¿½' 'ï¿½ï¿½ï¿½ï¿½CSeq: 		
     if(*(p_cseq+i)==' '&&k==0)			
 		{
-			k++;	//µÚ¶þ¸ö' '
+			k++;	//ï¿½Ú¶ï¿½ï¿½ï¿½' '
 			j =0;
 			continue;
 		}
-//2. µÚ¶þ¸ö' ' Îªxxx 	
+//2. ï¿½Ú¶ï¿½ï¿½ï¿½' ' Îªxxx 	
     if(*(p_cseq+i)==' '&&k==1)
 		{
 			ibuffer[j] ='\0';	
@@ -859,11 +634,11 @@ void ANALYSIS_cseq(char *p_cseq,char num_name)
 			j=0;
       continue;
 		}		
-//3. ÐÐ½áÊø	
+//3. ï¿½Ð½ï¿½ï¿½ï¿½	
     if(*(p_cseq+i)=='\r')
 		{
 			ibuffer[j] ='\0';
-			if(num_name==1){	//=1: ÊÇ200 OK
+			if(num_name==1){	//=1: ï¿½ï¿½200 OK
 				ANALYSIS_cseq_type(ibuffer);
 			}
       break;
@@ -877,7 +652,7 @@ void ANALYSIS_cseq(char *p_cseq,char num_name)
 
 
 /*
- ³õÊ¼»¯ sip rx/tx flag
+ ï¿½ï¿½Ê¼ï¿½ï¿½ sip rx/tx flag
 */
 void ANALYSIS_RxParamInit(void)
 {
