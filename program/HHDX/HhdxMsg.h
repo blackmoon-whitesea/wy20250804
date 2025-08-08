@@ -4,6 +4,9 @@
 
 #define HHDX_PARAM	1
 #define HHDX_FUNC		2
+#define HHDX_REC_START	3
+#define HHDX_REC_STOP	4
+#define HHDX_REC_OFFHOOK	5
 
 #define	JS_RESET					10
 #define	JS_PARAM_READ				11
@@ -24,11 +27,13 @@
 #define JS_TEL_ONOFF				50
 #define JS_DIAL_NUMS				51
 #define JS_DIAL_NUM					52
+#define JS_REC_START			    53
+#define JS_REC_STOP				    54
 
 struct stHhdxFlag
 {
-	unsigned char sv_ip:		1;		//bit0 =1:ÉèÖÃsip ip
-	unsigned char eepromwr:	1;		//=1: ¿ªÊ¼Ð´eeprom		0:½áÊø
+	unsigned char sv_ip:		1;		//bit0 =1:ï¿½ï¿½ï¿½ï¿½sip ip
+	unsigned char eepromwr:	1;		//=1: ï¿½ï¿½Ê¼Ð´eeprom		0:ï¿½ï¿½ï¿½ï¿½
 	unsigned char c:1;
 	unsigned char d:1;
 	unsigned char e:1;
@@ -51,7 +56,8 @@ char *HHDX_GetFieldName(int cmd_type,char *p_msg);
 char *HHDX_GetFieldValue(char name,char *p_msg);
 char HHDX_AnalyseJsonName(int cmd_type,char *p_msg);
 void HHDX_AnalyseJsonValue(char name,char *p_msg);
-int HHDX_FuncRx(char *p_msg_name);
+// int HHDX_FuncRx(char *p_msg_name);
+int HHDX_FuncRx(int cmd_type, char *p_msg_name);
 int HHDX_ParamRx(char *p_msg_name);
 
 void HHDX_ParamTxBuild(void);

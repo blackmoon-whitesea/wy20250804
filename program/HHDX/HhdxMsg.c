@@ -13,33 +13,34 @@
 
 struct stHhdxFlag gsHhdxFlag;
 
-
+int rec_recive_cmd=0;
+int dynamic_port=0;	
 /*
 1. TEL_param_fromPC={......}
 2. TEL_func_fromPC={......}
 */
-//判断命令类型
+//解析命令行内容
 int HHDX_Command(char *p_line)
 {
 	unsigned int i;
 	int j=0;	//字段长度
-	char ibuffer[18]; // 类型数据缓存 
+	char ibuffer[18]; // 命令行缓冲区 
 	for(i=0;i<18;i++)
 	{
-//1. 第一个字节初始化ibuffer		
+//1. 第一个字节开始给ibuffer		
 		if(j==0) ibuffer[0]='\0';
-//2. 第一个'=' 			
+//2. 找一个'=' 			
     if(*(p_line+i)=='=')
 		{
-			ibuffer[j]='\0';	//不包括'='的字符串
+			ibuffer[j]='\0';	//遇到分隔符'='停止
 			gTempPointer =(p_line+i+1);	//'='下一个地址
 			break;
 		}
-//3. 记录"="前字段
+//3. 记录"="前字符
     ibuffer[j]= *(p_line+i);
 		j++;
 	}
-//取得TEL_param_fromPC或TEL_func_fromPC名称
+//取出TEL_param_fromPC和TEL_func_fromPC命令
 	if(i!=18)
 	{
 		if(!strcmp(ibuffer,"TEL_func_fromPC")){
@@ -50,31 +51,47 @@ int HHDX_Command(char *p_line)
 			printf("P=%s\r\n",ibuffer);
 			return HHDX_PARAM;
 		}
+		if(!strcmp(ibuffer,"Send_Start")){			
+			printf("P=%s\r\n",ibuffer);
+			rec_recive_cmd=HHDX_REC_START;
+			return HHDX_REC_START;
+		}	
+		if(!strcmp(ibuffer,"Send_Stop")){
+			printf("P=%s\r\n",ibuffer);
+			rec_recive_cmd=HHDX_REC_STOP;
+			return HHDX_REC_STOP;
+		}
+		if(!strcmp(ibuffer,"Send_Offhook")){
+			printf("P=%s\r\n",ibuffer);
+			rec_recive_cmd=HHDX_REC_OFFHOOK;
+			return HHDX_REC_OFFHOOK;
+		}
+
 	}		
 	return 0;
 }
 
 /*
-提取每组字段
+提取每段字符
 {"key":"value",......}
 */
 int HHDX_DivideJson(int cmd_type,char *p_msg,int msg_len)
 {
 	int i;		
-	int j=0;	//每字段长度，但不包含','字节
+	int j=0;	//每字段长度计数，遇到分隔符','清零
 	char *value_addr;
-	char ibuffer[50]; //每字段"key":"value"数据缓存(最大不会超过50) 
+	char ibuffer[50]; //每字符"key":"value"缓冲区(不会超过50) 
 	for(i=0;i<msg_len;i++)
 	{
 		if((*(p_msg+i))=='{'){	//json开始
 			j=0;
 			ibuffer[0]='\0';
 		}
-		else if((*(p_msg+i))==','){	//json多个字段分割符
+		else if((*(p_msg+i))==','){	//json字段间分隔符
 			value_addr=HHDX_GetFieldName(cmd_type,ibuffer);
 			HHDX_GetFieldValue(gTempChar,value_addr);
 			j=0;
-			ibuffer[0]='\0';		//下一个字段			
+			ibuffer[0]='\0';		//下一段字符			
 		}
 		else if((*(p_msg+i))=='}'){	//json结束
 			value_addr=HHDX_GetFieldName(cmd_type,ibuffer);
@@ -82,54 +99,60 @@ int HHDX_DivideJson(int cmd_type,char *p_msg,int msg_len)
 			return i;
 		}	
 		else{
-	    ibuffer[j]= *(p_msg+i); // 将每穿字段内容搬到ibuffer[j]中
+	    ibuffer[j]= *(p_msg+i); // 将每个字符复制搬到ibuffer[j]中
 			j++;
-			if(j==50)		//因为msg_len>50,以防ibuffer溢出
+			if(j==50)		//防止msg_len>50,超出ibuffer长度
 				j=0;
 		}
 	}
-	return 0;			//返回长度
+	return 0;			//分析出错
 }
 
 /*
-从{"key":"value"}中提取每组字段中"key"
+从{"key":"value"}中提取每段字符的"key"
 */
 char *HHDX_GetFieldName(int cmd_type,char *p_msg)
 {
 	int i;		
-	int j=0;	//每字段长度，但不包含','字节
-	char ibuffer[20]; //"key"字段名不超过20
+	int j=0;	//每字段长度计数，遇到分隔符','清零
+	char ibuffer[20]; //"key"字符的缓冲区长度为20
 	for(i=0;i<20;i++)
 	{
-		if((j==0)&&(*(p_msg+i)=='"')){	//字段名开始
+		if((j==0)&&(*(p_msg+i)=='"')){	//字符名开始
 			ibuffer[0]='\0';
 		}
-		else if((j!=0)&&(*(p_msg+i)=='"')){	//字段名结束
+		else if((j!=0)&&(*(p_msg+i)=='"')){	//字符名结束
 			ibuffer[j] ='\0';
 //			printf("N=%s\r\n",ibuffer);
 			gTempChar =HHDX_AnalyseJsonName(cmd_type,ibuffer);
 			return 	p_msg+i+2;		//返回value地址
 		}
 		else{
-	    ibuffer[j]= *(p_msg+i); // 将每穿字段内容搬到ibuffer[j]中
+	    ibuffer[j]= *(p_msg+i); // 将每个字符复制搬到ibuffer[j]中
 			j++;
 		}
 	}
-	return 0;			//返回长度
+	return 0;			//分析出错
 }
 
 
-//收到来到PC管理软件command type
+//分析来自PC的命令和command type
 char HHDX_AnalyseJsonName(int cmd_type,char *p_msg)
 {
 	char name=0;
 	if(cmd_type ==HHDX_FUNC){
-		name =HHDX_FuncRx(p_msg);
+		name = (char)HHDX_FuncRx(cmd_type,p_msg);
+	}
+	else if(cmd_type ==HHDX_REC_START){
+		name = (char)HHDX_FuncRx(cmd_type,p_msg);
+	}
+	else if(cmd_type ==HHDX_REC_STOP){
+		name = (char)HHDX_FuncRx(cmd_type,p_msg);
 	}
 	else if(cmd_type ==HHDX_PARAM){
-		name =HHDX_ParamRx(p_msg);
+		name = (char)HHDX_ParamRx(p_msg);
 		gsNetFlag.bind =0;
-		gsHhdxFlag.eepromwr =1;		//1: 可以写eeprom		0: 写结束
+		gsHhdxFlag.eepromwr =1;		//1: 需要写eeprom		0: 写完毕
 	}
 	else{
 		name =0;
@@ -139,23 +162,27 @@ char HHDX_AnalyseJsonName(int cmd_type,char *p_msg)
 
 
 /*
-//来至管理软件PC的电话功能:  TEL_func_fromPC={……}
+//接收来自PC的电话功能指令:  TEL_func_fromPC={命令}
 {"tel_onoff":"x"}
-{"dial_nums":"xxx……"}
+{"dial_nums":"xxx号码"}
 {"dial_num":"x"}
 */
-int HHDX_FuncRx(char *p_msg_name)
+int HHDX_FuncRx(int cmd_type,char *p_msg_name)
 {
 	if(!strcmp(p_msg_name,"tel_onoff"))
 		return JS_TEL_ONOFF;
-  if(!strcmp(p_msg_name,"dial_nums"))
+    if(!strcmp(p_msg_name,"dial_nums"))
 		return JS_DIAL_NUMS;
 	if(!strcmp(p_msg_name,"dial_num"))
 		return JS_DIAL_NUM;	
+	if(cmd_type==HHDX_REC_START && !strcmp(p_msg_name,"port"))
+		return JS_REC_START;	
+	if(cmd_type==HHDX_REC_STOP && !strcmp(p_msg_name,"id"))
+		return JS_REC_STOP;		
 	return 0;
 }
 /* 
-//来到PC管理软件参数设置功能
+//接收PC配置参数的JSON格式数据
 {
 	"local_ip":"192.168.0.22",
 	"mask":"255.255.255.0",
@@ -205,28 +232,28 @@ int HHDX_ParamRx(char *p_msg_name)
 	return 0;
 }
 /*
-从{"key":"value"}中提取每组字段中"value"
+从{"key":"value"}中提取每段字符的"value"
 */
 char *HHDX_GetFieldValue(char name,char *p_msg)
 {
 	int i=0,j=0;
-	char ibuffer[16]; //message header名称缓存	
+	char ibuffer[16]; //message header缓冲区	
 	for(i=0;i<16;i++)
 	{
-		if((j==0)&&(*(p_msg+i)=='"')){	//字段名开始
+		if((j==0)&&(*(p_msg+i)=='"')){	//字符名开始
 			ibuffer[0]='\0';
 		}
-		else if((j!=0)&&(*(p_msg+i)=='"')){	//字段名结束
+		else if((j!=0)&&(*(p_msg+i)=='"')){	//字符名结束
 			ibuffer[j] ='\0';
 			HHDX_AnalyseJsonValue(name,ibuffer);
 			return p_msg+i+2;		//返回value地址
 		}
 		else{
-	    ibuffer[j]= *(p_msg+i); // 将每穿字段内容搬到ibuffer[j]中
+	    ibuffer[j]= *(p_msg+i); // 将每个字符复制搬到ibuffer[j]中
 			j++;
 		}
 	}
-	return 0;			//返回长度
+	return 0;			//分析出错
 }
 
 /*
@@ -244,7 +271,21 @@ void HHDX_AnalyseJsonValue(char name,char *p_msg)
 			break;
 		case JS_DIAL_NUMS:	
 			break;			
-	   case JS_DIAL_NUM:
+	   	case JS_DIAL_NUM:
+			break;
+		case JS_REC_START:
+			//rec_recive_flag=HHDX_REC_START;
+			dynamic_port = atoi(p_msg);
+			printf("dynamic_port=%d\r\n",dynamic_port);
+			NET_UdppcbConnect(gpsaUdppcb[1],gpsEeprom->sv_ip,dynamic_port,RTP_LOCAL_PORT);
+			break;
+		case JS_REC_STOP:
+			//rec_recive_flag=HHDX_REC_STOP;
+			if(gpsaUdppcb[1]){	
+				udp_remove(gpsaUdppcb[1]);	//移除UDP连接
+				gpsaUdppcb[1] =NULL;
+			}	
+			printf("rec stop\r\n");
 			break;
 
 //------------- parameter -------------
@@ -263,7 +304,7 @@ void HHDX_AnalyseJsonValue(char name,char *p_msg)
 	   	gsNetFlag.bind =0;
 			break;				
 		case JS_LOCAL_NUM:
-			if(strlen(p_msg)<16){			//最长号为15
+			if(strlen(p_msg)<16){			//长度不超过15
 				strcpy((char *)gpsEeprom->own_num,p_msg);
 				LWIP_NetConfigUpdate();
 			}
@@ -317,8 +358,8 @@ void HHDX_AnalyseJsonValue(char name,char *p_msg)
 ;2.本机号码	= 8002
 ;3.服务器IP	= 192.168.0.10
 ;4.网关		= 192.168.0.1
-;5.子码掩码	= 255.255.255.0
-;6.热线号码	= 9999
+;5.子网掩码	= 255.255.255.0
+;6.扬声器音量	= 9999
 */
 void HHDX_FactoryReset(void)
 {
@@ -347,7 +388,7 @@ void HHDX_FactoryReset(void)
 	gpsEeprom->gw_ip[2] =GW_IP2;
 	gpsEeprom->gw_ip[3] =GW_IP3;
 
-//5.子码掩码	= 255.255.0.0
+//5.子网掩码	= 255.255.0.0
 	gpsEeprom->mask_ip[0] =NET_MASK0;
 	gpsEeprom->mask_ip[1] =NET_MASK1;
 	gpsEeprom->mask_ip[2] =NET_MASK2;
@@ -365,13 +406,13 @@ void HHDX_FactoryReset(void)
 //9.Automatic response time=0~9(max=9*3=27s)	
 	gpsEeprom->ans_time =3;
 	
-//10.16个开关	
+//10.16位标志位	
 	gpsEeprom->flag.ans_onoff =0;
 	gpsEeprom->flag.alarm_led_onoff =0;
 }	
 
 /*
-//向PC返回所有参数
+//向PC发送参数查询回复
 	TEL_param_toPC={
 	"local_ip":"192.168.0.12",
 	"mask":"255.255.255.0",
@@ -420,7 +461,7 @@ void HHDX_ParamTxBuild(void)
 
 void HHDX_VariateInit(void)
 {
-	gsHhdxFlag.eepromwr =0;	//1: 允许写EEPROM
+	gsHhdxFlag.eepromwr =0;	//1: 需要写EEPROM
 }
 
 //	

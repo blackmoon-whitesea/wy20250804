@@ -6,6 +6,11 @@
 //#include "../USER/usmart_network.h"  // Include network detection functions
 #include <24cxx.h>
 #include <HhdxMsg.h>
+#include "cw2015.h"  // 添加 CW2015 头文件包含
+
+// 外部变量声明
+extern unsigned int gBatVal;  // CW2015 电压采样值
+extern char gDeviceId[16];    // SipMsgBuilding.c 中的设备ID变量
 
 //////////////////////////////////////////////////////////////////////////////////	 
 //This program is only for learning use, without author's permission, 
@@ -84,6 +89,10 @@ u8 *sys_cmd_tab[]=
 	"getip",//local:192.168.0.30 netmask:255.255.255.0 gw:192.168.0.1  server:192.168.0.10 port:5000
 	"setip",//192.168.0.30 2555.255.255.0 192.168.0.1
 	"setsvip",//192.168.0.10 5000
+	"setnum",//Change phone number
+	"readV",//Read voltage
+	"changeV",//Change voltage
+	"setid",//Set
 };	    
 
 //Execute system commands
@@ -106,7 +115,7 @@ u8 usmart_sys_cmd_exe(u8 *str)
 	}
 	switch(i)
 	{					   
-		case 0:
+		case 0://？
 		case 1://Help command
 			printf("\r\n");
 #if USMART_USE_HELP
@@ -137,6 +146,10 @@ u8 usmart_sys_cmd_exe(u8 *str)
 			printf("setip:  Set local IP address\r\n");
 			printf("        localip netmask gateway\r\n");
 			printf("setsvip:Set server IP address and port\r\n");
+			printf("setnum:Set num\r\n");
+			printf("readV: Read voltage\r\n");
+			printf("changeV: Change voltage\r\n");
+			printf("setid: Set device ID (affects all JSON messages)\r\n");
 			printf("Note: IP address must be valid, otherwise setting fails.\r\n");
 			printf("System commands support case-insensitive input.\r\n");
 			printf("USMART Usage:\r\n");
@@ -222,11 +235,21 @@ u8 usmart_sys_cmd_exe(u8 *str)
 			break;	    
 		case 7://getip command, get IP address
 			printf("\r\n");
-			printf("Local IP Address: %d.%d.%d.%d\r\n",gpsEeprom->own_ip[0],gpsEeprom->own_ip[1],gpsEeprom->own_ip[2],gpsEeprom->own_ip[3]);
+			printf("LocalIP: %d.%d.%d.%d\r\n",gpsEeprom->own_ip[0],gpsEeprom->own_ip[1],gpsEeprom->own_ip[2],gpsEeprom->own_ip[3]);
 			printf("Netmask: %d.%d.%d.%d\r\n",gpsEeprom->mask_ip[0],gpsEeprom->mask_ip[1],gpsEeprom->mask_ip[2],gpsEeprom->mask_ip[3]);
 			printf("Gateway: %d.%d.%d.%d\r\n",gpsEeprom->gw_ip[0],gpsEeprom->gw_ip[1],gpsEeprom->gw_ip[2],gpsEeprom->gw_ip[3]);
 			printf("Server: %d.%d.%d.%d Port: %d\r\n",gpsEeprom->sv_ip[0],gpsEeprom->sv_ip[1],gpsEeprom->sv_ip[2],gpsEeprom->sv_ip
 				[3],gpsEeprom->port);
+			printf("OwnNum: %s\r\n",gpsEeprom->own_num);
+			printf("SpkVol: %d\r\n",gpsEeprom->spk_vol);
+			printf("MicVol: %d\r\n",gpsEeprom->mic_vol);
+			printf("MusicName: %d\r\n",gpsEeprom->music_name);
+			printf("AnsTime: %d\r\n",gpsEeprom->ans_time);
+			//输出STM32唯一ID
+			printf("STM32 unique ID: 0x%08X\r\n",*(vu32*)(0x1FFF7A10));
+			//输出电话号码nmuber
+			printf("Phone Number: %s\r\n",gpsEeprom->own_num);
+				
 			printf("\r\n");	
 			break;
 		case 8://setip command, set IP addresss
@@ -244,7 +267,13 @@ u8 usmart_sys_cmd_exe(u8 *str)
 					{
 						*p='\0';//将分隔符替换为结束符
 						p++;
-						usmart_str2num(p,&res);
+						usmart_str2num(sfname,&res);
+						//printf("res=%d\r\n",res);
+					}else {
+						if (j==3) {
+							usmart_str2num(sfname,&res);
+							//printf("res=%d\r\n",res);
+						}
 					}
 					gpsEeprom->own_ip[j]=res;
 					if(j==3) break;
@@ -254,6 +283,7 @@ u8 usmart_sys_cmd_exe(u8 *str)
 			}else return USMART_PARMERR;			//parameter error.		
 
 			//netmask
+			printf("str:%s\r\n",str);
 			res=usmart_get_ipparm(str,sfname,&i);
 			str+=res; //point to next parameter
 			if(res==0)return USMART_FUNCERR;
@@ -266,7 +296,13 @@ u8 usmart_sys_cmd_exe(u8 *str)
 					{
 						*p='\0';//将分隔符替换为结束符
 						p++;
-						usmart_str2num(p,&res);
+						usmart_str2num(sfname,&res);
+						//printf("res=%d\r\n",res);
+					}else {
+						if (j==3) {
+							usmart_str2num(sfname,&res);
+							//printf("res=%d\r\n",res);
+						}
 					}
 					gpsEeprom->mask_ip[j]=res;
 					if(j==3) break;
@@ -275,6 +311,7 @@ u8 usmart_sys_cmd_exe(u8 *str)
 			}else return USMART_PARMERR;			//parameter error.
 
 			//gw
+			printf("str:%s\r\n",str);
 			res=usmart_get_ipparm(str,sfname,&i);
 			//if(res!=0)return USMART_FUNCERR;
 			if(i==1)//get parameters
@@ -286,14 +323,20 @@ u8 usmart_sys_cmd_exe(u8 *str)
 					{
 						*p='\0';//将分隔符替换为结束符
 						p++;
-						usmart_str2num(p,&res);
+						usmart_str2num(sfname,&res);
+						//printf("res=%d\r\n",res);
+					}else {
+						if (j==3) {
+							usmart_str2num(sfname,&res);
+							//printf("res=%d\r\n",res);
+						}
 					}
 					gpsEeprom->gw_ip[j]=res;
 					if(j==3) break;
 					strcpy(sfname,p);
 				}
 			}else return USMART_PARMERR;		 	//parameter error.
-
+			printf("set IP Address Success!\r\n");
 			//save to eeprom
 			//AT24CXX_WriteLenByte(EEPROM_GPS_FLAG_ADDR,(u8*)&gpsEeprom->flag,sizeof(gpsEeprom->flag));
 			gsHhdxFlag.eepromwr =1;
@@ -317,12 +360,12 @@ u8 usmart_sys_cmd_exe(u8 *str)
 			//svip
 			res=usmart_get_ipparm(str,sfname,&i);
 			str+=res; //point to next parameter
-			printf("ip%s %d %d\r\n",sfname,i,res);
+			//printf("ip%s %d %d\r\n",sfname,i,res);
 			if(res==0)return USMART_FUNCERR;
 			
 			if(i==1)//get parameters
 			{
-				printf("ip%s\r\n",sfname);
+				//printf("ip%s\r\n",sfname);
 				//处理sfname中svip地址
 				for(j=0;j<4;j++){
 					p=strchr(sfname,'.');
@@ -330,29 +373,135 @@ u8 usmart_sys_cmd_exe(u8 *str)
 					{
 						*p='\0';//将分隔符替换为结束符
 						p++;
-						usmart_str2num(p,&res);
-						printf("res=%d\r\n",res);
+						usmart_str2num(sfname,&res);
+						//printf("res=%d\r\n",res);
+					}else {
+						if (j==3) {
+							usmart_str2num(sfname,&res);
+							//printf("res=%d\r\n",res);
+						}
 					}
+					
 					gpsEeprom->sv_ip[j]=res;
 					if(j==3) break;
 					strcpy(sfname,p);
 				}
 			}else return USMART_PARMERR;			//parameter error.
+
 			//port
+			//printf("str:%s\r\n",str);
 			res=usmart_get_aparm(str,sfname,&i);
 			//if(res!=0)return USMART_FUNCERR;
+			//printf("port:%s %d\r\n",sfname,i);
 			if(i==0)//get parameters
 			{
 				i=usmart_str2num(sfname,&res);	   		//record parameters
 				if(i==0)						   		//get command address data succeeded
 				{
 					gpsEeprom->port=res;
+					//printf("Set Server Port:%d\r\n",res);
 				}else return USMART_PARMERR;   			//not set, or parameter error
  			}else return USMART_PARMERR;				//parameter error.
+			printf("Set Server IP Address and Port Success!\r\n");
 			//save to eeprom
 			//AT24CXX_WriteLenByte(EEPROM_GPS_FLAG_ADDR,(u8*)&gpsEeprom->flag,sizeof(gpsEeprom->flag));
 	        gsHhdxFlag.eepromwr =1;
 			break;
+		case 10://set phone number
+			printf("\r\n");
+			//localip
+			res=usmart_get_aparm(str,sfname,&i);
+			//str+=res; //point to next parameter
+			if(res==0)return USMART_FUNCERR;		//error getting parameters
+			if(i==0)//get parameters
+			{
+				//处理number中电话号码
+				printf("number:%s\r\n",sfname);
+				if(strlen(sfname)>16) return USMART_PARMERR; //电话号码长度不能超过16位
+				strcpy(gpsEeprom->own_num,sfname);
+				printf("Set Phone Number Success!\r\n");
+				//save to eeprom
+				//AT24CXX_WriteLenByte(EEPROM_GPS_FLAG_ADDR,(u8*)&gpsEeprom->flag,sizeof(gpsEeprom->flag));
+				gsHhdxFlag.eepromwr =1;
+
+			}else return USMART_PARMERR;			//parameter error.		
+			break;
+		case 11://read voltage
+			printf("\r\n");
+			//从 cw2015.c 中读取电压值
+			printf("Reading voltage...\r\n");
+			
+			// 直接读取全局变量 gBatVal (14位AD转换结果)
+			if(gBatVal == 0) {
+				printf("Warning: Voltage value is 0, may not be initialized!\r\n");
+			}
+			
+			// 显示原始AD值和转换后的电压值
+			printf("Raw AD Value: %d\r\n", gBatVal);
+			printf("Voltage: %d.%02dV\r\n", gBatVal/100, gBatVal%100);
+			
+			// 显示电话状态对应的电压范围
+			printf("Voltage Status:\r\n");
+			if(gBatVal < 168) {
+				printf("  Status: Disconnected (< 1.68V)\r\n");
+			}
+			else if((gBatVal > 170) && (gBatVal < 190)) {
+				printf("  Status: Off-hook (1.70V - 1.90V)\r\n");
+			}
+			else if((gBatVal > 236) && (gBatVal < 264)) {
+				printf("  Status: On-hook (2.36V - 2.64V)\r\n");
+			}
+			else if(gBatVal > 280) {
+				printf("  Status: Ringing (> 2.80V)\r\n");
+			}
+			else {
+				printf("  Status: Unknown range\r\n");
+			}
+			
+			printf("Read voltage completed.\r\n");
+			break;
+
+		case 12://change voltage
+			printf("\r\n");
+			break;
+
+		case 13://setid command, set ID
+			printf("\r\n");
+			res=usmart_get_aparm(str,sfname,&i);
+			if(res==0)return USMART_FUNCERR;		//error getting parameters
+			if(i==0)//get parameters
+			{
+				//处理ID数字
+				printf("Setting Device ID to: %s\r\n",sfname);
+				
+				// 检查输入是否为有效数字
+				for(j=0;j<strlen(sfname);j++) {
+					if(sfname[j] < '0' || sfname[j] > '9') {
+						printf("Error: ID must be numeric only!\r\n");
+						return USMART_PARMERR;
+					}
+				}
+				
+				// 检查长度限制（最多8位数字）
+				if(strlen(sfname) > 8) {
+					printf("Error: ID too long (max 8 digits)!\r\n");
+					return USMART_PARMERR;
+				}
+				
+				// 设置新的设备ID到全局变量中
+				strncpy(gDeviceId, sfname, sizeof(gDeviceId)-1);
+				gDeviceId[sizeof(gDeviceId)-1] = '\0';  // 确保字符串结尾
+				
+				printf("Device ID successfully set to: %s\r\n", gDeviceId);
+				printf("This change affects all JSON messages:\r\n");
+				printf("- Port request/verify messages\r\n");
+				printf("- File transfer messages\r\n");
+				printf("- Call status messages (CID_JSON)\r\n");
+				printf("Changes take effect immediately.\r\n");
+
+			}else return USMART_PARMERR;			//parameter error.		
+			break;
+
 		default://illegal command
 			//return USMART_FUNCERR;
 			return 0;
@@ -560,7 +709,9 @@ void usmart_scan(void)
 	if(USART_RX_STA&0x8000)//Data reception complete
 	{					   
 		len=USART_RX_STA&0x3fff;	//Get length of received data
-		USART_RX_BUF[len]='\0';	//Add string terminator at the end. 
+		USART_RX_BUF[len]='\0';	//Add string terminator at the end.
+		USART_RX_STA=0;	//Clear status flag immediately to prevent repeat processing
+		
 		sta=usmart_dev.cmd_rec(USART_RX_BUF);//Get command recognition info
 		if(sta==0)usmart_dev.exe();	//Execute function 
 		else 
@@ -582,11 +733,15 @@ void usmart_scan(void)
 						break;		
 					case USMART_NOFUNCFIND:
 						printf("Function Not Found!\r\n");   			
-						break;		
+						break;	
+					default:
+						printf("\r\n>>");
 				}
+			}else {
+				printf("\r\n>>");
 			}
 		}
-		USART_RX_STA=0;//Reset status flag	    
+		USART_RX_STA=0;
 	}
 }
 

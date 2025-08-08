@@ -43,3 +43,5 @@
 ..\obj\usmart.o: ..\HARDWARE\24CXX\24cxx.h
 ..\obj\usmart.o: ..\HARDWARE\IIC\myiic.h
 ..\obj\usmart.o: ..\HHDX\HhdxMsg.h
+..\obj\usmart.o: ..\HARDWARE\CW2015\cw2015.h
+..\obj\usmart.o: ..\HARDWARE\CW2015\iic.h

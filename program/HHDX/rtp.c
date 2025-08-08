@@ -13,14 +13,14 @@
 #include "cw2015.h"
 
 struct stRtp gsRtp;
-u8 gRtpRxBuf[RTP_BUF_NUM][172];	//±¾Ó¦¸ÃÖ»ÐèÒª160×Ö½Ú£¬µ«q->payload+12±àÒë³ö´í
+u8 gRtpRxBuf[RTP_BUF_NUM][172];	//ï¿½ï¿½Ó¦ï¿½ï¿½Ö»ï¿½ï¿½Òª160ï¿½Ö½Ú£ï¿½ï¿½ï¿½q->payload+12ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿?
 u8 gRtpTxBuf[RTP_BUF_NUM][160];
 u8 gRtpRxNum;
 u8 gRtpTxNum;
 
 /*********************************************
-1. ÊÕ»ò·¢200 OK(INVITE)¿ªÊ¼·¢RTP
-2. ÊÕ»ò·¢200 OK(bye)Í£·¢RTP
+1. ï¿½Õ»ï¿½200 OK(INVITE)ï¿½ï¿½Ê¼ï¿½ï¿½RTP
+2. ï¿½Õ»ï¿½200 OK(bye)Í£ï¿½ï¿½RTP
 *********************************************/
 void RTP_tx(void)
 {	
@@ -34,7 +34,7 @@ void RTP_tx(void)
 			gsRtp.seq =0;
 			gsRtp.ssrc =gSipRamdom1;			
 			gpsT3->rtp=0;
-//			I2S2_SampleRate_Set(8000);	//ÉèÖÃ²ÉÑù
+//			I2S2_SampleRate_Set(8000);	//ï¿½ï¿½ï¿½Ã²ï¿½ï¿½ï¿½
 			AUDIO_rec_mode();
 		}
 		if(gpsT3->rtp>=20){	//Ã¿20ms
@@ -56,14 +56,14 @@ Sequence number: 7
 [Extended sequence number: 65543]
 Timestamp: 1123143454
 Synchronization Source identifier: 0x2acb3b1e (717962014)
-Payload: d5d55555555554¡­
+Payload: d5d55555555554ï¿½ï¿½
 -----------------------------------------------
 Version: 80
 Payload type: 08
 Sequence number:  07
-	16Î»ÕûÊý +1
+	16Î»ï¿½ï¿½ï¿½ï¿½ +1
 Timestamp: 42 f1 cf 1e (1123143134 -1123143294 = 160)
-	32Î»ÕûÊý +160
+	32Î»ï¿½ï¿½ï¿½ï¿½ +160
 ssid : 2a cb 3b 1e
 	
 ****************************************************************/
@@ -96,12 +96,12 @@ void RTP_build(void)
 			*(SendMsg+12+j) =gRtpTxBuf[gRtpTxNum][j];			
 		}
 		gRtpTxNum ++;
-		gRtpTxNum &= (~RTP_BUF_NUM);	//×¢£º±ØÐëÊÇ2,4,8,16...
+		gRtpTxNum &= (~RTP_BUF_NUM);	//×¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½2,4,8,16...
 	}
 	else{
 		for(j=0;j<160;j++)
 		{
-			*(SendMsg+12+j) =0xD5;		//±ÜÃâ¶ÁÅÜµ½Ð´µÄÇ°ÃæÈ¥ÁË
+			*(SendMsg+12+j) =0xD5;		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Üµï¿½Ð´ï¿½ï¿½Ç°ï¿½ï¿½È¥ï¿½ï¿?
 		}
 	}	
 //	printf("%d=%d,%d\r\n",gsRtp.seq,gsAudio.rtp_tx_num,gRtpTxNum);

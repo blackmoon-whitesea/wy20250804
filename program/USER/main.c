@@ -138,14 +138,15 @@ int main(void)
 				gsNetFlag.bind =1;	
 				NET_UdppcbConnect(gpsaUdppcb[0],gpsEeprom->sv_ip,SIP_PORT,SIP_PORT);				
 				// 根据动态端口设置RTP连接
-				if(gpsUaInfo->dynamic_port > 0)
-				{
-					NET_UdppcbConnect(gpsaUdppcb[1],gpsEeprom->sv_ip,gpsUaInfo->dynamic_port,gpsUaInfo->dynamic_port);
-				}
-				else
-				{
-					NET_UdppcbConnect(gpsaUdppcb[1],gpsEeprom->sv_ip,RTP_LOCAL_PORT,RTP_LOCAL_PORT);
-				}
+				//if(gpsUaInfo->dynamic_port > 0)
+				//{
+				//	NET_UdppcbConnect(gpsaUdppcb[1],gpsEeprom->sv_ip,gpsUaInfo->dynamic_port,gpsUaInfo->dynamic_port);
+				//}
+				//else
+				//{
+					//NET_UdppcbConnect(gpsaUdppcb[1],gpsEeprom->sv_ip,RTP_LOCAL_PORT,RTP_LOCAL_PORT);
+					NET_UdppcbConnect(gpsaUdppcb[1],gpsEeprom->sv_ip,gpsEeprom->port,RTP_LOCAL_PORT);
+				//}
 			}
 		}
 			
@@ -187,9 +188,9 @@ int main(void)
 			wait_counter = 0;
 		}
 		
-		usmart_scan();
+		//usmart_scan();
 		
-		delay_ms(10);  // 延时10ms，避免过快扫描导致CPU占用过高
+		//delay_ms(10);  // 延时10ms，避免过快扫描导致CPU占用过高
 		
 //5. Sip register		
 		gSipRamdom1 ++;

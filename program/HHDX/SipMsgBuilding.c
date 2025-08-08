@@ -15,6 +15,7 @@
 void SEND_CID_JSON(const char* msg_type, const char* status, const char* call_number);
 
 char *gpDeviceVer = "2301091740";
+char gDeviceId[16] = "1222";  // 默认设备ID为1222，可通过串口命令修改
 /***********************************************************************
 "DTMF=" + 号码(1位)
 ***********************************************************************/
@@ -37,13 +38,14 @@ void BUILD_CID_start(void)
 {
 	int i;
 	
-	strcpy((char *)gFskCidBuf,gpsUaInfo->called_number);	//9012
+	strcpy((char *)gFskCidBuf,gpsUaInfo->called_number);	//来电号码
 	for(i =strlen((char *)gFskCidBuf); i <MAX_NUM_LEN; i++){
 		gFskCidBuf[i] =0x20;
 	}
 	gFskCidBuf[MAX_NUM_LEN] =0;
 	
-	strcpy((char *)gFskOwnBuf,(const char*)gpsEeprom->own_num);	//9012
+	// 每次都从EEPROM获取最新的本机号码
+	strcpy((char *)gFskOwnBuf,(const char*)gpsEeprom->own_num);	//本机号码
 	for(i =strlen((char *)gFskOwnBuf); i <MAX_NUM_LEN; i++){
 		gFskOwnBuf[i] =0x20;
 	}
@@ -559,7 +561,7 @@ void BUILD_port_request(void)
 	服务器>>终端（port=动态分配的端口号）
 	Port_Response={"port":"8888","status":"success"}*/
 	
-	j=sprintf(SendMsg,"{\"id\":\"%s\",\"type\":\"port_request\"}\r\n", "1222");
+	j=sprintf(SendMsg,"{\"id\":\"%s\",\"type\":\"port_request\"}\r\n", gDeviceId);
 	
 	NET_TxPcbLenWr(SIP_TX,j);
 	
@@ -581,7 +583,7 @@ void BUILD_port_verify(u16 port)
 	终端>>服务器（通过动态端口发送验证消息）
 	Port_Verify={"id":"1222","type":"port_verify","port":"8888"}*/
 	
-	j=sprintf(SendMsg,"{\"id\":\"%s\",\"type\":\"port_verify\",\"port\":\"%d\"}\r\n", "1222", port);
+	j=sprintf(SendMsg,"{\"id\":\"%s\",\"type\":\"port_verify\",\"port\":\"%d\"}\r\n", gDeviceId, port);
 	
 	NET_TxPcbLenWr(SIP_TX,j);
 }
@@ -599,7 +601,7 @@ void BUILD_file_start(const char* filename, u32 filesize)
 	File_Start={"id":"1222","type":"file_start","filename":"record.wav","size":"102400"}*/
 	
 	j=sprintf(SendMsg,"{\"id\":\"%s\",\"type\":\"file_start\",\"filename\":\"%s\",\"size\":\"%lu\"}\r\n", 
-		"1222", filename, filesize);
+		gDeviceId, filename, filesize);
 	
 	NET_TxPcbLenWr(SIP_TX,j);
 }
@@ -617,7 +619,7 @@ void BUILD_file_data(u16 block_num, u8* data, u16 data_len)
 	File_Data={"id":"1222","type":"file_data","block":"1","data":"base64_encoded_data"}*/
 	
 	j=sprintf(SendMsg,"{\"id\":\"%s\",\"type\":\"file_data\",\"block\":\"%d\",\"length\":\"%d\"}\r\n", 
-		"1222", block_num, data_len);
+		gDeviceId, block_num, data_len);
 	
 	// 注意：这里简化处理，实际应该将二进制数据进行Base64编码或直接发送二进制
 	memcpy(SendMsg + j, data, data_len);
@@ -639,7 +641,7 @@ void BUILD_file_end(u16 total_blocks, u32 total_size)
 	File_End={"id":"1222","type":"file_end","total_blocks":"100","total_size":"102400"}*/
 	
 	j=sprintf(SendMsg,"{\"id\":\"%s\",\"type\":\"file_end\",\"total_blocks\":\"%d\",\"total_size\":\"%lu\"}\r\n", 
-		"1222", total_blocks, total_size);
+		gDeviceId, total_blocks, total_size);
 	
 	NET_TxPcbLenWr(SIP_TX,j);
 }
@@ -715,14 +717,14 @@ void SEND_CID_JSON(const char* msg_type, const char* status, const char* call_nu
         // 包含来电号码的消息（呼入事件）
         msg_len = sprintf(json_msg, 
             "{\"id\":\"%s\",\"number\":\"%s\",\"call\":\"%s\",\"timestamp\":\"%s\",\"type\":\"%s\",\"status\":\"%s\"}\r\n",
-            "1222", gFskOwnBuf, call_number, timestamp, msg_type, status);
+            gDeviceId, gpsEeprom->own_num, call_number, timestamp, msg_type, status);
     }
     else
     {
         // 不包含来电号码的消息（接听/挂断事件）
         msg_len = sprintf(json_msg, 
             "{\"id\":\"%s\",\"number\":\"%s\",\"timestamp\":\"%s\",\"type\":\"%s\",\"status\":\"%s\"}\r\n",
-            "1222", gFskOwnBuf, timestamp, msg_type, status);
+            gDeviceId, gpsEeprom->own_num, timestamp, msg_type, status);
     }
     
     // 网络发送

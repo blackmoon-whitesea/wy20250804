@@ -1,6 +1,6 @@
 Dependencies for Project 'Template', Target 'Template': (DO NOT MODIFY !)
 CompilerVersion: 5060750::V5.06 update 6 (build 750)::ARMCC
-F (.\main.c)(0x6893603A)(-c --cpu Cortex-M4.fp.sp -g -O2 --apcs=interwork -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\FWLIB\STM32F4xx_StdPeriph_Driver\inc -I ..\USER -I ..\HARDWARE\KEY -I ..\HARDWARE\LCD -I ..\HARDWARE\ETHERNET -I ..\HARDWARE\TIMER -I ..\HARDWARE\LED -I ..\HARDWARE\SRAM -I ..\FWLIB\STM32F4x7_ETH_Driver\inc -I ..\MALLOC -I ..\USMART -I ..\LWIP -I ..\LWIP\arch -I ..\LWIP\lwip_header -I ..\LWIP\app\TCP_Client -I ..\LWIP\lwip_app\lwip_comm -I ..\LWIP\lwip-1.4.1\src\include -I ..\LWIP\lwip-1.4.1\src\include\ipv4 -I ..\LWIP\lwip-1.4.1\src\include\netif -I ..\HHDX -I ..\HARDWARE\I2S -I ..\HARDWARE\IIC -I ..\HARDWARE\WM8978 -I ..\AUDIO -I ..\HARDWARE\24CXX -I ..\HARDWARE\CW2015 -I ..\HARDWARE\FSK -I ..\HARDWARE\DTMF-I.\RTE\_Template-IC:\Keil_v5\ARM\CMSIS\Include-IC:\Users\25027\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\3.1.0\Device\Include-D__UVISION_VERSION="529" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\main.o --omf_browse ..\obj\main.crf --depend ..\obj\main.d)
+F (.\main.c)(0x68947D60)(-c --cpu Cortex-M4.fp.sp -g -O2 --apcs=interwork -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\FWLIB\STM32F4xx_StdPeriph_Driver\inc -I ..\USER -I ..\HARDWARE\KEY -I ..\HARDWARE\LCD -I ..\HARDWARE\ETHERNET -I ..\HARDWARE\TIMER -I ..\HARDWARE\LED -I ..\HARDWARE\SRAM -I ..\FWLIB\STM32F4x7_ETH_Driver\inc -I ..\MALLOC -I ..\USMART -I ..\LWIP -I ..\LWIP\arch -I ..\LWIP\lwip_header -I ..\LWIP\app\TCP_Client -I ..\LWIP\lwip_app\lwip_comm -I ..\LWIP\lwip-1.4.1\src\include -I ..\LWIP\lwip-1.4.1\src\include\ipv4 -I ..\LWIP\lwip-1.4.1\src\include\netif -I ..\HHDX -I ..\HARDWARE\I2S -I ..\HARDWARE\IIC -I ..\HARDWARE\WM8978 -I ..\AUDIO -I ..\HARDWARE\24CXX -I ..\HARDWARE\CW2015 -I ..\HARDWARE\FSK -I ..\HARDWARE\DTMF-I.\RTE\_Template-IC:\Keil_v5\ARM\CMSIS\Include-IC:\Users\25027\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\3.1.0\Device\Include-D__UVISION_VERSION="529" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\main.o --omf_browse ..\obj\main.crf --depend ..\obj\main.d)
 I (..\SYSTEM\sys\sys.h)(0x5531D9CF)
 I (..\USER\stm32f4xx.h)(0x5447C0B7)
 I (..\CORE\core_cm4.h)(0x527B7158)
@@ -70,8 +70,8 @@ I (..\HHDX\SipConstant.h)(0x689068AB)
 I (..\HHDX\tel_func.h)(0x684F8F37)
 I (..\HARDWARE\WM8978\wm8978.h)(0x64365436)
 I (..\AUDIO\Audio.h)(0x64AF5CB4)
-I (..\HHDX\HhdxMsg.h)(0x684F9420)
-I (..\HARDWARE\24CXX\24cxx.h)(0x68935962)
+I (..\HHDX\HhdxMsg.h)(0x68954568)
+I (..\HARDWARE\24CXX\24cxx.h)(0x689442C5)
 I (..\HARDWARE\IIC\myiic.h)(0x6481C440)
 I (..\HHDX\rtp.h)(0x644B5E5D)
 I (..\HARDWARE\CW2015\iic.h)(0x6857C84D)
@@ -216,7 +216,7 @@ I (..\LWIP\lwip-1.4.1\src\include\ipv4\lwip/ip.h)(0x50CEFB5E)
 I (..\LWIP\lwip-1.4.1\src\include\lwip/tcp.h)(0x50CEFB5E)
 I (..\LWIP\lwip-1.4.1\src\include\lwip/mem.h)(0x54042706)
 I (..\LWIP\lwip-1.4.1\src\include\ipv4\lwip/icmp.h)(0x50CEFB5E)
-I (..\HHDX\HhdxMsg.h)(0x684F9420)
+I (..\HHDX\HhdxMsg.h)(0x68954568)
 F (..\HARDWARE\LED\led.c)(0x688DD308)(-c --cpu Cortex-M4.fp.sp -g -O2 --apcs=interwork -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\FWLIB\STM32F4xx_StdPeriph_Driver\inc -I ..\USER -I ..\HARDWARE\KEY -I ..\HARDWARE\LCD -I ..\HARDWARE\ETHERNET -I ..\HARDWARE\TIMER -I ..\HARDWARE\LED -I ..\HARDWARE\SRAM -I ..\FWLIB\STM32F4x7_ETH_Driver\inc -I ..\MALLOC -I ..\USMART -I ..\LWIP -I ..\LWIP\arch -I ..\LWIP\lwip_header -I ..\LWIP\app\TCP_Client -I ..\LWIP\lwip_app\lwip_comm -I ..\LWIP\lwip-1.4.1\src\include -I ..\LWIP\lwip-1.4.1\src\include\ipv4 -I ..\LWIP\lwip-1.4.1\src\include\netif -I ..\HHDX -I ..\HARDWARE\I2S -I ..\HARDWARE\IIC -I ..\HARDWARE\WM8978 -I ..\AUDIO -I ..\HARDWARE\24CXX -I ..\HARDWARE\CW2015 -I ..\HARDWARE\FSK -I ..\HARDWARE\DTMF-I.\RTE\_Template-IC:\Keil_v5\ARM\CMSIS\Include-IC:\Users\25027\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\3.1.0\Device\Include-D__UVISION_VERSION="529" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\led.o --omf_browse ..\obj\led.crf --depend ..\obj\led.d)
 I (..\HARDWARE\LED\led.h)(0x539BF63A)
 I (..\SYSTEM\sys\sys.h)(0x5531D9CF)
@@ -458,7 +458,7 @@ I (..\FWLIB\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_fsmc.h)(0x5710F3E0)
 I (..\HARDWARE\IIC\myiic.h)(0x6481C440)
 I (..\SYSTEM\delay\delay.h)(0x54656F79)
 F (..\HARDWARE\24CXX\24cxx.c)(0x684F80B0)(-c --cpu Cortex-M4.fp.sp -g -O2 --apcs=interwork -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\FWLIB\STM32F4xx_StdPeriph_Driver\inc -I ..\USER -I ..\HARDWARE\KEY -I ..\HARDWARE\LCD -I ..\HARDWARE\ETHERNET -I ..\HARDWARE\TIMER -I ..\HARDWARE\LED -I ..\HARDWARE\SRAM -I ..\FWLIB\STM32F4x7_ETH_Driver\inc -I ..\MALLOC -I ..\USMART -I ..\LWIP -I ..\LWIP\arch -I ..\LWIP\lwip_header -I ..\LWIP\app\TCP_Client -I ..\LWIP\lwip_app\lwip_comm -I ..\LWIP\lwip-1.4.1\src\include -I ..\LWIP\lwip-1.4.1\src\include\ipv4 -I ..\LWIP\lwip-1.4.1\src\include\netif -I ..\HHDX -I ..\HARDWARE\I2S -I ..\HARDWARE\IIC -I ..\HARDWARE\WM8978 -I ..\AUDIO -I ..\HARDWARE\24CXX -I ..\HARDWARE\CW2015 -I ..\HARDWARE\FSK -I ..\HARDWARE\DTMF-I.\RTE\_Template-IC:\Keil_v5\ARM\CMSIS\Include-IC:\Users\25027\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\3.1.0\Device\Include-D__UVISION_VERSION="529" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\24cxx.o --omf_browse ..\obj\24cxx.crf --depend ..\obj\24cxx.d)
-I (..\HARDWARE\24CXX\24cxx.h)(0x68935962)
+I (..\HARDWARE\24CXX\24cxx.h)(0x689442C5)
 I (..\HARDWARE\IIC\myiic.h)(0x6481C440)
 I (..\SYSTEM\sys\sys.h)(0x5531D9CF)
 I (..\USER\stm32f4xx.h)(0x5447C0B7)
@@ -499,7 +499,7 @@ I (..\SYSTEM\delay\delay.h)(0x54656F79)
 I (..\SYSTEM\usart\usart.h)(0x63DB0A3B)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x5D9AD21A)
 I (..\HARDWARE\TIMER\timer.h)(0x6875F6B2)
-I (..\HHDX\HhdxMsg.h)(0x684F9420)
+I (..\HHDX\HhdxMsg.h)(0x68954568)
 F (..\HARDWARE\CW2015\cw2015.c)(0x6878B098)(-c --cpu Cortex-M4.fp.sp -g -O2 --apcs=interwork -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\FWLIB\STM32F4xx_StdPeriph_Driver\inc -I ..\USER -I ..\HARDWARE\KEY -I ..\HARDWARE\LCD -I ..\HARDWARE\ETHERNET -I ..\HARDWARE\TIMER -I ..\HARDWARE\LED -I ..\HARDWARE\SRAM -I ..\FWLIB\STM32F4x7_ETH_Driver\inc -I ..\MALLOC -I ..\USMART -I ..\LWIP -I ..\LWIP\arch -I ..\LWIP\lwip_header -I ..\LWIP\app\TCP_Client -I ..\LWIP\lwip_app\lwip_comm -I ..\LWIP\lwip-1.4.1\src\include -I ..\LWIP\lwip-1.4.1\src\include\ipv4 -I ..\LWIP\lwip-1.4.1\src\include\netif -I ..\HHDX -I ..\HARDWARE\I2S -I ..\HARDWARE\IIC -I ..\HARDWARE\WM8978 -I ..\AUDIO -I ..\HARDWARE\24CXX -I ..\HARDWARE\CW2015 -I ..\HARDWARE\FSK -I ..\HARDWARE\DTMF-I.\RTE\_Template-IC:\Keil_v5\ARM\CMSIS\Include-IC:\Users\25027\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\3.1.0\Device\Include-D__UVISION_VERSION="529" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\cw2015.o --omf_browse ..\obj\cw2015.crf --depend ..\obj\cw2015.d)
 I (..\HARDWARE\CW2015\cw2015.h)(0x6878AF4D)
 I (..\HARDWARE\CW2015\iic.h)(0x6857C84D)
@@ -544,7 +544,7 @@ I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x5D9AD21A)
 I (..\HARDWARE\TIMER\timer.h)(0x6875F6B2)
 I (..\HARDWARE\FSK\usart3_FSK.h)(0x6878993F)
 I (..\HHDX\tel_func.h)(0x684F8F37)
-I (..\HHDX\HhdxMsg.h)(0x684F9420)
+I (..\HHDX\HhdxMsg.h)(0x68954568)
 I (..\HHDX\SipFunction.h)(0x687865E3)
 I (..\HHDX\SipStructure.h)(0x689068AB)
 I (..\HHDX\SipConstant.h)(0x689068AB)
@@ -626,7 +626,7 @@ I (..\FWLIB\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_fsmc.h)(0x5710F3E0)
 I (..\SYSTEM\sys\sys.h)(0x5531D9CF)
 I (..\HARDWARE\FSK\usart3_FSK.h)(0x6878993F)
 I (..\HHDX\tel_func.h)(0x684F8F37)
-I (..\HHDX\HhdxMsg.h)(0x684F9420)
+I (..\HHDX\HhdxMsg.h)(0x68954568)
 I (..\HHDX\SipFunction.h)(0x687865E3)
 I (..\HHDX\SipStructure.h)(0x689068AB)
 I (..\HHDX\SipConstant.h)(0x689068AB)
@@ -1136,7 +1136,7 @@ I (..\FWLIB\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dcmi.h)(0x5710F3E0)
 I (..\FWLIB\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_fsmc.h)(0x5710F3E0)
 I (..\SYSTEM\usart\usart.h)(0x63DB0A3B)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x5D9AD21A)
-F (..\LWIP\lwip_app\lwip_comm\lwip_comm.c)(0x68933CDE)(-c --cpu Cortex-M4.fp.sp -g -O2 --apcs=interwork -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\FWLIB\STM32F4xx_StdPeriph_Driver\inc -I ..\USER -I ..\HARDWARE\KEY -I ..\HARDWARE\LCD -I ..\HARDWARE\ETHERNET -I ..\HARDWARE\TIMER -I ..\HARDWARE\LED -I ..\HARDWARE\SRAM -I ..\FWLIB\STM32F4x7_ETH_Driver\inc -I ..\MALLOC -I ..\USMART -I ..\LWIP -I ..\LWIP\arch -I ..\LWIP\lwip_header -I ..\LWIP\app\TCP_Client -I ..\LWIP\lwip_app\lwip_comm -I ..\LWIP\lwip-1.4.1\src\include -I ..\LWIP\lwip-1.4.1\src\include\ipv4 -I ..\LWIP\lwip-1.4.1\src\include\netif -I ..\HHDX -I ..\HARDWARE\I2S -I ..\HARDWARE\IIC -I ..\HARDWARE\WM8978 -I ..\AUDIO -I ..\HARDWARE\24CXX -I ..\HARDWARE\CW2015 -I ..\HARDWARE\FSK -I ..\HARDWARE\DTMF-I.\RTE\_Template-IC:\Keil_v5\ARM\CMSIS\Include-IC:\Users\25027\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\3.1.0\Device\Include-D__UVISION_VERSION="529" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\lwip_comm.o --omf_browse ..\obj\lwip_comm.crf --depend ..\obj\lwip_comm.d)
+F (..\LWIP\lwip_app\lwip_comm\lwip_comm.c)(0x68943392)(-c --cpu Cortex-M4.fp.sp -g -O2 --apcs=interwork -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\FWLIB\STM32F4xx_StdPeriph_Driver\inc -I ..\USER -I ..\HARDWARE\KEY -I ..\HARDWARE\LCD -I ..\HARDWARE\ETHERNET -I ..\HARDWARE\TIMER -I ..\HARDWARE\LED -I ..\HARDWARE\SRAM -I ..\FWLIB\STM32F4x7_ETH_Driver\inc -I ..\MALLOC -I ..\USMART -I ..\LWIP -I ..\LWIP\arch -I ..\LWIP\lwip_header -I ..\LWIP\app\TCP_Client -I ..\LWIP\lwip_app\lwip_comm -I ..\LWIP\lwip-1.4.1\src\include -I ..\LWIP\lwip-1.4.1\src\include\ipv4 -I ..\LWIP\lwip-1.4.1\src\include\netif -I ..\HHDX -I ..\HARDWARE\I2S -I ..\HARDWARE\IIC -I ..\HARDWARE\WM8978 -I ..\AUDIO -I ..\HARDWARE\24CXX -I ..\HARDWARE\CW2015 -I ..\HARDWARE\FSK -I ..\HARDWARE\DTMF-I.\RTE\_Template-IC:\Keil_v5\ARM\CMSIS\Include-IC:\Users\25027\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\3.1.0\Device\Include-D__UVISION_VERSION="529" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\lwip_comm.o --omf_browse ..\obj\lwip_comm.crf --depend ..\obj\lwip_comm.d)
 I (..\LWIP\lwip_app\lwip_comm\lwip_comm.h)(0x684F9420)
 I (..\HARDWARE\ETHERNET\lan8720.h)(0x6481C786)
 I (..\SYSTEM\sys\sys.h)(0x5531D9CF)
@@ -1206,8 +1206,8 @@ I (..\MALLOC\malloc.h)(0x64449EE6)
 I (..\SYSTEM\delay\delay.h)(0x54656F79)
 I (..\SYSTEM\usart\usart.h)(0x63DB0A3B)
 I (..\HHDX\SipConstant.h)(0x689068AB)
-I (..\HHDX\HhdxMsg.h)(0x684F9420)
-I (..\HARDWARE\24CXX\24cxx.h)(0x68935962)
+I (..\HHDX\HhdxMsg.h)(0x68954568)
+I (..\HARDWARE\24CXX\24cxx.h)(0x689442C5)
 I (..\HARDWARE\IIC\myiic.h)(0x6481C440)
 F (..\LWIP\lwip-1.4.1\src\netif\etharp.c)(0x50CEFB5E)(-c --cpu Cortex-M4.fp.sp -g -O2 --apcs=interwork -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\FWLIB\STM32F4xx_StdPeriph_Driver\inc -I ..\USER -I ..\HARDWARE\KEY -I ..\HARDWARE\LCD -I ..\HARDWARE\ETHERNET -I ..\HARDWARE\TIMER -I ..\HARDWARE\LED -I ..\HARDWARE\SRAM -I ..\FWLIB\STM32F4x7_ETH_Driver\inc -I ..\MALLOC -I ..\USMART -I ..\LWIP -I ..\LWIP\arch -I ..\LWIP\lwip_header -I ..\LWIP\app\TCP_Client -I ..\LWIP\lwip_app\lwip_comm -I ..\LWIP\lwip-1.4.1\src\include -I ..\LWIP\lwip-1.4.1\src\include\ipv4 -I ..\LWIP\lwip-1.4.1\src\include\netif -I ..\HHDX -I ..\HARDWARE\I2S -I ..\HARDWARE\IIC -I ..\HARDWARE\WM8978 -I ..\AUDIO -I ..\HARDWARE\24CXX -I ..\HARDWARE\CW2015 -I ..\HARDWARE\FSK -I ..\HARDWARE\DTMF-I.\RTE\_Template-IC:\Keil_v5\ARM\CMSIS\Include-IC:\Users\25027\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\3.1.0\Device\Include-D__UVISION_VERSION="529" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\etharp.o --omf_browse ..\obj\etharp.crf --depend ..\obj\etharp.d)
 I (..\LWIP\lwip-1.4.1\src\include\lwip/opt.h)(0x63A00C24)
@@ -1753,7 +1753,7 @@ I (..\FWLIB\STM32F4x7_ETH_Driver\inc\stm32f4x7_eth.h)(0x53D86A78)
 I (..\FWLIB\STM32F4x7_ETH_Driver\inc\stm32f4x7_eth_conf.h)(0x54436DF6)
 I (..\LWIP\lwip-1.4.1\src\include\lwip/tcp.h)(0x50CEFB5E)
 I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x5D9AD218)
-I (..\HHDX\HhdxMsg.h)(0x684F9420)
+I (..\HHDX\HhdxMsg.h)(0x68954568)
 I (..\HHDX\sipfunction.h)(0x687865E3)
 I (..\HHDX\SipStructure.h)(0x689068AB)
 I (..\HHDX\SipConstant.h)(0x689068AB)
@@ -1993,8 +1993,8 @@ I (..\HHDX\SipConstant.h)(0x689068AB)
 I (..\HHDX\tel_func.h)(0x684F8F37)
 I (..\HHDX\rtp.h)(0x644B5E5D)
 I (..\AUDIO\Audio.h)(0x64AF5CB4)
-I (..\HHDX\HhdxMsg.h)(0x684F9420)
-I (..\HARDWARE\24CXX\24cxx.h)(0x68935962)
+I (..\HHDX\HhdxMsg.h)(0x68954568)
+I (..\HARDWARE\24CXX\24cxx.h)(0x689442C5)
 I (..\HARDWARE\IIC\myiic.h)(0x6481C440)
 I (..\HARDWARE\CW2015\cw2015.h)(0x6878AF4D)
 I (..\HARDWARE\CW2015\iic.h)(0x6857C84D)
@@ -2104,13 +2104,13 @@ I (..\HARDWARE\TIMER\timer.h)(0x6875F6B2)
 I (..\HHDX\SipFunction.h)(0x687865E3)
 I (..\HHDX\SipStructure.h)(0x689068AB)
 I (..\HHDX\SipConstant.h)(0x689068AB)
-I (..\HARDWARE\24CXX\24cxx.h)(0x68935962)
+I (..\HARDWARE\24CXX\24cxx.h)(0x689442C5)
 I (..\HARDWARE\IIC\myiic.h)(0x6481C440)
 I (..\HHDX\tel_func.h)(0x684F8F37)
 I (..\HARDWARE\WM8978\wm8978.h)(0x64365436)
 I (..\AUDIO\Audio.h)(0x64AF5CB4)
 I (..\HARDWARE\I2S\i2s.h)(0x5710F3E3)
-I (..\HHDX\HhdxMsg.h)(0x684F9420)
+I (..\HHDX\HhdxMsg.h)(0x68954568)
 I (..\HARDWARE\FSK\usart3_FSK.h)(0x6878993F)
 F (..\HHDX\SipMsgAnalysis.c)(0x689339AC)(-c --cpu Cortex-M4.fp.sp -g -O2 --apcs=interwork -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\FWLIB\STM32F4xx_StdPeriph_Driver\inc -I ..\USER -I ..\HARDWARE\KEY -I ..\HARDWARE\LCD -I ..\HARDWARE\ETHERNET -I ..\HARDWARE\TIMER -I ..\HARDWARE\LED -I ..\HARDWARE\SRAM -I ..\FWLIB\STM32F4x7_ETH_Driver\inc -I ..\MALLOC -I ..\USMART -I ..\LWIP -I ..\LWIP\arch -I ..\LWIP\lwip_header -I ..\LWIP\app\TCP_Client -I ..\LWIP\lwip_app\lwip_comm -I ..\LWIP\lwip-1.4.1\src\include -I ..\LWIP\lwip-1.4.1\src\include\ipv4 -I ..\LWIP\lwip-1.4.1\src\include\netif -I ..\HHDX -I ..\HARDWARE\I2S -I ..\HARDWARE\IIC -I ..\HARDWARE\WM8978 -I ..\AUDIO -I ..\HARDWARE\24CXX -I ..\HARDWARE\CW2015 -I ..\HARDWARE\FSK -I ..\HARDWARE\DTMF-I.\RTE\_Template-IC:\Keil_v5\ARM\CMSIS\Include-IC:\Users\25027\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\3.1.0\Device\Include-D__UVISION_VERSION="529" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\sipmsganalysis.o --omf_browse ..\obj\sipmsganalysis.crf --depend ..\obj\sipmsganalysis.d)
 I (..\SYSTEM\sys\sys.h)(0x5531D9CF)
@@ -2159,7 +2159,7 @@ I (C:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x5D9AD21A)
 I (..\HARDWARE\WM8978\wm8978.h)(0x64365436)
 I (..\AUDIO\Audio.h)(0x64AF5CB4)
 I (..\HARDWARE\I2S\i2s.h)(0x5710F3E3)
-I (..\HARDWARE\24CXX\24cxx.h)(0x68935962)
+I (..\HARDWARE\24CXX\24cxx.h)(0x689442C5)
 I (..\HARDWARE\IIC\myiic.h)(0x6481C440)
 F (..\HHDX\StrInt.c)(0x65328013)(-c --cpu Cortex-M4.fp.sp -g -O2 --apcs=interwork -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\FWLIB\STM32F4xx_StdPeriph_Driver\inc -I ..\USER -I ..\HARDWARE\KEY -I ..\HARDWARE\LCD -I ..\HARDWARE\ETHERNET -I ..\HARDWARE\TIMER -I ..\HARDWARE\LED -I ..\HARDWARE\SRAM -I ..\FWLIB\STM32F4x7_ETH_Driver\inc -I ..\MALLOC -I ..\USMART -I ..\LWIP -I ..\LWIP\arch -I ..\LWIP\lwip_header -I ..\LWIP\app\TCP_Client -I ..\LWIP\lwip_app\lwip_comm -I ..\LWIP\lwip-1.4.1\src\include -I ..\LWIP\lwip-1.4.1\src\include\ipv4 -I ..\LWIP\lwip-1.4.1\src\include\netif -I ..\HHDX -I ..\HARDWARE\I2S -I ..\HARDWARE\IIC -I ..\HARDWARE\WM8978 -I ..\AUDIO -I ..\HARDWARE\24CXX -I ..\HARDWARE\CW2015 -I ..\HARDWARE\FSK -I ..\HARDWARE\DTMF-I.\RTE\_Template-IC:\Keil_v5\ARM\CMSIS\Include-IC:\Users\25027\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\3.1.0\Device\Include-D__UVISION_VERSION="529" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\strint.o --omf_browse ..\obj\strint.crf --depend ..\obj\strint.d)
 I (C:\Keil_v5\ARM\ARMCC\include\math.h)(0x5D9AD212)
@@ -2202,7 +2202,7 @@ I (..\FWLIB\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dcmi.h)(0x5710F3E0)
 I (..\FWLIB\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_fsmc.h)(0x5710F3E0)
 I (..\SYSTEM\sys\sys.h)(0x5531D9CF)
 I (..\MALLOC\malloc.h)(0x64449EE6)
-F (..\HHDX\SipMsgBuilding.c)(0x68906C7E)(-c --cpu Cortex-M4.fp.sp -g -O2 --apcs=interwork -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\FWLIB\STM32F4xx_StdPeriph_Driver\inc -I ..\USER -I ..\HARDWARE\KEY -I ..\HARDWARE\LCD -I ..\HARDWARE\ETHERNET -I ..\HARDWARE\TIMER -I ..\HARDWARE\LED -I ..\HARDWARE\SRAM -I ..\FWLIB\STM32F4x7_ETH_Driver\inc -I ..\MALLOC -I ..\USMART -I ..\LWIP -I ..\LWIP\arch -I ..\LWIP\lwip_header -I ..\LWIP\app\TCP_Client -I ..\LWIP\lwip_app\lwip_comm -I ..\LWIP\lwip-1.4.1\src\include -I ..\LWIP\lwip-1.4.1\src\include\ipv4 -I ..\LWIP\lwip-1.4.1\src\include\netif -I ..\HHDX -I ..\HARDWARE\I2S -I ..\HARDWARE\IIC -I ..\HARDWARE\WM8978 -I ..\AUDIO -I ..\HARDWARE\24CXX -I ..\HARDWARE\CW2015 -I ..\HARDWARE\FSK -I ..\HARDWARE\DTMF-I.\RTE\_Template-IC:\Keil_v5\ARM\CMSIS\Include-IC:\Users\25027\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\3.1.0\Device\Include-D__UVISION_VERSION="529" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\sipmsgbuilding.o --omf_browse ..\obj\sipmsgbuilding.crf --depend ..\obj\sipmsgbuilding.d)
+F (..\HHDX\SipMsgBuilding.c)(0x68955E74)(-c --cpu Cortex-M4.fp.sp -g -O2 --apcs=interwork -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\FWLIB\STM32F4xx_StdPeriph_Driver\inc -I ..\USER -I ..\HARDWARE\KEY -I ..\HARDWARE\LCD -I ..\HARDWARE\ETHERNET -I ..\HARDWARE\TIMER -I ..\HARDWARE\LED -I ..\HARDWARE\SRAM -I ..\FWLIB\STM32F4x7_ETH_Driver\inc -I ..\MALLOC -I ..\USMART -I ..\LWIP -I ..\LWIP\arch -I ..\LWIP\lwip_header -I ..\LWIP\app\TCP_Client -I ..\LWIP\lwip_app\lwip_comm -I ..\LWIP\lwip-1.4.1\src\include -I ..\LWIP\lwip-1.4.1\src\include\ipv4 -I ..\LWIP\lwip-1.4.1\src\include\netif -I ..\HHDX -I ..\HARDWARE\I2S -I ..\HARDWARE\IIC -I ..\HARDWARE\WM8978 -I ..\AUDIO -I ..\HARDWARE\24CXX -I ..\HARDWARE\CW2015 -I ..\HARDWARE\FSK -I ..\HARDWARE\DTMF-I.\RTE\_Template-IC:\Keil_v5\ARM\CMSIS\Include-IC:\Users\25027\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\3.1.0\Device\Include-D__UVISION_VERSION="529" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\sipmsgbuilding.o --omf_browse ..\obj\sipmsgbuilding.crf --depend ..\obj\sipmsgbuilding.d)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x5D9AD21A)
 I (..\SYSTEM\usart\usart.h)(0x63DB0A3B)
 I (..\USER\stm32f4xx_conf.h)(0x6532804A)
@@ -2264,8 +2264,8 @@ I (..\LWIP\lwip-1.4.1\src\include\lwip/mem.h)(0x54042706)
 I (..\LWIP\lwip-1.4.1\src\include\ipv4\lwip/icmp.h)(0x50CEFB5E)
 I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x5D9AD218)
 I (..\HARDWARE\TIMER\timer.h)(0x6875F6B2)
-I (..\HHDX\HhdxMsg.h)(0x684F9420)
-I (..\HARDWARE\24CXX\24cxx.h)(0x68935962)
+I (..\HHDX\HhdxMsg.h)(0x68954568)
+I (..\HARDWARE\24CXX\24cxx.h)(0x689442C5)
 I (..\HARDWARE\IIC\myiic.h)(0x6481C440)
 I (..\HHDX\SipFunction.h)(0x687865E3)
 I (..\HHDX\SipStructure.h)(0x689068AB)
@@ -2343,9 +2343,9 @@ I (..\HHDX\tel_func.h)(0x684F8F37)
 I (..\AUDIO\Audio.h)(0x64AF5CB4)
 I (..\HARDWARE\I2S\i2s.h)(0x5710F3E3)
 I (..\HARDWARE\WM8978\wm8978.h)(0x64365436)
-I (..\HHDX\HhdxMsg.h)(0x684F9420)
+I (..\HHDX\HhdxMsg.h)(0x68954568)
 I (..\HHDX\rtp.h)(0x644B5E5D)
-F (..\HHDX\rtp.c)(0x685A4133)(-c --cpu Cortex-M4.fp.sp -g -O2 --apcs=interwork -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\FWLIB\STM32F4xx_StdPeriph_Driver\inc -I ..\USER -I ..\HARDWARE\KEY -I ..\HARDWARE\LCD -I ..\HARDWARE\ETHERNET -I ..\HARDWARE\TIMER -I ..\HARDWARE\LED -I ..\HARDWARE\SRAM -I ..\FWLIB\STM32F4x7_ETH_Driver\inc -I ..\MALLOC -I ..\USMART -I ..\LWIP -I ..\LWIP\arch -I ..\LWIP\lwip_header -I ..\LWIP\app\TCP_Client -I ..\LWIP\lwip_app\lwip_comm -I ..\LWIP\lwip-1.4.1\src\include -I ..\LWIP\lwip-1.4.1\src\include\ipv4 -I ..\LWIP\lwip-1.4.1\src\include\netif -I ..\HHDX -I ..\HARDWARE\I2S -I ..\HARDWARE\IIC -I ..\HARDWARE\WM8978 -I ..\AUDIO -I ..\HARDWARE\24CXX -I ..\HARDWARE\CW2015 -I ..\HARDWARE\FSK -I ..\HARDWARE\DTMF-I.\RTE\_Template-IC:\Keil_v5\ARM\CMSIS\Include-IC:\Users\25027\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\3.1.0\Device\Include-D__UVISION_VERSION="529" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\rtp.o --omf_browse ..\obj\rtp.crf --depend ..\obj\rtp.d)
+F (..\HHDX\rtp.c)(0x68945B0E)(-c --cpu Cortex-M4.fp.sp -g -O2 --apcs=interwork -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\FWLIB\STM32F4xx_StdPeriph_Driver\inc -I ..\USER -I ..\HARDWARE\KEY -I ..\HARDWARE\LCD -I ..\HARDWARE\ETHERNET -I ..\HARDWARE\TIMER -I ..\HARDWARE\LED -I ..\HARDWARE\SRAM -I ..\FWLIB\STM32F4x7_ETH_Driver\inc -I ..\MALLOC -I ..\USMART -I ..\LWIP -I ..\LWIP\arch -I ..\LWIP\lwip_header -I ..\LWIP\app\TCP_Client -I ..\LWIP\lwip_app\lwip_comm -I ..\LWIP\lwip-1.4.1\src\include -I ..\LWIP\lwip-1.4.1\src\include\ipv4 -I ..\LWIP\lwip-1.4.1\src\include\netif -I ..\HHDX -I ..\HARDWARE\I2S -I ..\HARDWARE\IIC -I ..\HARDWARE\WM8978 -I ..\AUDIO -I ..\HARDWARE\24CXX -I ..\HARDWARE\CW2015 -I ..\HARDWARE\FSK -I ..\HARDWARE\DTMF-I.\RTE\_Template-IC:\Keil_v5\ARM\CMSIS\Include-IC:\Users\25027\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\3.1.0\Device\Include-D__UVISION_VERSION="529" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\rtp.o --omf_browse ..\obj\rtp.crf --depend ..\obj\rtp.d)
 I (..\SYSTEM\usart\usart.h)(0x63DB0A3B)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x5D9AD21A)
 I (..\USER\stm32f4xx_conf.h)(0x6532804A)
@@ -2416,7 +2416,7 @@ I (..\AUDIO\Audio.h)(0x64AF5CB4)
 I (..\HARDWARE\I2S\i2s.h)(0x5710F3E3)
 I (..\HARDWARE\CW2015\cw2015.h)(0x6878AF4D)
 I (..\HARDWARE\CW2015\iic.h)(0x6857C84D)
-F (..\HHDX\HhdxMsg.c)(0x684FD4B5)(-c --cpu Cortex-M4.fp.sp -g -O2 --apcs=interwork -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\FWLIB\STM32F4xx_StdPeriph_Driver\inc -I ..\USER -I ..\HARDWARE\KEY -I ..\HARDWARE\LCD -I ..\HARDWARE\ETHERNET -I ..\HARDWARE\TIMER -I ..\HARDWARE\LED -I ..\HARDWARE\SRAM -I ..\FWLIB\STM32F4x7_ETH_Driver\inc -I ..\MALLOC -I ..\USMART -I ..\LWIP -I ..\LWIP\arch -I ..\LWIP\lwip_header -I ..\LWIP\app\TCP_Client -I ..\LWIP\lwip_app\lwip_comm -I ..\LWIP\lwip-1.4.1\src\include -I ..\LWIP\lwip-1.4.1\src\include\ipv4 -I ..\LWIP\lwip-1.4.1\src\include\netif -I ..\HHDX -I ..\HARDWARE\I2S -I ..\HARDWARE\IIC -I ..\HARDWARE\WM8978 -I ..\AUDIO -I ..\HARDWARE\24CXX -I ..\HARDWARE\CW2015 -I ..\HARDWARE\FSK -I ..\HARDWARE\DTMF-I.\RTE\_Template-IC:\Keil_v5\ARM\CMSIS\Include-IC:\Users\25027\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\3.1.0\Device\Include-D__UVISION_VERSION="529" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\hhdxmsg.o --omf_browse ..\obj\hhdxmsg.crf --depend ..\obj\hhdxmsg.d)
+F (..\HHDX\HhdxMsg.c)(0x689545AF)(-c --cpu Cortex-M4.fp.sp -g -O2 --apcs=interwork -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\FWLIB\STM32F4xx_StdPeriph_Driver\inc -I ..\USER -I ..\HARDWARE\KEY -I ..\HARDWARE\LCD -I ..\HARDWARE\ETHERNET -I ..\HARDWARE\TIMER -I ..\HARDWARE\LED -I ..\HARDWARE\SRAM -I ..\FWLIB\STM32F4x7_ETH_Driver\inc -I ..\MALLOC -I ..\USMART -I ..\LWIP -I ..\LWIP\arch -I ..\LWIP\lwip_header -I ..\LWIP\app\TCP_Client -I ..\LWIP\lwip_app\lwip_comm -I ..\LWIP\lwip-1.4.1\src\include -I ..\LWIP\lwip-1.4.1\src\include\ipv4 -I ..\LWIP\lwip-1.4.1\src\include\netif -I ..\HHDX -I ..\HARDWARE\I2S -I ..\HARDWARE\IIC -I ..\HARDWARE\WM8978 -I ..\AUDIO -I ..\HARDWARE\24CXX -I ..\HARDWARE\CW2015 -I ..\HARDWARE\FSK -I ..\HARDWARE\DTMF-I.\RTE\_Template-IC:\Keil_v5\ARM\CMSIS\Include-IC:\Users\25027\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\3.1.0\Device\Include-D__UVISION_VERSION="529" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\hhdxmsg.o --omf_browse ..\obj\hhdxmsg.crf --depend ..\obj\hhdxmsg.d)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x5D9AD21A)
 I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x5D9AD218)
 I (..\HARDWARE\TIMER\timer.h)(0x6875F6B2)
@@ -2456,11 +2456,11 @@ I (..\FWLIB\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dac.h)(0x5710F3E0)
 I (..\FWLIB\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dcmi.h)(0x5710F3E0)
 I (..\FWLIB\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_fsmc.h)(0x5710F3E0)
 I (..\SYSTEM\usart\usart.h)(0x63DB0A3B)
-I (..\HHDX\HhdxMsg.h)(0x684F9420)
+I (..\HHDX\HhdxMsg.h)(0x68954568)
 I (..\HHDX\SipConstant.h)(0x689068AB)
 I (..\HHDX\SipFunction.h)(0x687865E3)
 I (..\HHDX\SipStructure.h)(0x689068AB)
-I (..\HARDWARE\24CXX\24cxx.h)(0x68935962)
+I (..\HARDWARE\24CXX\24cxx.h)(0x689442C5)
 I (..\HARDWARE\IIC\myiic.h)(0x6481C440)
 I (..\MALLOC\malloc.h)(0x64449EE6)
 I (..\SYSTEM\delay\delay.h)(0x54656F79)
@@ -2575,16 +2575,16 @@ I (..\FWLIB\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_fsmc.h)(0x5710F3E0)
 I (..\SYSTEM\sys\sys.h)(0x5531D9CF)
 I (..\HARDWARE\FSK\usart3_FSK.h)(0x6878993F)
 I (..\HHDX\tel_func.h)(0x684F8F37)
-I (..\HHDX\HhdxMsg.h)(0x684F9420)
+I (..\HHDX\HhdxMsg.h)(0x68954568)
 I (..\HHDX\SipFunction.h)(0x687865E3)
 I (..\HHDX\SipStructure.h)(0x689068AB)
 I (..\HHDX\SipConstant.h)(0x689068AB)
 I (..\HARDWARE\CW2015\cw2015.h)(0x6878AF4D)
 I (..\HARDWARE\CW2015\iic.h)(0x6857C84D)
 I (..\HARDWARE\TIMER\timer.h)(0x6875F6B2)
-F (..\USMART\usmart.c)(0x68936799)(-c --cpu Cortex-M4.fp.sp -g -O2 --apcs=interwork -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\FWLIB\STM32F4xx_StdPeriph_Driver\inc -I ..\USER -I ..\HARDWARE\KEY -I ..\HARDWARE\LCD -I ..\HARDWARE\ETHERNET -I ..\HARDWARE\TIMER -I ..\HARDWARE\LED -I ..\HARDWARE\SRAM -I ..\FWLIB\STM32F4x7_ETH_Driver\inc -I ..\MALLOC -I ..\USMART -I ..\LWIP -I ..\LWIP\arch -I ..\LWIP\lwip_header -I ..\LWIP\app\TCP_Client -I ..\LWIP\lwip_app\lwip_comm -I ..\LWIP\lwip-1.4.1\src\include -I ..\LWIP\lwip-1.4.1\src\include\ipv4 -I ..\LWIP\lwip-1.4.1\src\include\netif -I ..\HHDX -I ..\HARDWARE\I2S -I ..\HARDWARE\IIC -I ..\HARDWARE\WM8978 -I ..\AUDIO -I ..\HARDWARE\24CXX -I ..\HARDWARE\CW2015 -I ..\HARDWARE\FSK -I ..\HARDWARE\DTMF-I.\RTE\_Template-IC:\Keil_v5\ARM\CMSIS\Include-IC:\Users\25027\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\3.1.0\Device\Include-D__UVISION_VERSION="529" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\usmart.o --omf_browse ..\obj\usmart.crf --depend ..\obj\usmart.d)
+F (..\USMART\usmart.c)(0x68954D37)(-c --cpu Cortex-M4.fp.sp -g -O2 --apcs=interwork -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\FWLIB\STM32F4xx_StdPeriph_Driver\inc -I ..\USER -I ..\HARDWARE\KEY -I ..\HARDWARE\LCD -I ..\HARDWARE\ETHERNET -I ..\HARDWARE\TIMER -I ..\HARDWARE\LED -I ..\HARDWARE\SRAM -I ..\FWLIB\STM32F4x7_ETH_Driver\inc -I ..\MALLOC -I ..\USMART -I ..\LWIP -I ..\LWIP\arch -I ..\LWIP\lwip_header -I ..\LWIP\app\TCP_Client -I ..\LWIP\lwip_app\lwip_comm -I ..\LWIP\lwip-1.4.1\src\include -I ..\LWIP\lwip-1.4.1\src\include\ipv4 -I ..\LWIP\lwip-1.4.1\src\include\netif -I ..\HHDX -I ..\HARDWARE\I2S -I ..\HARDWARE\IIC -I ..\HARDWARE\WM8978 -I ..\AUDIO -I ..\HARDWARE\24CXX -I ..\HARDWARE\CW2015 -I ..\HARDWARE\FSK -I ..\HARDWARE\DTMF-I.\RTE\_Template-IC:\Keil_v5\ARM\CMSIS\Include-IC:\Users\25027\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\3.1.0\Device\Include-D__UVISION_VERSION="529" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\usmart.o --omf_browse ..\obj\usmart.crf --depend ..\obj\usmart.d)
 I (..\USMART\usmart.h)(0x689333C5)
-I (..\USMART\usmart_str.h)(0x53673F41)
+I (..\USMART\usmart_str.h)(0x689368C4)
 I (..\USER\stm32f4xx.h)(0x5447C0B7)
 I (..\CORE\core_cm4.h)(0x527B7158)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x5D9AD218)
@@ -2623,12 +2623,14 @@ I (..\SYSTEM\usart\usart.h)(0x63DB0A3B)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x5D9AD21A)
 I (..\SYSTEM\sys\sys.h)(0x5531D9CF)
 I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x5D9AD218)
-I (..\HARDWARE\24CXX\24cxx.h)(0x68935962)
+I (..\HARDWARE\24CXX\24cxx.h)(0x689442C5)
 I (..\HARDWARE\IIC\myiic.h)(0x6481C440)
-I (..\HHDX\HhdxMsg.h)(0x684F9420)
+I (..\HHDX\HhdxMsg.h)(0x68954568)
+I (..\HARDWARE\CW2015\cw2015.h)(0x6878AF4D)
+I (..\HARDWARE\CW2015\iic.h)(0x6857C84D)
 F (..\USMART\usmart_config.c)(0x5445C68A)(-c --cpu Cortex-M4.fp.sp -g -O2 --apcs=interwork -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\FWLIB\STM32F4xx_StdPeriph_Driver\inc -I ..\USER -I ..\HARDWARE\KEY -I ..\HARDWARE\LCD -I ..\HARDWARE\ETHERNET -I ..\HARDWARE\TIMER -I ..\HARDWARE\LED -I ..\HARDWARE\SRAM -I ..\FWLIB\STM32F4x7_ETH_Driver\inc -I ..\MALLOC -I ..\USMART -I ..\LWIP -I ..\LWIP\arch -I ..\LWIP\lwip_header -I ..\LWIP\app\TCP_Client -I ..\LWIP\lwip_app\lwip_comm -I ..\LWIP\lwip-1.4.1\src\include -I ..\LWIP\lwip-1.4.1\src\include\ipv4 -I ..\LWIP\lwip-1.4.1\src\include\netif -I ..\HHDX -I ..\HARDWARE\I2S -I ..\HARDWARE\IIC -I ..\HARDWARE\WM8978 -I ..\AUDIO -I ..\HARDWARE\24CXX -I ..\HARDWARE\CW2015 -I ..\HARDWARE\FSK -I ..\HARDWARE\DTMF-I.\RTE\_Template-IC:\Keil_v5\ARM\CMSIS\Include-IC:\Users\25027\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\3.1.0\Device\Include-D__UVISION_VERSION="529" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\usmart_config.o --omf_browse ..\obj\usmart_config.crf --depend ..\obj\usmart_config.d)
 I (..\USMART\usmart.h)(0x689333C5)
-I (..\USMART\usmart_str.h)(0x53673F41)
+I (..\USMART\usmart_str.h)(0x689368C4)
 I (..\USER\stm32f4xx.h)(0x5447C0B7)
 I (..\CORE\core_cm4.h)(0x527B7158)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x5D9AD218)
@@ -2669,8 +2671,8 @@ I (..\SYSTEM\delay\delay.h)(0x54656F79)
 I (..\SYSTEM\sys\sys.h)(0x5531D9CF)
 I (..\SYSTEM\usart\usart.h)(0x63DB0A3B)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x5D9AD21A)
-F (..\USMART\usmart_str.c)(0x68936720)(-c --cpu Cortex-M4.fp.sp -g -O2 --apcs=interwork -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\FWLIB\STM32F4xx_StdPeriph_Driver\inc -I ..\USER -I ..\HARDWARE\KEY -I ..\HARDWARE\LCD -I ..\HARDWARE\ETHERNET -I ..\HARDWARE\TIMER -I ..\HARDWARE\LED -I ..\HARDWARE\SRAM -I ..\FWLIB\STM32F4x7_ETH_Driver\inc -I ..\MALLOC -I ..\USMART -I ..\LWIP -I ..\LWIP\arch -I ..\LWIP\lwip_header -I ..\LWIP\app\TCP_Client -I ..\LWIP\lwip_app\lwip_comm -I ..\LWIP\lwip-1.4.1\src\include -I ..\LWIP\lwip-1.4.1\src\include\ipv4 -I ..\LWIP\lwip-1.4.1\src\include\netif -I ..\HHDX -I ..\HARDWARE\I2S -I ..\HARDWARE\IIC -I ..\HARDWARE\WM8978 -I ..\AUDIO -I ..\HARDWARE\24CXX -I ..\HARDWARE\CW2015 -I ..\HARDWARE\FSK -I ..\HARDWARE\DTMF-I.\RTE\_Template-IC:\Keil_v5\ARM\CMSIS\Include-IC:\Users\25027\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\3.1.0\Device\Include-D__UVISION_VERSION="529" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\usmart_str.o --omf_browse ..\obj\usmart_str.crf --depend ..\obj\usmart_str.d)
-I (..\USMART\usmart_str.h)(0x53673F41)
+F (..\USMART\usmart_str.c)(0x68944664)(-c --cpu Cortex-M4.fp.sp -g -O2 --apcs=interwork -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\FWLIB\STM32F4xx_StdPeriph_Driver\inc -I ..\USER -I ..\HARDWARE\KEY -I ..\HARDWARE\LCD -I ..\HARDWARE\ETHERNET -I ..\HARDWARE\TIMER -I ..\HARDWARE\LED -I ..\HARDWARE\SRAM -I ..\FWLIB\STM32F4x7_ETH_Driver\inc -I ..\MALLOC -I ..\USMART -I ..\LWIP -I ..\LWIP\arch -I ..\LWIP\lwip_header -I ..\LWIP\app\TCP_Client -I ..\LWIP\lwip_app\lwip_comm -I ..\LWIP\lwip-1.4.1\src\include -I ..\LWIP\lwip-1.4.1\src\include\ipv4 -I ..\LWIP\lwip-1.4.1\src\include\netif -I ..\HHDX -I ..\HARDWARE\I2S -I ..\HARDWARE\IIC -I ..\HARDWARE\WM8978 -I ..\AUDIO -I ..\HARDWARE\24CXX -I ..\HARDWARE\CW2015 -I ..\HARDWARE\FSK -I ..\HARDWARE\DTMF-I.\RTE\_Template-IC:\Keil_v5\ARM\CMSIS\Include-IC:\Users\25027\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\3.1.0\Device\Include-D__UVISION_VERSION="529" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\usmart_str.o --omf_browse ..\obj\usmart_str.crf --depend ..\obj\usmart_str.d)
+I (..\USMART\usmart_str.h)(0x689368C4)
 I (..\USER\stm32f4xx.h)(0x5447C0B7)
 I (..\CORE\core_cm4.h)(0x527B7158)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x5D9AD218)

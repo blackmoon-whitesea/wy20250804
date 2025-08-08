@@ -28,38 +28,35 @@ Project File Date:  08/06/2025
 *** Using Compiler 'V5.06 update 6 (build 750)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
 Build target 'Template'
 compiling usmart.c...
-..\USMART\usmart.c(235): warning:  #223-D: function "usmart_get_ipparm" declared implicitly
-  			res=usmart_get_ipparm(str,sfname,&i);
-..\USMART\usmart.c(242): warning:  #167-D: argument of type "u8 *" is incompatible with parameter of type "const char *"
+..\USMART\usmart.c(261): warning:  #167-D: argument of type "u8 *" is incompatible with parameter of type "const char *"
   					p=strchr(sfname,'.');
-..\USMART\usmart.c(247): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
-  						usmart_str2num(p,&res);
-..\USMART\usmart.c(251): warning:  #167-D: argument of type "u8 *" is incompatible with parameter of type "char *restrict"
+..\USMART\usmart.c(276): warning:  #167-D: argument of type "u8 *" is incompatible with parameter of type "char *restrict"
   					strcpy(sfname,p);
-..\USMART\usmart.c(264): warning:  #167-D: argument of type "u8 *" is incompatible with parameter of type "const char *"
+..\USMART\usmart.c(290): warning:  #167-D: argument of type "u8 *" is incompatible with parameter of type "const char *"
   					p=strchr(sfname,'.');
-..\USMART\usmart.c(269): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
-  						usmart_str2num(p,&res);
-..\USMART\usmart.c(273): warning:  #167-D: argument of type "u8 *" is incompatible with parameter of type "char *restrict"
+..\USMART\usmart.c(305): warning:  #167-D: argument of type "u8 *" is incompatible with parameter of type "char *restrict"
   					strcpy(sfname,p);
-..\USMART\usmart.c(284): warning:  #167-D: argument of type "u8 *" is incompatible with parameter of type "const char *"
+..\USMART\usmart.c(317): warning:  #167-D: argument of type "u8 *" is incompatible with parameter of type "const char *"
   					p=strchr(sfname,'.');
-..\USMART\usmart.c(289): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
-  						usmart_str2num(p,&res);
-..\USMART\usmart.c(293): warning:  #167-D: argument of type "u8 *" is incompatible with parameter of type "char *restrict"
+..\USMART\usmart.c(332): warning:  #167-D: argument of type "u8 *" is incompatible with parameter of type "char *restrict"
   					strcpy(sfname,p);
-..\USMART\usmart.c(328): warning:  #167-D: argument of type "u8 *" is incompatible with parameter of type "const char *"
+..\USMART\usmart.c(367): warning:  #167-D: argument of type "u8 *" is incompatible with parameter of type "const char *"
   					p=strchr(sfname,'.');
-..\USMART\usmart.c(333): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
-  						usmart_str2num(p,&res);
-..\USMART\usmart.c(338): warning:  #167-D: argument of type "u8 *" is incompatible with parameter of type "char *restrict"
+..\USMART\usmart.c(383): warning:  #167-D: argument of type "u8 *" is incompatible with parameter of type "char *restrict"
   					strcpy(sfname,p);
-..\USMART\usmart.c: 13 warnings, 0 errors
+..\USMART\usmart.c(416): warning:  #167-D: argument of type "u8 *" is incompatible with parameter of type "const char *"
+  				if(strlen(sfname)>16) return USMART_PARMERR; //电话号码长度不能超过16�?
+..\USMART\usmart.c(417): warning:  #167-D: argument of type "u8 *" is incompatible with parameter of type "char *restrict"
+  				strcpy(gpsEeprom->own_num,sfname);
+..\USMART\usmart.c(417): warning:  #167-D: argument of type "u8 *" is incompatible with parameter of type "const char *restrict"
+  				strcpy(gpsEeprom->own_num,sfname);
+..\USMART\usmart.c: 11 warnings, 0 errors
+compiling SipMsgBuilding.c...
 linking...
-Program Size: Code=75290 RO-data=2246 RW-data=3468 ZI-data=375036  
+Program Size: Code=76918 RO-data=2538 RW-data=3488 ZI-data=375040  
 FromELF: creating hex file...
 After Build - User command #1: C:\Keil_v5\ARM\ARMCC\bin\fromelf.exe --bin -o ..\OBJ\phone.bin ..\OBJ\Template.axf
-"..\OBJ\Template.axf" - 0 Error(s), 13 Warning(s).
+"..\OBJ\Template.axf" - 0 Error(s), 11 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -72,7 +69,7 @@ Package Vendor: Keil
   .\RTE\_Template
 
 <h2>Collection of Component Files used:</h2>
-Build Time Elapsed:  00:00:04
+Build Time Elapsed:  00:00:07
 </pre>
 </body>
 </html>
