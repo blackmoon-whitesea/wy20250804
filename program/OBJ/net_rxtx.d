@@ -75,3 +75,4 @@
 ..\obj\net_rxtx.o: ..\HARDWARE\IIC\myiic.h
 ..\obj\net_rxtx.o: ..\HARDWARE\CW2015\cw2015.h
 ..\obj\net_rxtx.o: ..\HARDWARE\CW2015\iic.h
+..\obj\net_rxtx.o: ..\HHDX\RecMsgBuilding.h

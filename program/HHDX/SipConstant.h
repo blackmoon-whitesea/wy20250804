@@ -15,8 +15,8 @@
 
 #define HOST_IP0	192
 #define HOST_IP1	168
-#define HOST_IP2	1	
-#define HOST_IP3	100
+#define HOST_IP2	0	
+#define HOST_IP3	30
 
 //------ Gateway IP: 192.168.0.1
 #define GW_IP		0xC0A80001
@@ -31,8 +31,8 @@
 
 #define SV_IP0	192
 #define SV_IP1	168
-#define SV_IP2	1
-#define SV_IP3	20
+#define SV_IP2	0
+#define SV_IP3	10
 
 #define RTP_IP0	192
 #define RTP_IP1	168
@@ -44,28 +44,28 @@
 #define SIP_PORT 	5060
 #define SIP_EXPIRES	1200
 
-//ÖØ´«³£Á¿
-// Ìí¼ÓÏûÏ¢ÀàÐÍ¶¨Òå
-#define MSG_TYPE_START      0x01
-#define MSG_TYPE_OFFHOOK    0x02
-#define MSG_TYPE_STOP       0x03
+// //ï¿½Ø´ï¿½ï¿½ï¿½ï¿½ï¿½
+// // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½Í¶ï¿½ï¿½ï¿½
+// #define MSG_TYPE_START      0x01
+// #define MSG_TYPE_OFFHOOK    0x02
+// #define MSG_TYPE_STOP       0x03
 
-//¶¯Ì¬¶Ë¿ÚÐ­ÉÌ³£Á¿
-#define PORT_REQUEST_TIMEOUT    3000    // ¶Ë¿ÚÇëÇó³¬Ê±Ê±¼ä (3Ãë)
-#define PORT_REQUEST_MAX_RETRY  3       // ¶Ë¿ÚÇëÇó×î´óÖØÊÔ´ÎÊý
-#define FILE_BLOCK_SIZE         1024    // ÎÄ¼þ·Ö¿é´óÐ¡ (1KB)
-#define FILE_TRANSFER_TIMEOUT   5000    // ÎÄ¼þ´«Êä³¬Ê±Ê±¼ä (5Ãë)
+// //ï¿½ï¿½Ì¬ï¿½Ë¿ï¿½Ð­ï¿½Ì³ï¿½ï¿½ï¿½
+// #define PORT_REQUEST_TIMEOUT    3000    // ï¿½Ë¿ï¿½ï¿½ï¿½ï¿½ï¿½Ê±Ê±ï¿½ï¿½ (3ï¿½ï¿½)
+// #define PORT_REQUEST_MAX_RETRY  3       // ï¿½Ë¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½ï¿½
+// #define FILE_BLOCK_SIZE         1024    // ï¿½Ä¼ï¿½ï¿½Ö¿ï¿½ï¿½Ð¡ (1KB)
+// #define FILE_TRANSFER_TIMEOUT   5000    // ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ä³¬Ê±Ê±ï¿½ï¿½ (5ï¿½ï¿½)
 
-// ¶¯Ì¬¶Ë¿ÚÐ­ÉÌÏûÏ¢ÀàÐÍ
-#define MSG_TYPE_PORT_REQUEST   0x10    // ¶Ë¿ÚÇëÇó
-#define MSG_TYPE_PORT_RESPONSE  0x11    // ¶Ë¿ÚÏìÓ¦
-#define MSG_TYPE_PORT_VERIFY    0x12    // ¶Ë¿ÚÑéÖ¤
-#define MSG_TYPE_FILE_START     0x20    // ÎÄ¼þ´«Êä¿ªÊ¼
-#define MSG_TYPE_FILE_DATA      0x21    // ÎÄ¼þÊý¾Ý¿é
-#define MSG_TYPE_FILE_END       0x22    // ÎÄ¼þ´«Êä½áÊø
-#define MSG_TYPE_FILE_ACK       0x23    // ÎÄ¼þ´«ÊäÈ·ÈÏ
+// // ï¿½ï¿½Ì¬ï¿½Ë¿ï¿½Ð­ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½
+// #define MSG_TYPE_PORT_REQUEST   0x10    // ï¿½Ë¿ï¿½ï¿½ï¿½ï¿½ï¿½
+// #define MSG_TYPE_PORT_RESPONSE  0x11    // ï¿½Ë¿ï¿½ï¿½ï¿½Ó¦
+// #define MSG_TYPE_PORT_VERIFY    0x12    // ï¿½Ë¿ï¿½ï¿½ï¿½Ö¤
+// #define MSG_TYPE_FILE_START     0x20    // ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ä¿ªÊ¼
+// #define MSG_TYPE_FILE_DATA      0x21    // ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½Ý¿ï¿½
+// #define MSG_TYPE_FILE_END       0x22    // ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+// #define MSG_TYPE_FILE_ACK       0x23    // ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½È·ï¿½ï¿½
 
-//SIP ³£ÓÃ¹Ø¼ü×Ö
+//SIP ï¿½ï¿½ï¿½Ã¹Ø¼ï¿½ï¿½ï¿½
 //-------- SIP mechanism define
 //Normal calling
 #define TX_INVITE						0x01	
@@ -100,13 +100,13 @@
 	
 
 //IP phone hook-off/on tramsmit SIP
-#define FLASH_TX_SIP				0xE0	//°´Flash¼ü·¢¡®pc¡¯
-#define DIAL_NUM_TX_SIP			0xE1	//×¨ÓÃ·¢µ¥¸öºÅÂë
-#define HOOKOFF_TX_SIP			0xE2	//²¦¡®#¡¯ºÅ»ò²¦ºÅ6sÊ±¼äµ½/ÖØ²¦/×¨ÓÃ·¢¡®tj¡¯
+#define FLASH_TX_SIP				0xE0	//ï¿½ï¿½Flashï¿½ï¿½ï¿½ï¿½ï¿½ï¿½pcï¿½ï¿½
+#define DIAL_NUM_TX_SIP			0xE1	//×¨ï¿½Ã·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+#define HOOKOFF_TX_SIP			0xE2	//ï¿½ï¿½ï¿½ï¿½#ï¿½ï¿½ï¿½Å»ò²¦ºï¿½6sÊ±ï¿½äµ½/ï¿½Ø²ï¿½/×¨ï¿½Ã·ï¿½ï¿½ï¿½tjï¿½ï¿½
 #define HOOKON_TX_SIP				0xE3
 #define HOTLINE_TX_SIP			0xE4
 	
-//Ö÷½ÐÕª»ú	
+//ï¿½ï¿½ï¿½ï¿½Õªï¿½ï¿½	
 #define PHONE_HKOFF_HFON		0xFE	
 
 
@@ -123,7 +123,7 @@
 	
 	
 
-//ÇëÇó·½·¨
+//ï¿½ï¿½ï¿½ó·½·ï¿½
 #define INVITE         11
 #define ACK            12
 #define BYE            13            
@@ -131,10 +131,10 @@
 #define CANCEL         15
 #define REGISTER       16
 
-//SIP°æ±¾
+//SIPï¿½æ±¾
 #define SIPVERSION     17
 
-//SIP ³£¹æÊ×²¿
+//SIP ï¿½ï¿½ï¿½ï¿½ï¿½×²ï¿½
 #define ACCEPT           51
 #define ACCEPT_ENCODING  52
 #define ACCEPT_Language  53
@@ -154,7 +154,7 @@
 #define VIA              67
 #define MIME_VERSION     68
 
-//100~699 Îª×´Ì¬Âë
+//100~699 Îª×´Ì¬ï¿½ï¿½
 #define TRYING                  100
 #define RINGING                 180
 #define CALL_IS_BEING_FORWARDED 181
@@ -206,7 +206,7 @@
 #define DOES_NOT_EXIST_ANYWHERE    604
 #define NOT_ACCEPTABLE_GLOBAL      606           
 
-//SIP ÇëÇóÊ×²¿
+//SIP ï¿½ï¿½ï¿½ï¿½ï¿½×²ï¿½
 #define HIDE                700
 #define IN_REPLY_TO         701
 #define MAX_FORWARDS        702
@@ -217,7 +217,7 @@
 #define RESPONSE_KEY        707
 #define SUBJECT             708
 
-//SIP »ØÓ¦Ê×²¿
+//SIP ï¿½ï¿½Ó¦ï¿½×²ï¿½
 #define PROXY_AUTHENTICATE 750
 #define RETRY_AFTER        751
 #define SERVER             752
@@ -225,7 +225,7 @@
 #define WARNING            754
 #define WWW_AUTHENTICATE   755
 
-//SIP ÊµÌåÊ×²¿
+//SIP Êµï¿½ï¿½ï¿½×²ï¿½
 #define ALLOW                 800
 #define CONTENT_DISPOSITION   801
 #define CONTENT_ENCODING      802

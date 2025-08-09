@@ -5,20 +5,21 @@
 #include "SipFunction.h"
 #include "cw2015.h"
 #include "timer.h"
+#include "RecMsgBuilding.h"
 
-// È«¾Ö±äÁ¿
-#define  CID_MIN_LEN		10		//04 LEN ÔÂÈÕÊ±·Ö ºÅÂë
+// È«ï¿½Ö±ï¿½ï¿½ï¿½
+#define  CID_MIN_LEN		10		//04 LEN ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 struct stCidFlag gsCidFlag;
 u8 gRingCount = 0;
 u8 gCallerIDBuffer[CID_LEN];
-u16 gCidIndex = 0;			//±ØÐëÊÇu8ÀàÐÍ 0~255
+u16 gCidIndex = 0;			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½u8ï¿½ï¿½ï¿½ï¿½ 0~255
 u8 gCidReady = 0;
 u8 gFskCidBuf[17];
 u8 gFskOwnBuf[17];
 u8 gRingingLow_flag =0;
 u8 gRingingHi_flag =0;
 
-// USART3³õÊ¼»¯ PB11
+// USART3ï¿½ï¿½Ê¼ï¿½ï¿½ PB11
 void USART3_Init(u32 bound) {
 	GPIO_InitTypeDef GPIO_InitStruct;	 
 	USART_InitTypeDef USART_InitStruct;
@@ -28,7 +29,7 @@ void USART3_Init(u32 bound) {
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOE, ENABLE);
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART3, ENABLE);
 
-    // PB11×÷ÎªUSART3_RX
+    // PB11ï¿½ï¿½ÎªUSART3_RX
     GPIO_PinAFConfig(GPIOB, GPIO_PinSource11, GPIO_AF_USART3);
    
     GPIO_InitStruct.GPIO_Pin = GPIO_Pin_11;
@@ -50,12 +51,12 @@ void USART3_Init(u32 bound) {
 		USART_ClearFlag(USART3, USART_FLAG_TC);
 
     USART_ITConfig(USART3, USART_IT_RXNE, ENABLE);
-    //Usart3 NVIC ÅäÖÃ
-		NVIC_InitStructure.NVIC_IRQChannel = USART3_IRQn;//´®¿Ú3ÖÐ¶ÏÍ¨µÀ
-		NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority=2;//ÇÀÕ¼ÓÅÏÈ¼¶3
-		NVIC_InitStructure.NVIC_IRQChannelSubPriority =2;		//×ÓÓÅÏÈ¼¶3
-		NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;			//IRQÍ¨µÀÊ¹ÄÜ
-		NVIC_Init(&NVIC_InitStructure);	//¸ù¾ÝÖ¸¶¨µÄ²ÎÊý³õÊ¼»¯VIC¼Ä´æÆ÷¡¢
+    //Usart3 NVIC ï¿½ï¿½ï¿½ï¿½
+		NVIC_InitStructure.NVIC_IRQChannel = USART3_IRQn;//ï¿½ï¿½ï¿½ï¿½3ï¿½Ð¶ï¿½Í¨ï¿½ï¿½
+		NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority=2;//ï¿½ï¿½Õ¼ï¿½ï¿½ï¿½È¼ï¿½3
+		NVIC_InitStructure.NVIC_IRQChannelSubPriority =2;		//ï¿½ï¿½ï¿½ï¿½ï¿½È¼ï¿½3
+		NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;			//IRQÍ¨ï¿½ï¿½Ê¹ï¿½ï¿½
+		NVIC_Init(&NVIC_InitStructure);	//ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½Ä²ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½VICï¿½Ä´ï¿½ï¿½ï¿½ï¿½ï¿½
 
 	
 //	GPIO_Init(GPIOE,&GPIO_InitStructure);
@@ -63,21 +64,21 @@ void USART3_Init(u32 bound) {
 //    NVIC_EnableIRQ(USART3_IRQn);
 //    USART_Cmd(USART3, ENABLE);
 		GPIO_InitStruct.GPIO_Pin= GPIO_Pin_7;
-		GPIO_InitStruct.GPIO_Mode=GPIO_Mode_IN;  //ÊäÈë
-		GPIO_InitStruct.GPIO_PuPd=GPIO_PuPd_UP;  //ÉÏÀ­ÊäÈë
-		GPIO_InitStruct.GPIO_Speed=GPIO_Speed_100MHz; //¸ßËÙGPIO
+		GPIO_InitStruct.GPIO_Mode=GPIO_Mode_IN;  //ï¿½ï¿½ï¿½ï¿½
+		GPIO_InitStruct.GPIO_PuPd=GPIO_PuPd_UP;  //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		GPIO_InitStruct.GPIO_Speed=GPIO_Speed_100MHz; //ï¿½ï¿½ï¿½ï¿½GPIO
 		GPIO_Init(GPIOE,&GPIO_InitStruct);
 }
 
-void USART3_IRQHandler(void)                	//´®¿Ú1ÖÐ¶Ï·þÎñ³ÌÐò
+void USART3_IRQHandler(void)                	//ï¿½ï¿½ï¿½ï¿½1ï¿½Ð¶Ï·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 {
 	u8 data;
 	
-	if(USART_GetITStatus(USART3, USART_IT_RXNE) != RESET)  //½ÓÊÕÖÐ¶Ï(½ÓÊÕµ½µÄÊý¾Ý±ØÐëÊÇ0x0d 0x0a½áÎ²)
+	if(USART_GetITStatus(USART3, USART_IT_RXNE) != RESET)  //ï¿½ï¿½ï¿½ï¿½ï¿½Ð¶ï¿½(ï¿½ï¿½ï¿½Õµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý±ï¿½ï¿½ï¿½ï¿½ï¿½0x0d 0x0aï¿½ï¿½Î²)
 	{
         data = USART_ReceiveData(USART3);
         
-        // ½öÔÚµÚÒ»/¶þ´ÎÕñÁå¼ä½ÓÊÕÊý¾Ý
+        // ï¿½ï¿½ï¿½Úµï¿½Ò»/ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         if((gRingCount == 1) && gsBatFlag.ringing) {
             if(gCidIndex < CID_LEN) {
                 gCallerIDBuffer[gCidIndex++] = data;
@@ -92,25 +93,25 @@ void USART3_IRQHandler(void)                	//´®¿Ú1ÖÐ¶Ï·þÎñ³ÌÐò
 
 	
 	
-/************************************ µ¥Êý¾Ý **************************************
-1£®Í¬²½Òýµ¼×Ö·û: 55H 55H AAH AAH 55H 55H 55H,Îª150¸ö0/1Ïà¼äµÄ²¨ÐÎ
-2£®Êý¾ÝÏûÏ¢¸ñÊ½±êÊ¶·û: 80H±íÊ¾¸´ºÏÊý¾ÝÏûÏ¢¸ñÊ½ 04H±íÊ¾µ¥Êý¾ÝÏûÏ¢¸ñÊ½ 
-3£®×ÜÊý¾Ý³¤¶È: 16H ´ÓÆäºóµÄµÚÒ»¸ö×Ö·ûµ½BCC×Ö·ûÖ®Ç°£¨²»°üÀ¨BCC£©µÄËùÓÐ×Ö·ûµÄ×Ü³¤¶È¡£
-4£®Ê±¼ä´®£º30H 33H 31H 37H 31H 36H 35H 36H 30H--36HÎª03171656µÄÊ±¼ä´®£¬±íÊ¾3ÔÂ17ÈÕ16Ê±56·Ö 
-5£®À´µçºÅÂë£º32H 31H 35H 36H 34H 33H 30H 31H 34H 34H 32H--34HÎªµç»°ºÅÂë2156430144 	
-6£®BCCÐ£Ñé×Ö£ºBAH ÎªËùÓÐ×Ö·ûµÄ£¨ËùÓÐ´øÏÂ»®ÏßµÄ£©°´256µÄÄ£ÇóºÍÈ¡²¹	
+/************************************ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ **************************************
+1ï¿½ï¿½Í¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½: 55H 55H AAH AAH 55H 55H 55H,Îª150ï¿½ï¿½0/1ï¿½ï¿½ï¿½Ä²ï¿½ï¿½ï¿½
+2ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½Ê½ï¿½ï¿½Ê¶ï¿½ï¿½: 80Hï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½Ê½ 04Hï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½Ê½ 
+3ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý³ï¿½ï¿½ï¿½: 16H ï¿½ï¿½ï¿½ï¿½ï¿½Äµï¿½Ò»ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½BCCï¿½Ö·ï¿½Ö®Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½BCCï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½Ü³ï¿½ï¿½È¡ï¿½
+4ï¿½ï¿½Ê±ï¿½ä´®ï¿½ï¿½30H 33H 31H 37H 31H 36H 35H 36H 30H--36HÎª03171656ï¿½ï¿½Ê±ï¿½ä´®ï¿½ï¿½ï¿½ï¿½Ê¾3ï¿½ï¿½17ï¿½ï¿½16Ê±56ï¿½ï¿½ 
+5ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ë£º32H 31H 35H 36H 34H 33H 30H 31H 34H 34H 32H--34HÎªï¿½ç»°ï¿½ï¿½ï¿½ï¿½2156430144 	
+6ï¿½ï¿½BCCÐ£ï¿½ï¿½ï¿½Ö£ï¿½BAH Îªï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½Ä£ï¿½ï¿½ï¿½ï¿½Ð´ï¿½ï¿½Â»ï¿½ï¿½ßµÄ£ï¿½ï¿½ï¿½256ï¿½ï¿½Ä£ï¿½ï¿½ï¿½È¡ï¿½ï¿½	
 */
-/************************************ µ¥Êý¾Ý **************************************
+/************************************ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ **************************************
 55H 55H AAH AAH 55H 55H 55H 80H 16H 01H 08H 30H 33H 31H 37H 31H 36H 35H 36H 02H 0AH 32H 31H 35H 36H 34H 33H 30H 31H 34H 34H BAH 
-Êý¾Ý·ÖÎö: 
-1£®Í¬²½Òýµ¼×Ö·û: 55H 55H AAH AAH 55H 55H 55H,Îª150¸ö0/1Ïà¼äµÄ²¨ÐÎ
-2£®Êý¾ÝÏûÏ¢¸ñÊ½±êÊ¶·û: 80H±íÊ¾¸´ºÏÊý¾ÝÏûÏ¢¸ñÊ½ 04H±íÊ¾µ¥Êý¾ÝÏûÏ¢¸ñÊ½ 
-3£®×ÜÊý¾Ý³¤¶È: 16H ´ÓÆäºóµÄµÚÒ»¸ö×Ö·ûµ½BCC×Ö·ûÖ®Ç°£¨²»°üÀ¨BCC£©µÄËùÓÐ×Ö·ûµÄ×Ü³¤¶È¡£
-4£®µÚÒ»¸öÏûÏ¢: 01H 08H 30H 33H 31H 37H 31H 36H 35H 36H 
-	01H--ÏûÏ¢ÀàÐÍ,ºô½ÐÊ±¼ä 08H--²ÎÊý³¤¶È 30H--36HÎª03171656µÄÊ±¼ä´®£¬±íÊ¾3ÔÂ17ÈÕ16Ê±56·Ö 
-5£®µÚ¶þ¸öÏûÏ¢: 02H 0AH 32H 31H 35H 36H 34H 33H 30H 31H 34H 34H 
-	02H--ÏûÏ¢ÀàÐÍ,Ö÷ÖÐºÅÂë 0AH--²ÎÊý³¤¶È 32H--34HÎªµç»°ºÅÂë2156430144 
-6£®BCCÐ£Ñé×Ö£ºBAH ÎªËùÓÐ×Ö·ûµÄ£¨ËùÓÐ´øÏÂ»®ÏßµÄ£©°´256µÄÄ£ÇóºÍÈ¡²¹ 
+ï¿½ï¿½ï¿½Ý·ï¿½ï¿½ï¿½: 
+1ï¿½ï¿½Í¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½: 55H 55H AAH AAH 55H 55H 55H,Îª150ï¿½ï¿½0/1ï¿½ï¿½ï¿½Ä²ï¿½ï¿½ï¿½
+2ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½Ê½ï¿½ï¿½Ê¶ï¿½ï¿½: 80Hï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½Ê½ 04Hï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½Ê½ 
+3ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý³ï¿½ï¿½ï¿½: 16H ï¿½ï¿½ï¿½ï¿½ï¿½Äµï¿½Ò»ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½BCCï¿½Ö·ï¿½Ö®Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½BCCï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½Ü³ï¿½ï¿½È¡ï¿½
+4ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½Ï¢: 01H 08H 30H 33H 31H 37H 31H 36H 35H 36H 
+	01H--ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ 08H--ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 30H--36HÎª03171656ï¿½ï¿½Ê±ï¿½ä´®ï¿½ï¿½ï¿½ï¿½Ê¾3ï¿½ï¿½17ï¿½ï¿½16Ê±56ï¿½ï¿½ 
+5ï¿½ï¿½ï¿½Ú¶ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢: 02H 0AH 32H 31H 35H 36H 34H 33H 30H 31H 34H 34H 
+	02H--ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½Ðºï¿½ï¿½ï¿½ 0AH--ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 32H--34HÎªï¿½ç»°ï¿½ï¿½ï¿½ï¿½2156430144 
+6ï¿½ï¿½BCCÐ£ï¿½ï¿½ï¿½Ö£ï¿½BAH Îªï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½Ä£ï¿½ï¿½ï¿½ï¿½Ð´ï¿½ï¿½Â»ï¿½ï¿½ßµÄ£ï¿½ï¿½ï¿½256ï¿½ï¿½Ä£ï¿½ï¿½ï¿½È¡ï¿½ï¿½ 
 */
 u8 FSK_parse(void)	
 {
@@ -126,13 +127,13 @@ u8 FSK_parse(void)
 		printf("\r\n");
 		
 		byte55 =0;
-//1£®Í¬²½Òýµ¼×Ö·û:
+//1ï¿½ï¿½Í¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½:
 		for(i =0; i<(CID_LEN-CID_MIN_LEN); i++){
 //			printf("%X \r\n",gCallerIDBuffer[i]);
 			if((gCallerIDBuffer[i] ==0x55) || (gCallerIDBuffer[i] ==0xAA)){
 				byte55++;
 //				printf("byte55=%d\r\n",byte55);
-				if(byte55 >10){	//10¸ö55H»ò0AAH
+				if(byte55 >10){	//10ï¿½ï¿½55Hï¿½ï¿½0AAH
 					break;
 				}
 			}
@@ -145,7 +146,7 @@ u8 FSK_parse(void)
 		if(i >=(CID_LEN-CID_MIN_LEN))
 			return 0;
 		type =0;
-//2£®Êý¾ÝÏûÏ¢¸ñÊ½±êÊ¶·û: 80H±íÊ¾¸´ºÏÊý¾ÝÏûÏ¢¸ñÊ½ 04H±íÊ¾µ¥Êý¾ÝÏûÏ¢¸ñÊ½
+//2ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½Ê½ï¿½ï¿½Ê¶ï¿½ï¿½: 80Hï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½Ê½ 04Hï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½Ê½
 		for(; i<(CID_LEN-CID_MIN_LEN); i++){
 			if(gCallerIDBuffer[i] ==0x04)
 			{
@@ -161,15 +162,15 @@ u8 FSK_parse(void)
 		//printf("type_i=%d\r\n",i);
 		if(i >=(CID_LEN-CID_MIN_LEN))
 			return 0;
-//--------------- µ¥Êý¾Ý --------------		
+//--------------- ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ --------------		
 		if(type ==0x04){
-	//3£®×ÜÊý¾Ý³¤¶È: 16H ´ÓÆäºóµÄµÚÒ»¸ö×Ö·ûµ½BCC×Ö·ûÖ®Ç°£¨²»°üÀ¨BCC£©µÄËùÓÐ×Ö·ûµÄ×Ü³¤¶È¡£
+	//3ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý³ï¿½ï¿½ï¿½: 16H ï¿½ï¿½ï¿½ï¿½ï¿½Äµï¿½Ò»ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½BCCï¿½Ö·ï¿½Ö®Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½BCCï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½Ü³ï¿½ï¿½È¡ï¿½
 			i++;
 			num_len =gCallerIDBuffer[i];
 			//printf("num_len[%d]=%d\r\n",i,num_len);
 			if(num_len <9)
 				return 0;
-	//4£®Ê±¼ä´®£º		
+	//4ï¿½ï¿½Ê±ï¿½ä´®ï¿½ï¿½		
 			i +=9;
 			num_len -=8;
 			if(num_len >MAX_NUM_LEN)
@@ -184,21 +185,24 @@ u8 FSK_parse(void)
 			}		
 			gpsUaInfo->called_number[gDialNumLen] =0;
 			printf("\r\n");
-	//5. Çå¿Õbuf
+	//5. ï¿½ï¿½ï¿½buf
 			for(j=0; j<gCidIndex;j ++){
 				gCallerIDBuffer[j] =0;
 			}
-			BUILD_CID_start();
+			//wy modify
+			//BUILD_CID_start();
+			BUILD_CID_JSON_start();
+			
 		}
-//--------------- ¸´ºÏÊý¾Ý --------------		
+//--------------- ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ --------------		
 		if(type ==0x80){
-	//3£®×ÜÊý¾Ý³¤¶È: 16H ´ÓÆäºóµÄµÚÒ»¸ö×Ö·ûµ½BCC×Ö·ûÖ®Ç°£¨²»°üÀ¨BCC£©µÄËùÓÐ×Ö·ûµÄ×Ü³¤¶È¡£
+	//3ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý³ï¿½ï¿½ï¿½: 16H ï¿½ï¿½ï¿½ï¿½ï¿½Äµï¿½Ò»ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½BCCï¿½Ö·ï¿½Ö®Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½BCCï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½Ü³ï¿½ï¿½È¡ï¿½
 			i++;
 			num_len =gCallerIDBuffer[i];
 			//printf("num_len[%d]=%d\r\n",i,num_len);
 			if(num_len <13)
 				return 0;
-	//4£®Ê±¼ä´®£º		
+	//4ï¿½ï¿½Ê±ï¿½ä´®ï¿½ï¿½		
 			i +=12;
 			num_len =gCallerIDBuffer[i];
 			printf("len=%d\r\n",num_len);
@@ -215,25 +219,29 @@ u8 FSK_parse(void)
 			}		
 			gpsUaInfo->called_number[gDialNumLen] =0;
 			printf("\r\n");
-	//5. Çå¿Õbuf
+	//5. ï¿½ï¿½ï¿½buf
 			for(j=0; j<gCidIndex;j ++){
 				gCallerIDBuffer[j] =0;
 			}
-			BUILD_CID_start();
+			//wy modify
+			//BUILD_CID_start();
+			BUILD_CID_JSON_start();
 		}		
 		
 	}
 	return 0;
 }
-// ·¢ËÍ½áÊøÐ­Òé
+// ï¿½ï¿½ï¿½Í½ï¿½ï¿½ï¿½Ð­ï¿½ï¿½
 void FSK_RTP_stop(void)	
 {
 	if((gsSipTxFlag.rtp ==1) && (gsBatFlag.onhook==1)){
 		gsSipTxFlag.rtp =0;
+		//wy modify
 		BUILD_CID_stop();
+		BUILD_CID_JSON_stop();
 	}
 }
-//ÅÐ¶ÏÕñÁå
+//ï¿½Ð¶ï¿½ï¿½ï¿½ï¿½ï¿½
 void FSK_ringing(void)	
 {
 	if(CID_RINGING ==0){

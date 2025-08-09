@@ -15,7 +15,7 @@
 
 unsigned int gSipRamdom1=0x8a2e4b6e;
 unsigned int gSipRamdom2=0x7b5c1f39;
-//2023Äê01ÔÂ01ÈÕ 12:18:30
+//2023ï¿½ï¿½01ï¿½ï¿½01ï¿½ï¿½ 12:18:30
 
 struct stUaInfo *gpsUaInfo;
 struct stDate gsDate;
@@ -25,36 +25,36 @@ u8 gSipTxFlow =0;
 
 
 
-//SIP·¢ËÍÁ÷³Ì
+//SIPï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 void SIP_TxFlow(void)
 {
 
-// ¼ì²éÖØ´«±êÖ¾
-    if(gsSipTxFlag.retry)
-    {
-        gsSipTxFlag.retry = 0;
+// // ï¿½ï¿½ï¿½ï¿½Ø´ï¿½ï¿½ï¿½Ö¾
+//     if(gsSipTxFlag.retry)
+//     {
+//         gsSipTxFlag.retry = 0;
         
-        // ¸ù¾Ý×îºó·¢ËÍµÄÏûÏ¢ÀàÐÍÖØ·¢
-        switch(gpsUaInfo->last_msg_type)
-        {
-            case MSG_TYPE_START:
-                BUILD_CID_start();
-                break;
-            case MSG_TYPE_OFFHOOK:
-                BUILD_CID_offhook();
-                break;
-            case MSG_TYPE_STOP:
-                BUILD_CID_stop();
-                break;
-            case MSG_TYPE_PORT_REQUEST:
-                BUILD_port_request();
-                break;
-            case MSG_TYPE_PORT_VERIFY:
-                BUILD_port_verify(gpsUaInfo->dynamic_port);
-                break;
-        }
-        return;
-    }
+//         // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Íµï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½Ø·ï¿½
+//         switch(gpsUaInfo->last_msg_type)
+//         {
+//             case MSG_TYPE_START:
+//                 BUILD_CID_start();
+//                 break;
+//             case MSG_TYPE_OFFHOOK:
+//                 BUILD_CID_offhook();
+//                 break;
+//             case MSG_TYPE_STOP:
+//                 BUILD_CID_stop();
+//                 break;
+//             case MSG_TYPE_PORT_REQUEST:
+//                 BUILD_port_request();
+//                 break;
+//             case MSG_TYPE_PORT_VERIFY:
+//                 BUILD_port_verify(gpsUaInfo->dynamic_port);
+//                 break;
+//         }
+//         return;
+//     }
 
 	switch(gSipTxFlow)
 	{
@@ -85,9 +85,9 @@ void SIP_TxFlow(void)
 			gSipMechanism =TX_180_RINGING;
 			gsSipTxFlag.ringing =1;
 			gSipTxFlow =0;		
-//			I2S2_SampleRate_Set(44100);	//ÉèÖÃ²ÉÑù
-			AUDIO_play_mode();		//ÃâÌá·ÅMusic
-			TEL_HandfreeSPK_on();	//´ò¿ªÃâÌáSPK	
+//			I2S2_SampleRate_Set(44100);	//ï¿½ï¿½ï¿½Ã²ï¿½ï¿½ï¿½
+			AUDIO_play_mode();		//ï¿½ï¿½ï¿½ï¿½ï¿½Music
+			TEL_HandfreeSPK_on();	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½SPK	
 			break;
 		case TX_INVITE_200_OK:
 			BUILD_invite_ok();
@@ -133,12 +133,12 @@ void SIP_TxFlow(void)
 
 
 //-----------------------------------------------------------------------------
-//¡¾  °æ          ±¾  ¡¿v1.0
-//¡¾  º¯  Êý  Ãû  ³Æ  ¡¿
-//¡¾ ´´½¨ÈË¼°´´½¨Ê±¼ä ¡¿snowwind 2010-01-08
-//¡¾ ÐÞ¸ÄÈË¼°ÐÞ¸ÄÊ±¼ä ¡¿
-//¡¾  ÐÞ  ¸Ä  Ô­  Òò  ¡¿
-//¡¾  ¹¦  ÄÜ  Ãè  Êö  ¡¿Count date-time
+//ï¿½ï¿½  ï¿½ï¿½          ï¿½ï¿½  ï¿½ï¿½v1.0
+//ï¿½ï¿½  ï¿½ï¿½  ï¿½ï¿½  ï¿½ï¿½  ï¿½ï¿½  ï¿½ï¿½
+//ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ë¼ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ ï¿½ï¿½snowwind 2010-01-08
+//ï¿½ï¿½ ï¿½Þ¸ï¿½ï¿½Ë¼ï¿½ï¿½Þ¸ï¿½Ê±ï¿½ï¿½ ï¿½ï¿½
+//ï¿½ï¿½  ï¿½ï¿½  ï¿½ï¿½  Ô­  ï¿½ï¿½  ï¿½ï¿½
+//ï¿½ï¿½  ï¿½ï¿½  ï¿½ï¿½  ï¿½ï¿½  ï¿½ï¿½  ï¿½ï¿½Count date-time
 //-----------------------------------------------------------------------------
 void SIP_date(void)
 {
@@ -171,13 +171,13 @@ void SIP_date(void)
 	}
 }
 //-----------------------------------------------------------------------------
-//¡¾  °æ          ±¾  ¡¿v1.0
-//¡¾  º¯  Êý  Ãû  ³Æ  ¡¿
-//¡¾ ´´½¨ÈË¼°´´½¨Ê±¼ä ¡¿snowwind 2010-01-08
-//¡¾ ÐÞ¸ÄÈË¼°ÐÞ¸ÄÊ±¼ä ¡¿
-//¡¾  ÐÞ  ¸Ä  Ô­  Òò  ¡¿
-//¡¾  ¹¦  ÄÜ  Ãè  Êö  ¡¿Call_ID:(Macºó4×Ö½Ú+gSipRamdom1)-ÄêÔÂÈÕÊ±·ÖÃë-(IP address+gSipRamdom2)
-//						Èç: Call_ID:xxxxxxxx-xxxxxxxxxxxx-xxxxxxxx
+//ï¿½ï¿½  ï¿½ï¿½          ï¿½ï¿½  ï¿½ï¿½v1.0
+//ï¿½ï¿½  ï¿½ï¿½  ï¿½ï¿½  ï¿½ï¿½  ï¿½ï¿½  ï¿½ï¿½
+//ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ë¼ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ ï¿½ï¿½snowwind 2010-01-08
+//ï¿½ï¿½ ï¿½Þ¸ï¿½ï¿½Ë¼ï¿½ï¿½Þ¸ï¿½Ê±ï¿½ï¿½ ï¿½ï¿½
+//ï¿½ï¿½  ï¿½ï¿½  ï¿½ï¿½  Ô­  ï¿½ï¿½  ï¿½ï¿½
+//ï¿½ï¿½  ï¿½ï¿½  ï¿½ï¿½  ï¿½ï¿½  ï¿½ï¿½  ï¿½ï¿½Call_ID:(Macï¿½ï¿½4ï¿½Ö½ï¿½+gSipRamdom1)-ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½-(IP address+gSipRamdom2)
+//						ï¿½ï¿½: Call_ID:xxxxxxxx-xxxxxxxxxxxx-xxxxxxxx
 //-----------------------------------------------------------------------------
 void SIP_CountCallid(char *call_id)
 {
@@ -185,19 +185,19 @@ void SIP_CountCallid(char *call_id)
 	unsigned int int_value=0;
 	unsigned short short_value=0;
 	*call_id='\0';
-//(Macºó4×Ö½Ú+gSipRamdom1)	
+//(Macï¿½ï¿½4ï¿½Ö½ï¿½+gSipRamdom1)	
 	int_value=gSipRamdom1+((unsigned int)((lwipdev.mac[2]<<24)|(lwipdev.mac[3]<<16)|(lwipdev.mac[4]<<8)|(lwipdev.mac[5]<<0)));
 	Hex2Asc(&int_value,hex_buf,(sizeof(unsigned int)<<1));
 	strcat(call_id,hex_buf);
 	strcat(call_id,"-");
 
-//ÄêÔÂÈÕÊ±·ÖÃë
-	//ÄêÔÂÈÕÊ±
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±
 	int_value=((unsigned int)((gsDate.year<<24)|(gsDate.month<<16)|(gsDate.day<<8)|(gsDate.hour<<0)));
 	Hex2Asc(&int_value,hex_buf,(sizeof(unsigned int)<<1));
 	strcat(call_id,hex_buf);
 		
-	//·ÖÃë
+	//ï¿½ï¿½ï¿½ï¿½
 	short_value=((unsigned short)((gsDate.min<<8)|gsDate.sec));
 	Hex2Asc(&short_value,hex_buf,(sizeof(unsigned short)<<1));
 	strcat(call_id,hex_buf);
@@ -211,13 +211,13 @@ void SIP_CountCallid(char *call_id)
 }
 
 //-----------------------------------------------------------------------------
-//¡¾  °æ          ±¾  ¡¿v1.0
-//¡¾  º¯  Êý  Ãû  ³Æ  ¡¿
-//¡¾ ´´½¨ÈË¼°´´½¨Ê±¼ä ¡¿snowwind 2010-01-08
-//¡¾ ÐÞ¸ÄÈË¼°ÐÞ¸ÄÊ±¼ä ¡¿
-//¡¾  ÐÞ  ¸Ä  Ô­  Òò  ¡¿
-//¡¾  ¹¦  ÄÜ  Ãè  Êö  ¡¿From/To tag=(gSipRamdom1+ntohl(gSipRamdom2))(gSipRamdom1-ntohl(gSipRamdom2))
-//						Èç: tag=xxxxxxxxxxxxxxxx
+//ï¿½ï¿½  ï¿½ï¿½          ï¿½ï¿½  ï¿½ï¿½v1.0
+//ï¿½ï¿½  ï¿½ï¿½  ï¿½ï¿½  ï¿½ï¿½  ï¿½ï¿½  ï¿½ï¿½
+//ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ë¼ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ ï¿½ï¿½snowwind 2010-01-08
+//ï¿½ï¿½ ï¿½Þ¸ï¿½ï¿½Ë¼ï¿½ï¿½Þ¸ï¿½Ê±ï¿½ï¿½ ï¿½ï¿½
+//ï¿½ï¿½  ï¿½ï¿½  ï¿½ï¿½  Ô­  ï¿½ï¿½  ï¿½ï¿½
+//ï¿½ï¿½  ï¿½ï¿½  ï¿½ï¿½  ï¿½ï¿½  ï¿½ï¿½  ï¿½ï¿½From/To tag=(gSipRamdom1+ntohl(gSipRamdom2))(gSipRamdom1-ntohl(gSipRamdom2))
+//						ï¿½ï¿½: tag=xxxxxxxxxxxxxxxx
 //-----------------------------------------------------------------------------
 void SIP_CountTag(char *tag)
 {	
@@ -234,13 +234,13 @@ void SIP_CountTag(char *tag)
 }
 
 //-----------------------------------------------------------------------------
-//¡¾  °æ          ±¾  ¡¿v1.0
-//¡¾  º¯  Êý  Ãû  ³Æ  ¡¿
-//¡¾ ´´½¨ÈË¼°´´½¨Ê±¼ä ¡¿snowwind 2010-01-08
-//¡¾ ÐÞ¸ÄÈË¼°ÐÞ¸ÄÊ±¼ä ¡¿
-//¡¾  ÐÞ  ¸Ä  Ô­  Òò  ¡¿
-//¡¾  ¹¦  ÄÜ  Ãè  Êö  ¡¿Via: branch=(gSipRamdom1+gSipRamdom2+ntohl(gSipRamdom1))
-//						Èç: branch=z9hG4bKxxxxxxxxxxxxxxxx
+//ï¿½ï¿½  ï¿½ï¿½          ï¿½ï¿½  ï¿½ï¿½v1.0
+//ï¿½ï¿½  ï¿½ï¿½  ï¿½ï¿½  ï¿½ï¿½  ï¿½ï¿½  ï¿½ï¿½
+//ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ë¼ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ ï¿½ï¿½snowwind 2010-01-08
+//ï¿½ï¿½ ï¿½Þ¸ï¿½ï¿½Ë¼ï¿½ï¿½Þ¸ï¿½Ê±ï¿½ï¿½ ï¿½ï¿½
+//ï¿½ï¿½  ï¿½ï¿½  ï¿½ï¿½  Ô­  ï¿½ï¿½  ï¿½ï¿½
+//ï¿½ï¿½  ï¿½ï¿½  ï¿½ï¿½  ï¿½ï¿½  ï¿½ï¿½  ï¿½ï¿½Via: branch=(gSipRamdom1+gSipRamdom2+ntohl(gSipRamdom1))
+//						ï¿½ï¿½: branch=z9hG4bKxxxxxxxxxxxxxxxx
 //-----------------------------------------------------------------------------
 void SIP_CountBranch(char *branch)
 {
@@ -301,8 +301,8 @@ void SIP_UainfoInit(void)
 
 
 //-----------------------------------------------------------------------------
-//1.Èç¹û×¢²á³É¹¦ÔòÃ¿¸ô60s×¢²áÒ»´Î
-//2.Èç¹ûÃ»ÓÐ×¢²á³É¹¦Ã¿¸ô3Ãë×¢²áÒ»´Î£¬×¢²á20´Îºó£¬Í£120s
+//1.ï¿½ï¿½ï¿½×¢ï¿½ï¿½É¹ï¿½ï¿½ï¿½Ã¿ï¿½ï¿½60s×¢ï¿½ï¿½Ò»ï¿½ï¿½
+//2.ï¿½ï¿½ï¿½Ã»ï¿½ï¿½×¢ï¿½ï¿½É¹ï¿½Ã¿ï¿½ï¿½3ï¿½ï¿½×¢ï¿½ï¿½Ò»ï¿½Î£ï¿½×¢ï¿½ï¿½20ï¿½Îºï¿½Í£120s
 //-----------------------------------------------------------------------------
 void SIP_RegisterTx(void)
 {
@@ -310,7 +310,7 @@ void SIP_RegisterTx(void)
 	char flag;
 	
 	flag =0;
-//	gsSipRxFlag.ok_reg =1;//test?????? ÊÕµ½OK =1	
+//	gsSipRxFlag.ok_reg =1;//test?????? ï¿½Õµï¿½OK =1	
 //1:register successful
 	if(gsSipRxFlag.ok_reg){
 		if(gpsT3->sip_reg > 600){	//600*100ms =60s

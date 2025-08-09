@@ -13,7 +13,7 @@
 
 
 // �ⲿ�������� (��SipMsgBuilding.c�ж���)
-void BUILD_port_verify(u16 port);
+//void BUILD_port_verify(u16 port);
 
 // ���atoi�����ã��ṩһ���򵥵�ʵ��
 #ifndef atoi
@@ -43,81 +43,81 @@ extern struct stUaInfo *gpsUaInfo;struct stMsg gsMsg;
 struct stSipRxFlag gsSipRxFlag;
 struct stSipTxFlag gsSipTxFlag;
 
-// ��������Ӧ��������
-void handle_server_response(void)
-{
-    // �յ���������Ӧ������ش���־
-    if(gpsUaInfo->waiting_response)
-    {
-        gpsUaInfo->waiting_response = 0;
-        gpsUaInfo->retry_count = 0;
-        gpsUaInfo->retry_timer = 0;
-    }
-}
+// // ��������Ӧ��������
+// void handle_server_response(void)
+// {
+//     // �յ���������Ӧ������ش����?
+//     if(gpsUaInfo->waiting_response)
+//     {
+//         gpsUaInfo->waiting_response = 0;
+//         gpsUaInfo->retry_count = 0;
+//         gpsUaInfo->retry_timer = 0;
+//     }
+// }
 
-// ��̬�˿���Ӧ��������
-void parse_port_response(char* response_data, int data_len)
-{
-    char *port_start, *port_end;
-    char port_str[8];
-    int port_len;
-    unsigned int temp_port;  // �Ƶ�������ͷ����
+// // ��̬�˿���Ӧ��������
+// void parse_port_response(char* response_data, int data_len)
+// {
+//     char *port_start, *port_end;
+//     char port_str[8];
+//     int port_len;
+//     unsigned int temp_port;  // �Ƶ�������ͷ����
     
-    // ���� "port":"xxxx" ��ʽ
-    port_start = strstr(response_data, "\"port\":\"");
-    if(port_start != NULL)
-    {
-        port_start += 8;  // ���� "port":"
-        port_end = strchr(port_start, '"');
-        if(port_end != NULL)
-        {
-            port_len = port_end - port_start;
-            if(port_len < 8)
-            {
-                strncpy(port_str, port_start, port_len);
-                port_str[port_len] = '\0';
+//     // ���� "port":"xxxx" ��ʽ
+//     port_start = strstr(response_data, "\"port\":\"");
+//     if(port_start != NULL)
+//     {
+//         port_start += 8;  // ���� "port":"
+//         port_end = strchr(port_start, '"');
+//         if(port_end != NULL)
+//         {
+//             port_len = port_end - port_start;
+//             if(port_len < 8)
+//             {
+//                 strncpy(port_str, port_start, port_len);
+//                 port_str[port_len] = '\0';
                 
-                // ת���˿ںŲ�����
-                String2Int(&temp_port, port_str);
-                gpsUaInfo->dynamic_port = (u16)temp_port;
-                gpsUaInfo->port_negotiated = 1;
-                gpsUaInfo->port_request_timer = 0;
+//                 // ת���˿ںŲ�����
+//                 String2Int(&temp_port, port_str);
+//                 gpsUaInfo->dynamic_port = (u16)temp_port;
+//                 gpsUaInfo->port_negotiated = 1;
+//                 gpsUaInfo->port_request_timer = 0;
                 
-                printf("Received dynamic port: %d\r\n", gpsUaInfo->dynamic_port);
+//                 printf("Received dynamic port: %d\r\n", gpsUaInfo->dynamic_port);
                 
-                // ��֤�˿ڿ�����
-                BUILD_port_verify(gpsUaInfo->dynamic_port);
-            }
-        }
-    }
-}
+//                 // ��֤�˿ڿ�����
+//                 BUILD_port_verify(gpsUaInfo->dynamic_port);
+//             }
+//         }
+//     }
+// }
 
-// �˿���֤��Ӧ��������
-void parse_port_verify_response(char* response_data, int data_len)
-{
-    // ������֤�ɹ���־
-    if(strstr(response_data, "\"status\":\"success\"") != NULL)
-    {
-        gpsUaInfo->port_verified = 1;
-        printf("Port verification successful\r\n");
-    }
-    else
-    {
-        printf("Port verification failed\r\n");
-        // ��������˿�
-        gpsUaInfo->port_negotiated = 0;
-        gpsUaInfo->port_verified = 0;
-    }
-}
+// // �˿���֤��Ӧ��������
+// void parse_port_verify_response(char* response_data, int data_len)
+// {
+//     // ������֤�ɹ���־
+//     if(strstr(response_data, "\"status\":\"success\"") != NULL)
+//     {
+//         gpsUaInfo->port_verified = 1;
+//         printf("Port verification successful\r\n");
+//     }
+//     else
+//     {
+//         printf("Port verification failed\r\n");
+//         // ��������˿�?
+//         gpsUaInfo->port_negotiated = 0;
+//         gpsUaInfo->port_verified = 0;
+//     }
+// }
 
-// �ļ�������Ӧ��������
-void parse_file_transfer_response(char* response_data, int data_len)
-{
-    if(strstr(response_data, "\"type\":\"file_ack\"") != NULL)
-    {
-        printf("File transfer acknowledged\r\n");
-    }
-}
+// // �ļ�������Ӧ��������
+// void parse_file_transfer_response(char* response_data, int data_len)
+// {
+//     if(strstr(response_data, "\"type\":\"file_ack\"") != NULL)
+//     {
+//         printf("File transfer acknowledged\r\n");
+//     }
+// }
 
 
 /*
@@ -207,7 +207,7 @@ int ANALYSIS_get_lname(char *p_line_name)
 
 /*
  ���ݽ��յ�line��,�ж�Ҫ������Щmessage header
-��ڲ��� 
+��ڲ���? 
 	line_name: ��һ������
 	p_msg: ��һ�е�һ�ֽڵ�ַ
 	msg_len: ����sip������
@@ -280,7 +280,7 @@ void ANALYSIS_line_to_msg(int line_name,char *p_msg,int msg_len)
 }
 
 /*
- 200 OK�������¼������
+ 200 OK�������¼������?
 */
 void ANALYSIS_cseq_type(char *p_msg_name)
 {
@@ -290,39 +290,39 @@ void ANALYSIS_cseq_type(char *p_msg_name)
 		gsSipRxFlag.ok_inv =1;
 		gsSipRxFlag.rec =1;
 		//���ӷ�������Ӧ����
-		handle_server_response();
+		//handle_server_response();
 	}
   	if(!strcmp(p_msg_name,"BYE")){
   		gSipMechanism = RX_BYE_200_OK;
   		gsSipRxFlag.ok_bye =1;
 		// ���ӷ�������Ӧ����
-    	handle_server_response();
+    	//handle_server_response();
 	}
 	if(!strcmp(p_msg_name,"CANCEL")){
 		gSipMechanism = RX_CANCEL_200_OK;
 		gsSipRxFlag.ok_cel =1;
 		// ���ӷ�������Ӧ����
-    	handle_server_response();
+    	//handle_server_response();
 	}
 	if(!strcmp(p_msg_name,"REGISTER")){
 		gSipMechanism = RX_BYE_200_OK;
 		gsSipRxFlag.ok_reg =1;
 		// ���ӷ�������Ӧ����
-    	handle_server_response();
+    	//handle_server_response();
 	}
-	// ������̬�˿���Ӧ��Ϣ
-	if(!strcmp(p_msg_name,"PORT_RESPONSE")){
-		printf("Received PORT_RESPONSE message\r\n");
-		handle_server_response();
-	}
-	if(!strcmp(p_msg_name,"PORT_VERIFY_RESPONSE")){
-		printf("Received PORT_VERIFY_RESPONSE message\r\n");
-		handle_server_response();
-	}
-	if(!strcmp(p_msg_name,"FILE_ACK")){
-		printf("Received FILE_ACK message\r\n");
-		handle_server_response();
-	}
+	// // ������̬�˿���Ӧ��Ϣ
+	// if(!strcmp(p_msg_name,"PORT_RESPONSE")){
+	// 	printf("Received PORT_RESPONSE message\r\n");
+	// 	handle_server_response();
+	// }
+	// if(!strcmp(p_msg_name,"PORT_VERIFY_RESPONSE")){
+	// 	printf("Received PORT_VERIFY_RESPONSE message\r\n");
+	// 	handle_server_response();
+	// }
+	// if(!strcmp(p_msg_name,"FILE_ACK")){
+	// 	printf("Received FILE_ACK message\r\n");
+	// 	handle_server_response();
+	// }
 }
 
 /*
@@ -401,7 +401,7 @@ void ANALYSIS_msghdr(char *p_msg, int len)
 	{
 		if((*(p_msg+i)==':')&&(*(p_msg+i+1)==' ')){
 	// ÿһ����Ϣͷ����ѭ���¸�ʽ��������ͷ�ֶ�������Via��From�ȣ���
-	// ������ð�ţ�Ȼ�����Ϊһ������ǰ���ո񣬺���Ϊ�ֶ�ֵ:
+	// ������ð�ţ�Ȼ������?һ������ǰ���ո񣬺���Ϊ�ֶ�ֵ:
 	// header-header = field-name: SP [field-value] CRLF
 			ibuffer[i]='\0'; 				//�ַ���������
 			switch(ANALYSIS_get_msgname(ibuffer))
@@ -589,7 +589,7 @@ void ANALYSIS_get_cseq(char *p_msg,int msg_len)
 		
 		if((*(p_msg+i)==':')&&(*(p_msg+i+1)==' ')){
 	// ÿһ����Ϣͷ����ѭ���¸�ʽ��������ͷ�ֶ�������Via��From�ȣ���
-	// ������ð�ţ�Ȼ�����Ϊһ������ǰ���ո񣬺���Ϊ�ֶ�ֵ:
+	// ������ð�ţ�Ȼ������?һ������ǰ���ո񣬺���Ϊ�ֶ�ֵ:
 	// header-header = field-name: SP [field-value] CRLF
 			ibuffer[j]='\0'; 				//�ַ���������
 			if(!strcmp(ibuffer,"CSeq")){

@@ -1,5 +1,11 @@
 {
     "files.associations": {
-        "usart3_FSK.C": "cpp"
+        "usart3_FSK.C": "cpp",
+        "usart3_fsk.h": "c",
+        "recmsgbuilding.h": "c",
+        "sipfunction.h": "c",
+        "timer.h": "c",
+        "hhdxmsg.h": "c",
+        "24cxx.h": "c"
     }
 }

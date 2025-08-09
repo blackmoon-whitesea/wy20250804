@@ -6,7 +6,8 @@
 #include "tel_func.h"
 #include "HhdxMsg.h"
 #include "SipFunction.h"
-   
+#include "24cxx.h"
+
 unsigned int gBatVal =0;
 u8 onhook_delay=0;
 struct stBatFlag gsBatFlag;
@@ -33,14 +34,14 @@ struct stBatFlag gsBatFlag;
 * Sr = repeated Start
 *****************************************************************************/
 
-/*				ÓÃ»§°å59.5V		ÓÃ»§°å53.2V		ÓÃ»§°å48V			ÓÃ»§°å43V
-1. ¹Ò»ú: 		2.64					2.53					2.45					2.36
+/*				ï¿½Ã»ï¿½ï¿½ï¿½59.5V		ï¿½Ã»ï¿½ï¿½ï¿½53.2V		ï¿½Ã»ï¿½ï¿½ï¿½48V			ï¿½Ã»ï¿½ï¿½ï¿½43V
+1. ï¿½Ò»ï¿½: onhook_lv hv 		2.64					2.53					2.45					2.36
 
-2. ÕñÁå:		2.9~3.2(75VÁåÁ÷)
+2. ï¿½ï¿½ï¿½ï¿½: ring_lv 		2.9~3.2(75Vï¿½ï¿½ï¿½ï¿½)
 
-3. Õª»ú: 		1.7~1.8V
+3. Õªï¿½ï¿½: offhook_lv hv		1.7~1.8V
 
-4. ²»²åµç»°Ïß£º Ð¡ÓÚ1.68V
+4. ï¿½ï¿½ï¿½ï¿½ç»°ï¿½ß£ï¿½nophone_hv Ð¡ï¿½ï¿½1.68V
 */
 void CW2015_BatSample(void)
 {
@@ -51,11 +52,12 @@ void CW2015_BatSample(void)
 	}
 }
 
-//ÅÐ¶Ï¸÷ÖÖ×´Ì¬
+//ï¿½Ð¶Ï¸ï¿½ï¿½ï¿½×´Ì¬
 void CW2015_BatStatus(void)
 {
-//1. ²»²åµç»°Ïß£º Ð¡ÓÚ1.68V
-	if(gBatVal <168){
+//1. ï¿½ï¿½ï¿½ï¿½ç»°ï¿½ß£ï¿½ Ð¡ï¿½ï¿½1.68V
+	//if(gBatVal <168){
+	if(gBatVal<gpsEeprom->nophone_hv){
 		if(gsBatFlag.discon ==0){
 			if(gsBatFlag.flag1 ==1){
 				if(gpsT3->bat_discon >30){
@@ -82,8 +84,9 @@ void CW2015_BatStatus(void)
 			}				
 		}		
 	}
-//2. ÕñÁå:	2.85~3.2(75VÁåÁ÷)
-	else if(gBatVal >280){	//×¢£ºÕñÁåÊÇÒ»¼ì²âµ½µçÑ¹¾ÍÓÐÐ§£¬ÓëÕª£¬¹Ò»ú²»Í¬
+//2. ï¿½ï¿½ï¿½ï¿½:	2.85~3.2(75Vï¿½ï¿½ï¿½ï¿½)
+	//else if(gBatVal >280){	//×¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½âµ½ï¿½ï¿½Ñ¹ï¿½ï¿½ï¿½ï¿½Ð§ï¿½ï¿½ï¿½ï¿½Õªï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Í¬
+	else if(gBatVal>gpsEeprom->ring_lv){
 		gpsT3->bat_onhook =0;
 		gpsT3->bat_offhook =0;
 //		if(gsBatFlag.flag4 ==0){
@@ -128,8 +131,9 @@ void CW2015_BatStatus(void)
 //			}
 //		}
 	}
-//3. ¹Ò»ú: 2.36~2.64
-	else if((gBatVal >236) && (gBatVal <264)){
+//3. ï¿½Ò»ï¿½: 2.36~2.64
+	//else if((gBatVal >236) && (gBatVal <264)){
+	else if((gBatVal>gpsEeprom->onhook_lv)&&(gBatVal<gpsEeprom->onhook_hv)){
 		gpsT3->bat_offhook =0;
 		gsBatFlag.flag3=0;
 		if((gsBatFlag.offhook ==1)||(gRingCount !=0)){
@@ -158,8 +162,9 @@ void CW2015_BatStatus(void)
 			}				
 		}		
 	}
-//4. Õª»ú: 1.7~1.9
-	else if((gBatVal >170) && (gBatVal <190)){
+//4. Õªï¿½ï¿½: 1.7~1.9
+	//else if((gBatVal >170) && (gBatVal <190)){
+	else if((gBatVal>gpsEeprom->offhook_lv)&&(gBatVal<gpsEeprom->offhook_hv)){
 		gpsT3->bat_onhook =0;
 		gsBatFlag.flag2 =0;
 		if(gsBatFlag.offhook ==0){
@@ -176,7 +181,10 @@ void CW2015_BatStatus(void)
 					gpsT3->bat_offhook =0;
 					gpsT3->bat_ringing =0;
 					printf("offhook\r\n");
-					BUILD_CID_offhook();
+					//wy modify
+					//BUILD_CID_offhook();
+					BUILD_CID_JSON_offhook();
+					
 					onhook_delay =12;
 				}
 			}
@@ -193,14 +201,14 @@ void CW2015_BatStatus(void)
 	
 }
 /***********************************************************
-* ³õÊ¼»¯cw2015Òý½Å£º
+* ï¿½ï¿½Ê¼ï¿½ï¿½cw2015ï¿½ï¿½ï¿½Å£ï¿½
 * IIC'CLK = PF1
 *	IIC'SDA = PF0
-* QSTRT = PF3(Ïàµ±ÓÚ¸´Î»½Å)
+* QSTRT = PF3(ï¿½àµ±ï¿½Ú¸ï¿½Î»ï¿½ï¿½)
 ***********************************************************/
 void CW2015_Init(void)
 {		
-//2. ÉÏµçÄ¬ÈÏÐÝÃß£¬ÎÒÃÇÔÚ´Ë»½ÐÑ	
+//2. ï¿½Ïµï¿½Ä¬ï¿½ï¿½ï¿½ï¿½ï¿½ß£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú´Ë»ï¿½ï¿½ï¿½	
 	CW2015_WriteOneByte(0x0A,0x00);
 	delay_ms(100);
 	
@@ -208,7 +216,7 @@ void CW2015_Init(void)
 	gsBatFlag.onhook =0;
 	gsBatFlag.offhook =0;
 	gsBatFlag.ringing =0;
-////3. ÔÚQSTARTÒý½ÅÉÏ¸øÒ»¸öÏÈ¸ßºóµÍ¸´Î»ÐÅºÅ=>»áµ¼ÖÂµçÁ¿ÏÔÊ¾²»×¼
+////3. ï¿½ï¿½QSTARTï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½Ò»ï¿½ï¿½ï¿½È¸ßºï¿½Í¸ï¿½Î»ï¿½Åºï¿½=>ï¿½áµ¼ï¿½Âµï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½×¼
 //	QSTART=1;
 //	delay_ms(100);
 //	QSTART=0; 
@@ -217,7 +225,7 @@ void CW2015_Init(void)
 }
 
 /****************************************************************
-* Í¨¹ýCW2015¼Ä´æÆ÷»ñÈ¡µç³ØµçÑ¹¼°ÈÝÁ¿
+* Í¨ï¿½ï¿½CW2015ï¿½Ä´ï¿½ï¿½ï¿½ï¿½ï¿½È¡ï¿½ï¿½Øµï¿½Ñ¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 ****************************************************************/
 void CW2015_Data(void)
 {	
@@ -226,7 +234,7 @@ void CW2015_Data(void)
 	float V;
 	static u8 old_soc=255;
 	
-//1. ¶ÁÈ¡µç³ØµçÑ¹:
+//1. ï¿½ï¿½È¡ï¿½ï¿½Øµï¿½Ñ¹:
 // VCELL(0x02~0x03):	Report 14-bit A/D measurement of battery voltage
 	VL = CW2015_ReadOneByte(0x03);		
 //	printf("VL=%x\r\n",VL);
@@ -238,19 +246,19 @@ void CW2015_Data(void)
 	V = (VH*305)/1000000.0f;	
 //	VL = (int)(V);
 //	printf("V=%f,%d V\r\n",V,VL);
-//	V = (float)V*4.3f;//V*4.333;		//4.333 =(11+3.3)/3.3(µç×è·ÖÑ¹)
-	VL = (int)(V*100);	//ÎªÁËÈ¡µÃÐ¡Êýµãºó2Î»*100,ÒÔ±ã¸ü¾«×¼
+//	V = (float)V*4.3f;//V*4.333;		//4.333 =(11+3.3)/3.3(ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¹)
+	VL = (int)(V*100);	//Îªï¿½ï¿½È¡ï¿½ï¿½Ð¡ï¿½ï¿½ï¿½ï¿½ï¿½2Î»*100,ï¿½Ô±ï¿½ï¿½ï¿½ï¿½×¼
 	//printf("B=%d V\r\n",VL);
 //	UART5_tx_cmd(UART5_VOL_INT, VL);
 	gBatVal =VL;
 	
-//2. ¶ÁÈ¡µç³Ø´¢´æÁ¿SOC(State-Of-Charge)
+//2. ï¿½ï¿½È¡ï¿½ï¿½Ø´ï¿½ï¿½ï¿½ï¿½ï¿½SOC(State-Of-Charge)
 // SOC(0x04~0x05):	Report 16-bit SOC result 
 // In this Register, the high 8bit(0x04) part contains the SOC information in % which can 
 // directly used by end user if this accuracy is already good enough for application.
 // The low 8bit(0x05) part provides more accurate part of the SOC information until 1/256%.
  	SOC = CW2015_ReadOneByte(0x04);
- 	if(SOC !=old_soc){	//ÓÐ±ä»¯²ÅÏÔÊ¾
+ 	if(SOC !=old_soc){	//ï¿½Ð±ä»¯ï¿½ï¿½ï¿½ï¿½Ê¾
   	old_soc =SOC;
   	CW2015_Display(SOC);
 	}
@@ -258,15 +266,15 @@ void CW2015_Data(void)
 }		
 
 /****************************************************
-* µç³ØµçÁ¿Í¼ÐÎÓëÊý×ÖÏÔÊ¾
-* ·¢ÁË±ÜÃâÁÙ½çµãÍ¼°¸²»Í£À´»Ø±ä¶¯£¬
-* ¿ÉÒÔÇø·ÖÊÇÉÏÉý£¬ÏÂ½µÇ÷ÊÆ£¬ÖÐ¼äÓÐ5¸öµãµÄ»º³åÇø
+* ï¿½ï¿½Øµï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾
+* ï¿½ï¿½ï¿½Ë±ï¿½ï¿½ï¿½ï¿½Ù½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½Í£ï¿½ï¿½ï¿½Ø±ä¶¯ï¿½ï¿½
+* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½ï¿½Ð¼ï¿½ï¿½ï¿½5ï¿½ï¿½ï¿½ï¿½Ä»ï¿½ï¿½ï¿½ï¿½ï¿½
 ****************************************************/
 void CW2015_Display(u8 energy)
 {	
-////1. ÏÔÊ¾µ±Ê±µçÁ¿Öµ
+////1. ï¿½ï¿½Ê¾ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½Öµ
 //	DISP_CreateProtocolInt(0x1002, energy);
-////2. Ñ¡ÔñµçÁ¿Öµ¶ÔÓ¦Í¼°¸
+////2. Ñ¡ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½Ó¦Í¼ï¿½ï¿½
 //	if(energy ==100){
 //		DISP_CreateProtocolInt(0x1015, 0);
 //	}
@@ -276,8 +284,8 @@ void CW2015_Display(u8 energy)
 } 	
 	
 /*****************************************************************************
-* º¯ÊýÃû£º¶Á¼Ä´æÆ÷Êý¾Ý                             
-* ²Î  Êý£ºRegisterAddr:¼Ä´æÆ÷µØÖ·                 
+* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½                             
+* ï¿½ï¿½  ï¿½ï¿½ï¿½ï¿½RegisterAddr:ï¿½Ä´ï¿½ï¿½ï¿½ï¿½ï¿½Ö·                 
 * Read:
 *			S  0xC4  A  Register Address(8bits)  A  Sr 0xC5 A Register data(8bits)  A P
 *****************************************************************************/
@@ -285,53 +293,53 @@ u8 CW2015_ReadOneByte(u8 RegisterAddr)
 {				  
 	u8 temp=0;		  	    																 
   __disable_irq(); 
-	IIC1_Start();           				//IIC¿ªÊ¼ÐÅºÅ
-	IIC1_Send_Byte(0XC4); 					//·¢ËÍÆ÷¼þµØÖ· Ð´Êý¾Ý 	   	
+	IIC1_Start();           				//IICï¿½ï¿½Ê¼ï¿½Åºï¿½
+	IIC1_Send_Byte(0XC4); 					//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö· Ð´ï¿½ï¿½ï¿½ï¿½ 	   	
 	
-	if(IIC1_Wait_Ack())   					//µÈ´ýÓ¦´ð
+	if(IIC1_Wait_Ack())   					//ï¿½È´ï¿½Ó¦ï¿½ï¿½
 		printf("Readout1\r\n");
     
-	IIC1_Send_Byte(RegisterAddr);	//·¢ËÍ¼Ä´æÆ÷µØÖ·
-	if(IIC1_Wait_Ack())	     					//µÈ´ýÓ¦´ð 
+	IIC1_Send_Byte(RegisterAddr);	//ï¿½ï¿½ï¿½Í¼Ä´ï¿½ï¿½ï¿½ï¿½ï¿½Ö·
+	if(IIC1_Wait_Ack())	     					//ï¿½È´ï¿½Ó¦ï¿½ï¿½ 
 		printf("Readout2\r\n");
-	IIC1_Start();  								//IIC¿ªÊ¼ÐÅºÅ
-	IIC1_Send_Byte(0XC5);					//½øÈë¶ÁÈ¡Ä£Ê½			   
+	IIC1_Start();  								//IICï¿½ï¿½Ê¼ï¿½Åºï¿½
+	IIC1_Send_Byte(0XC5);					//ï¿½ï¿½ï¿½ï¿½ï¿½È¡Ä£Ê½			   
 	
-	if(IIC1_Wait_Ack())  					//µÈ´ýÓ¦´ð		
+	if(IIC1_Wait_Ack())  					//ï¿½È´ï¿½Ó¦ï¿½ï¿½		
 		printf("Readout3\r\n");
    
-	temp=IIC1_Read_Byte(0);				//¶ÁÒ»×Ö½ÚÊý¾Ý£¬·¢ËÍÓ¦´ð     
-    IIC1_Stop();     						//²úÉúÒ»¸öÍ£Ö¹Ìõ¼þ
+	temp=IIC1_Read_Byte(0);				//ï¿½ï¿½Ò»ï¿½Ö½ï¿½ï¿½ï¿½ï¿½Ý£ï¿½ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½     
+    IIC1_Stop();     						//ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½Í£Ö¹ï¿½ï¿½ï¿½ï¿½
 	__enable_irq();
-	return temp;    							//·µ»Ø¶ÁÈ¡µÄÊý¾Ý
+	return temp;    							//ï¿½ï¿½ï¿½Ø¶ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 }
 
 /*****************************************************************************
-* º¯ÊýÃû£ºÐ´¼Ä´æÆ÷Êý¾Ý                           
-* ²Î  Êý£ºRegisterAddr:¼Ä´æÆ÷µØÖ·                 
+* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð´ï¿½Ä´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½                           
+* ï¿½ï¿½  ï¿½ï¿½ï¿½ï¿½RegisterAddr:ï¿½Ä´ï¿½ï¿½ï¿½ï¿½ï¿½Ö·                 
 * Write:
 *			S  0xC4  A  Register Address(8bits)  A Write data(8bits)  A P
 *****************************************************************************/
 void CW2015_WriteOneByte(u16 RegisterAddr,u8 DataToWrite)
 {	
 	__disable_irq();
-	IIC1_Start();                    //¿ªÊ¼ÐÅºÅ
-	IIC1_Send_Byte(0XC4);            //·¢ËÍÆ÷¼þµØÖ·0XC4,Ð´Êý¾Ý 	 
+	IIC1_Start();                    //ï¿½ï¿½Ê¼ï¿½Åºï¿½
+	IIC1_Send_Byte(0XC4);            //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·0XC4,Ð´ï¿½ï¿½ï¿½ï¿½ 	 
 	
-	if(IIC1_Wait_Ack())              //µÈ´ýÓ¦´ð
+	if(IIC1_Wait_Ack())              //ï¿½È´ï¿½Ó¦ï¿½ï¿½
 		printf("WriteOut1\r\n");
    
-	IIC1_Send_Byte(RegisterAddr);    //·¢ËÍ¼Ä´æÆ÷µØÖ·
+	IIC1_Send_Byte(RegisterAddr);    //ï¿½ï¿½ï¿½Í¼Ä´ï¿½ï¿½ï¿½ï¿½ï¿½Ö·
 	
-	if(IIC1_Wait_Ack())              //µÈ´ýÓ¦´ð
+	if(IIC1_Wait_Ack())              //ï¿½È´ï¿½Ó¦ï¿½ï¿½
 		printf("WriteOut2\r\n");									  		   
 	
-	IIC1_Send_Byte(DataToWrite);     //·¢ËÍÊý¾Ý							   
+	IIC1_Send_Byte(DataToWrite);     //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½							   
 	
-	if(IIC1_Wait_Ack())              //µÈ´ýÓ¦´ð
+	if(IIC1_Wait_Ack())              //ï¿½È´ï¿½Ó¦ï¿½ï¿½
 		printf("WriteOut3\r\n");			 
     	
-	IIC1_Stop();                     //²úÉúÒ»¸öÍ£Ö¹Ìõ¼þ 	  
+	IIC1_Stop();                     //ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½Í£Ö¹ï¿½ï¿½ï¿½ï¿½ 	  
 	__enable_irq();
 }
 

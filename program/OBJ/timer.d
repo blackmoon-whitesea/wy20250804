@@ -40,6 +40,4 @@
 ..\obj\timer.o: ..\HARDWARE\ETHERNET\lan8720.h
 ..\obj\timer.o: ..\FWLIB\STM32F4x7_ETH_Driver\inc\stm32f4x7_eth.h
 ..\obj\timer.o: ..\FWLIB\STM32F4x7_ETH_Driver\inc\stm32f4x7_eth_conf.h
-..\obj\timer.o: ..\HHDX\SipFunction.h
-..\obj\timer.o: ..\HHDX\SipStructure.h
-..\obj\timer.o: ..\HHDX\SipConstant.h
+..\obj\timer.o: ..\HHDX\RecMsgBuilding.h

@@ -12,23 +12,23 @@
 #define	RTP_TX						1
 #define	MSW_TX						2
 
-#define SIP_LOCAL_PORT			5060	//¶¨ÒåSIPÁ¬½ÓµÄ¶Ë¿Ú 
-#define SVR_RMT_PORT				5060	//¶¨Òå·þÎñÆ÷Á¬½ÓµÄ¶Ë¿Ú 
-#define RTP_LOCAL_PORT			6000	//¶¨Òå·þÎñÆ÷Á¬½ÓµÄ¶Ë¿Ú 
+#define SIP_LOCAL_PORT			5060	//ï¿½ï¿½ï¿½ï¿½SIPï¿½ï¿½ï¿½ÓµÄ¶Ë¿ï¿½ 
+#define SVR_RMT_PORT			5060	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÓµÄ¶Ë¿ï¿½ 
+#define RTP_LOCAL_PORT			6000	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÓµÄ¶Ë¿ï¿½ 
 
 #define NET_BUF_SIZE 			1524
-#define NET_RXBUFNB        	8     /* ×¢£ºÖ»ÄÜÊÇ2^n(2,4,8,16...),´¿´âÎªÁË¼ÆËã·½±ã */
-#define NET_TXBUFNB        	8     /* ×¢£ºÖ»ÄÜÊÇ2^n(2,4,8,16...),´¿´âÎªÁË¼ÆËã·½±ã */ 
+#define NET_RXBUFNB        	8     /* ×¢ï¿½ï¿½Ö»ï¿½ï¿½ï¿½ï¿½2^n(2,4,8,16...),ï¿½ï¿½ï¿½ï¿½Îªï¿½Ë¼ï¿½ï¿½ã·½ï¿½ï¿½ */
+#define NET_TXBUFNB        	8     /* ×¢ï¿½ï¿½Ö»ï¿½ï¿½ï¿½ï¿½2^n(2,4,8,16...),ï¿½ï¿½ï¿½ï¿½Îªï¿½Ë¼ï¿½ï¿½ã·½ï¿½ï¿½ */ 
 
 
-//¶¨Òånet flag
+//ï¿½ï¿½ï¿½ï¿½net flag
 struct stNetFlag
 {
-	u8 udp_conn:	1;		//bit0 =1: UDPÁ¬½Ó
-	u8 netlink:		1;		//1: ²åÈëÍøÏß
-	u8 netok:			1;		//1: net ³õÊ¼»¯³É¹¦
-	u8 udppcb_new:1;		//1: ´´½¨ÐÂudppcb
-	u8 bind:			1;		//1: °ó¶¨AOI FSÍøÂç
+	u8 udp_conn:	1;		//bit0 =1: UDPï¿½ï¿½ï¿½ï¿½
+	u8 netlink:		1;		//1: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	u8 netok:			1;		//1: net ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½É¹ï¿½
+	u8 udppcb_new:1;		//1: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½udppcb
+	u8 bind:			1;		//1: ï¿½ï¿½AOI FSï¿½ï¿½ï¿½ï¿½
 	unsigned char f:1;
 	unsigned char g:1;
 	unsigned char h:1;
@@ -37,18 +37,18 @@ struct stNetFlag
 extern struct stNetFlag gsNetFlag;
 
 struct stNetRx{
-	unsigned int	len[NET_RXBUFNB];		//10µØÖ·Êý×é¶ÔÓ¦³¤¶È
-	unsigned char	rd;						//¶Á³öÊý
-	unsigned char	wr;						//Ð´ÈëÊý
+	unsigned int	len[NET_RXBUFNB];		//10ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½
+	unsigned char	rd;						//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	unsigned char	wr;						//Ð´ï¿½ï¿½ï¿½ï¿½
 	
 	unsigned short int port[NET_RXBUFNB];
 	unsigned char remoteip[NET_RXBUFNB][4];
 };
 struct stNetTx{
-	unsigned int	len[NET_TXBUFNB];		//10µØÖ·Êý×é¶ÔÓ¦³¤¶È
-	unsigned char	rd;						//¶Á³öÊý
-	unsigned char	wr;						//Ð´ÈëÊý
-	unsigned int	udppcb[NET_TXBUFNB];//ÏòÄÄ¸öudppcb[x]·¢ËÍ
+	unsigned int	len[NET_TXBUFNB];		//10ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½
+	unsigned char	rd;						//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	unsigned char	wr;						//Ð´ï¿½ï¿½ï¿½ï¿½
+	unsigned int	udppcb[NET_TXBUFNB];//ï¿½ï¿½ï¿½Ä¸ï¿½udppcb[x]ï¿½ï¿½ï¿½ï¿½
 };
 
 

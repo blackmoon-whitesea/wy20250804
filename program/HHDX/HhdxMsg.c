@@ -19,28 +19,28 @@ int dynamic_port=0;
 1. TEL_param_fromPC={......}
 2. TEL_func_fromPC={......}
 */
-//½âÎöÃüÁîÐÐÄÚÈÝ
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 int HHDX_Command(char *p_line)
 {
 	unsigned int i;
-	int j=0;	//×Ö¶Î³¤¶È
-	char ibuffer[18]; // ÃüÁîÐÐ»º³åÇø 
+	int j=0;	//ï¿½Ö¶Î³ï¿½ï¿½ï¿½
+	char ibuffer[18]; // ï¿½ï¿½ï¿½ï¿½ï¿½Ð»ï¿½ï¿½ï¿½ï¿½ï¿½ 
 	for(i=0;i<18;i++)
 	{
-//1. µÚÒ»¸ö×Ö½Ú¿ªÊ¼¸øibuffer		
+//1. ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Ö½Ú¿ï¿½Ê¼ï¿½ï¿½ibuffer		
 		if(j==0) ibuffer[0]='\0';
-//2. ÕÒÒ»¸ö'=' 			
+//2. ï¿½ï¿½Ò»ï¿½ï¿½'=' 			
     if(*(p_line+i)=='=')
 		{
-			ibuffer[j]='\0';	//Óöµ½·Ö¸ô·û'='Í£Ö¹
-			gTempPointer =(p_line+i+1);	//'='ÏÂÒ»¸öµØÖ·
+			ibuffer[j]='\0';	//ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½'='Í£Ö¹
+			gTempPointer =(p_line+i+1);	//'='ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½Ö·
 			break;
 		}
-//3. ¼ÇÂ¼"="Ç°×Ö·û
+//3. ï¿½ï¿½Â¼"="Ç°ï¿½Ö·ï¿½
     ibuffer[j]= *(p_line+i);
 		j++;
 	}
-//È¡³öTEL_param_fromPCºÍTEL_func_fromPCÃüÁî
+//È¡ï¿½ï¿½TEL_param_fromPCï¿½ï¿½TEL_func_fromPCï¿½ï¿½ï¿½ï¿½
 	if(i!=18)
 	{
 		if(!strcmp(ibuffer,"TEL_func_fromPC")){
@@ -72,71 +72,71 @@ int HHDX_Command(char *p_line)
 }
 
 /*
-ÌáÈ¡Ã¿¶Î×Ö·û
+ï¿½ï¿½È¡Ã¿ï¿½ï¿½ï¿½Ö·ï¿½
 {"key":"value",......}
 */
 int HHDX_DivideJson(int cmd_type,char *p_msg,int msg_len)
 {
 	int i;		
-	int j=0;	//Ã¿×Ö¶Î³¤¶È¼ÆÊý£¬Óöµ½·Ö¸ô·û','ÇåÁã
+	int j=0;	//Ã¿ï¿½Ö¶Î³ï¿½ï¿½È¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½','ï¿½ï¿½ï¿½ï¿½
 	char *value_addr;
-	char ibuffer[50]; //Ã¿×Ö·û"key":"value"»º³åÇø(²»»á³¬¹ý50) 
+	char ibuffer[50]; //Ã¿ï¿½Ö·ï¿½"key":"value"ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½á³¬ï¿½ï¿½50) 
 	for(i=0;i<msg_len;i++)
 	{
-		if((*(p_msg+i))=='{'){	//json¿ªÊ¼
+		if((*(p_msg+i))=='{'){	//jsonï¿½ï¿½Ê¼
 			j=0;
 			ibuffer[0]='\0';
 		}
-		else if((*(p_msg+i))==','){	//json×Ö¶Î¼ä·Ö¸ô·û
+		else if((*(p_msg+i))==','){	//jsonï¿½Ö¶Î¼ï¿½Ö¸ï¿½ï¿½ï¿½
 			value_addr=HHDX_GetFieldName(cmd_type,ibuffer);
 			HHDX_GetFieldValue(gTempChar,value_addr);
 			j=0;
-			ibuffer[0]='\0';		//ÏÂÒ»¶Î×Ö·û			
+			ibuffer[0]='\0';		//ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Ö·ï¿½			
 		}
-		else if((*(p_msg+i))=='}'){	//json½áÊø
+		else if((*(p_msg+i))=='}'){	//jsonï¿½ï¿½ï¿½ï¿½
 			value_addr=HHDX_GetFieldName(cmd_type,ibuffer);
 			HHDX_GetFieldValue(gTempChar,value_addr);
 			return i;
 		}	
 		else{
-	    ibuffer[j]= *(p_msg+i); // ½«Ã¿¸ö×Ö·û¸´ÖÆ°áµ½ibuffer[j]ÖÐ
+	    ibuffer[j]= *(p_msg+i); // ï¿½ï¿½Ã¿ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½Æ°áµ½ibuffer[j]ï¿½ï¿½
 			j++;
-			if(j==50)		//·ÀÖ¹msg_len>50,³¬³öibuffer³¤¶È
+			if(j==50)		//ï¿½ï¿½Ö¹msg_len>50,ï¿½ï¿½ï¿½ï¿½ibufferï¿½ï¿½ï¿½ï¿½
 				j=0;
 		}
 	}
-	return 0;			//·ÖÎö³ö´í
+	return 0;			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 }
 
 /*
-´Ó{"key":"value"}ÖÐÌáÈ¡Ã¿¶Î×Ö·ûµÄ"key"
+ï¿½ï¿½{"key":"value"}ï¿½ï¿½ï¿½ï¿½È¡Ã¿ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½"key"
 */
 char *HHDX_GetFieldName(int cmd_type,char *p_msg)
 {
 	int i;		
-	int j=0;	//Ã¿×Ö¶Î³¤¶È¼ÆÊý£¬Óöµ½·Ö¸ô·û','ÇåÁã
-	char ibuffer[20]; //"key"×Ö·ûµÄ»º³åÇø³¤¶ÈÎª20
+	int j=0;	//Ã¿ï¿½Ö¶Î³ï¿½ï¿½È¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½','ï¿½ï¿½ï¿½ï¿½
+	char ibuffer[20]; //"key"ï¿½Ö·ï¿½ï¿½Ä»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îª20
 	for(i=0;i<20;i++)
 	{
-		if((j==0)&&(*(p_msg+i)=='"')){	//×Ö·ûÃû¿ªÊ¼
+		if((j==0)&&(*(p_msg+i)=='"')){	//ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼
 			ibuffer[0]='\0';
 		}
-		else if((j!=0)&&(*(p_msg+i)=='"')){	//×Ö·ûÃû½áÊø
+		else if((j!=0)&&(*(p_msg+i)=='"')){	//ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			ibuffer[j] ='\0';
 //			printf("N=%s\r\n",ibuffer);
 			gTempChar =HHDX_AnalyseJsonName(cmd_type,ibuffer);
-			return 	p_msg+i+2;		//·µ»ØvalueµØÖ·
+			return 	p_msg+i+2;		//ï¿½ï¿½ï¿½ï¿½valueï¿½ï¿½Ö·
 		}
 		else{
-	    ibuffer[j]= *(p_msg+i); // ½«Ã¿¸ö×Ö·û¸´ÖÆ°áµ½ibuffer[j]ÖÐ
+	    ibuffer[j]= *(p_msg+i); // ï¿½ï¿½Ã¿ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½Æ°áµ½ibuffer[j]ï¿½ï¿½
 			j++;
 		}
 	}
-	return 0;			//·ÖÎö³ö´í
+	return 0;			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 }
 
 
-//·ÖÎöÀ´×ÔPCµÄÃüÁîºÍcommand type
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½PCï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½command type
 char HHDX_AnalyseJsonName(int cmd_type,char *p_msg)
 {
 	char name=0;
@@ -152,7 +152,7 @@ char HHDX_AnalyseJsonName(int cmd_type,char *p_msg)
 	else if(cmd_type ==HHDX_PARAM){
 		name = (char)HHDX_ParamRx(p_msg);
 		gsNetFlag.bind =0;
-		gsHhdxFlag.eepromwr =1;		//1: ÐèÒªÐ´eeprom		0: Ð´Íê±Ï
+		gsHhdxFlag.eepromwr =1;		//1: ï¿½ï¿½ÒªÐ´eeprom		0: Ð´ï¿½ï¿½ï¿½
 	}
 	else{
 		name =0;
@@ -162,9 +162,9 @@ char HHDX_AnalyseJsonName(int cmd_type,char *p_msg)
 
 
 /*
-//½ÓÊÕÀ´×ÔPCµÄµç»°¹¦ÄÜÖ¸Áî:  TEL_func_fromPC={ÃüÁî}
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½PCï¿½Äµç»°ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½:  TEL_func_fromPC={ï¿½ï¿½ï¿½ï¿½}
 {"tel_onoff":"x"}
-{"dial_nums":"xxxºÅÂë"}
+{"dial_nums":"xxxï¿½ï¿½ï¿½ï¿½"}
 {"dial_num":"x"}
 */
 int HHDX_FuncRx(int cmd_type,char *p_msg_name)
@@ -182,7 +182,7 @@ int HHDX_FuncRx(int cmd_type,char *p_msg_name)
 	return 0;
 }
 /* 
-//½ÓÊÕPCÅäÖÃ²ÎÊýµÄJSON¸ñÊ½Êý¾Ý
+//ï¿½ï¿½ï¿½ï¿½PCï¿½ï¿½ï¿½Ã²ï¿½ï¿½ï¿½ï¿½ï¿½JSONï¿½ï¿½Ê½ï¿½ï¿½ï¿½ï¿½
 {
 	"local_ip":"192.168.0.22",
 	"mask":"255.255.255.0",
@@ -232,28 +232,28 @@ int HHDX_ParamRx(char *p_msg_name)
 	return 0;
 }
 /*
-´Ó{"key":"value"}ÖÐÌáÈ¡Ã¿¶Î×Ö·ûµÄ"value"
+ï¿½ï¿½{"key":"value"}ï¿½ï¿½ï¿½ï¿½È¡Ã¿ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½"value"
 */
 char *HHDX_GetFieldValue(char name,char *p_msg)
 {
 	int i=0,j=0;
-	char ibuffer[16]; //message header»º³åÇø	
+	char ibuffer[16]; //message headerï¿½ï¿½ï¿½ï¿½ï¿½ï¿½	
 	for(i=0;i<16;i++)
 	{
-		if((j==0)&&(*(p_msg+i)=='"')){	//×Ö·ûÃû¿ªÊ¼
+		if((j==0)&&(*(p_msg+i)=='"')){	//ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼
 			ibuffer[0]='\0';
 		}
-		else if((j!=0)&&(*(p_msg+i)=='"')){	//×Ö·ûÃû½áÊø
+		else if((j!=0)&&(*(p_msg+i)=='"')){	//ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			ibuffer[j] ='\0';
 			HHDX_AnalyseJsonValue(name,ibuffer);
-			return p_msg+i+2;		//·µ»ØvalueµØÖ·
+			return p_msg+i+2;		//ï¿½ï¿½ï¿½ï¿½valueï¿½ï¿½Ö·
 		}
 		else{
-	    ibuffer[j]= *(p_msg+i); // ½«Ã¿¸ö×Ö·û¸´ÖÆ°áµ½ibuffer[j]ÖÐ
+	    ibuffer[j]= *(p_msg+i); // ï¿½ï¿½Ã¿ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½Æ°áµ½ibuffer[j]ï¿½ï¿½
 			j++;
 		}
 	}
-	return 0;			//·ÖÎö³ö´í
+	return 0;			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 }
 
 /*
@@ -282,7 +282,7 @@ void HHDX_AnalyseJsonValue(char name,char *p_msg)
 		case JS_REC_STOP:
 			//rec_recive_flag=HHDX_REC_STOP;
 			if(gpsaUdppcb[1]){	
-				udp_remove(gpsaUdppcb[1]);	//ÒÆ³ýUDPÁ¬½Ó
+				udp_remove(gpsaUdppcb[1]);	//ï¿½Æ³ï¿½UDPï¿½ï¿½ï¿½ï¿½
 				gpsaUdppcb[1] =NULL;
 			}	
 			printf("rec stop\r\n");
@@ -304,7 +304,7 @@ void HHDX_AnalyseJsonValue(char name,char *p_msg)
 	   	gsNetFlag.bind =0;
 			break;				
 		case JS_LOCAL_NUM:
-			if(strlen(p_msg)<16){			//³¤¶È²»³¬¹ý15
+			if(strlen(p_msg)<16){			//ï¿½ï¿½ï¿½È²ï¿½ï¿½ï¿½ï¿½ï¿½15
 				strcpy((char *)gpsEeprom->own_num,p_msg);
 				LWIP_NetConfigUpdate();
 			}
@@ -354,41 +354,41 @@ void HHDX_AnalyseJsonValue(char name,char *p_msg)
 
 
 /*
-;1.±¾»úIP	= 192.168.0.30
-;2.±¾»úºÅÂë	= 8002
-;3.·þÎñÆ÷IP	= 192.168.0.10
-;4.Íø¹Ø		= 192.168.0.1
-;5.×ÓÍøÑÚÂë	= 255.255.255.0
-;6.ÑïÉùÆ÷ÒôÁ¿	= 9999
+;1.ï¿½ï¿½ï¿½ï¿½IP	= 192.168.0.30
+;2.ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½	= 8002
+;3.ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½IP	= 192.168.0.10
+;4.ï¿½ï¿½ï¿½ï¿½		= 192.168.0.1
+;5.ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½	= 255.255.255.0
+;6.ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½	= 9999
 */
 void HHDX_FactoryReset(void)
 {
-//1.±¾»úIP	= 192.168.0.30	
+//1.ï¿½ï¿½ï¿½ï¿½IP	= 192.168.0.30	
 	gpsEeprom->own_ip[0] =HOST_IP0;
 	gpsEeprom->own_ip[1] =HOST_IP1;
 	gpsEeprom->own_ip[2] =HOST_IP2;
 	gpsEeprom->own_ip[3] =HOST_IP3;
 	
-//2.±¾»úºÅÂë	= 8002
+//2.ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½	= 8002
 	gpsEeprom->own_num[0] ='8';
 	gpsEeprom->own_num[1] ='0';
 	gpsEeprom->own_num[2] ='0';
 	gpsEeprom->own_num[3] ='2';
 	gpsEeprom->own_num[4] =0;
 
-//3.SIP·þÎñÆ÷IP	= 192.168.0.10	
+//3.SIPï¿½ï¿½ï¿½ï¿½ï¿½ï¿½IP	= 192.168.0.10	
 	gpsEeprom->sv_ip[0] =SV_IP0;
 	gpsEeprom->sv_ip[1] =SV_IP1;
 	gpsEeprom->sv_ip[2] =SV_IP2;
 	gpsEeprom->sv_ip[3] =SV_IP3;
 
-//4.Íø¹Ø		= 192.168.0.1	
+//4.ï¿½ï¿½ï¿½ï¿½		= 192.168.0.1	
 	gpsEeprom->gw_ip[0] =GW_IP0;
 	gpsEeprom->gw_ip[1] =GW_IP1;
 	gpsEeprom->gw_ip[2] =GW_IP2;
 	gpsEeprom->gw_ip[3] =GW_IP3;
 
-//5.×ÓÍøÑÚÂë	= 255.255.0.0
+//5.ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½	= 255.255.0.0
 	gpsEeprom->mask_ip[0] =NET_MASK0;
 	gpsEeprom->mask_ip[1] =NET_MASK1;
 	gpsEeprom->mask_ip[2] =NET_MASK2;
@@ -406,13 +406,29 @@ void HHDX_FactoryReset(void)
 //9.Automatic response time=0~9(max=9*3=27s)	
 	gpsEeprom->ans_time =3;
 	
-//10.16Î»±êÖ¾Î»	
+//10.16Î»ï¿½ï¿½Ö¾Î»	
 	gpsEeprom->flag.ans_onoff =0;
 	gpsEeprom->flag.alarm_led_onoff =0;
+//11.
+    gpsEeprom->own_id[0]='1';
+	gpsEeprom->own_id[1]='1';
+	gpsEeprom->own_id[2]='2';
+	gpsEeprom->own_id[3]='2';
+	gpsEeprom->own_id[0]=0;
+//12.
+   gpsEeprom->nophone_hv=168;
+   gpsEeprom->ring_lv=280;
+   gpsEeprom->onhook_lv=236;
+   gpsEeprom->onhook_hv=264;
+   gpsEeprom->offhook_lv=170;
+   gpsEeprom->offhook_hv=190;
+
+   gpsEeprom->port=RTP_LOCAL_PORT;
 }	
 
+
 /*
-//ÏòPC·¢ËÍ²ÎÊý²éÑ¯»Ø¸´
+//ï¿½ï¿½PCï¿½ï¿½ï¿½Í²ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¯ï¿½Ø¸ï¿½
 	TEL_param_toPC={
 	"local_ip":"192.168.0.12",
 	"mask":"255.255.255.0",
@@ -461,7 +477,7 @@ void HHDX_ParamTxBuild(void)
 
 void HHDX_VariateInit(void)
 {
-	gsHhdxFlag.eepromwr =0;	//1: ÐèÒªÐ´EEPROM
+	gsHhdxFlag.eepromwr =0;	//1: ï¿½ï¿½ÒªÐ´EEPROM
 }
 
 //	

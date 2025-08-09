@@ -11,13 +11,13 @@
 #include "SipFunction.h"
 #include "usart3_FSK.h"
 
-// º¯ÊıÉùÃ÷
-void SEND_CID_JSON(const char* msg_type, const char* status, const char* call_number);
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+//void SEND_CID_JSON(const char* msg_type, const char* status, const char* call_number);
 
 char *gpDeviceVer = "2301091740";
-char gDeviceId[16] = "1222";  // Ä¬ÈÏÉè±¸IDÎª1222£¬¿ÉÍ¨¹ı´®¿ÚÃüÁîĞŞ¸Ä
+//char gDeviceId[16] = "1222";  // Ä¬ï¿½ï¿½ï¿½è±¸IDÎª1222ï¿½ï¿½ï¿½ï¿½Í¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ş¸ï¿½
 /***********************************************************************
-"DTMF=" + ºÅÂë(1Î»)
+"DTMF=" + ï¿½ï¿½ï¿½ï¿½(1Î»)
 ***********************************************************************/
 void BUILD_DIAL_DTMF(u8 dtmf_val)
 {
@@ -31,71 +31,130 @@ void BUILD_DIAL_DTMF(u8 dtmf_val)
 	NET_TxPcbLenWr(SIP_TX,j);
 }
 
+
 /***********************************************************************
-"start" + ±àºÅ(4Î») + ±¾»úºÅ(16Î») + À´µçºÅ(16Î») 
+"start" + ï¿½ï¿½ï¿½(4Î») + ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(16Î») + ï¿½ï¿½ï¿½ï¿½ï¿½(16Î») 
 ***********************************************************************/
 void BUILD_CID_start(void)
 {
-	int i;
+	int i,j;
+	char *SendMsg;	
+	SendMsg =(char *)(gpNetTxBuf + gpsNetTx->wr*NET_BUF_SIZE);
 	
-	strcpy((char *)gFskCidBuf,gpsUaInfo->called_number);	//À´µçºÅÂë
+	strcpy((char *)gFskCidBuf,gpsUaInfo->called_number);	//9012
 	for(i =strlen((char *)gFskCidBuf); i <MAX_NUM_LEN; i++){
 		gFskCidBuf[i] =0x20;
 	}
 	gFskCidBuf[MAX_NUM_LEN] =0;
 	
-	// Ã¿´Î¶¼´ÓEEPROM»ñÈ¡×îĞÂµÄ±¾»úºÅÂë
-	strcpy((char *)gFskOwnBuf,(const char*)gpsEeprom->own_num);	//±¾»úºÅÂë
+	strcpy((char *)gFskOwnBuf,(const char*)gpsEeprom->own_num);	//9012
 	for(i =strlen((char *)gFskOwnBuf); i <MAX_NUM_LEN; i++){
 		gFskOwnBuf[i] =0x20;
 	}
 	gFskOwnBuf[MAX_NUM_LEN] =0;
-	
-	// Ê¹ÓÃĞÂµÄJSON·¢ËÍº¯Êı
-	SEND_CID_JSON("incoming_call", "start", (char*)gFskCidBuf);
-
-	//ÖØ´«ÉèÖÃ
-	gpsUaInfo->waiting_response = 1;
-    gpsUaInfo->retry_count = 0;
-    gpsUaInfo->max_retry = 3;
-    gpsUaInfo->retry_timeout = 2000;  // 2Ãë
-    gpsUaInfo->retry_timer = 2000;
-    gpsUaInfo->last_msg_type = MSG_TYPE_START;
+		
+	j=sprintf(SendMsg,"start1001%s%s\r\n",gFskOwnBuf,gFskCidBuf);
+		
+	NET_TxPcbLenWr(SIP_TX,j);
 }
 
 /***********************************************************************
-"stop" + ±àºÅ(4Î»)
+"stop" + ï¿½ï¿½ï¿½(4Î»)
 ***********************************************************************/
 void BUILD_CID_stop(void)
 {
-	// Ê¹ÓÃĞÂµÄJSON·¢ËÍº¯Êı
-	SEND_CID_JSON("call_end", "stop", NULL);
-
-	//ÖØ´«ÉèÖÃ
-	gpsUaInfo->waiting_response = 1;
-    gpsUaInfo->retry_count = 0;
-    gpsUaInfo->max_retry = 3;
-    gpsUaInfo->retry_timeout = 2000;  // 2Ãë
-    gpsUaInfo->retry_timer = 2000;
-    gpsUaInfo->last_msg_type = MSG_TYPE_STOP;
+	int j;
+	char *SendMsg;	
+	SendMsg =(char *)(gpNetTxBuf + gpsNetTx->wr*NET_BUF_SIZE);
+	
+		
+	j=sprintf(SendMsg,"stop1001\r\n");
+		
+	NET_TxPcbLenWr(SIP_TX,j);
 }
 
 /***********************************************************************
-"stop" + ±àºÅ(4Î»)
+"stop" + ï¿½ï¿½ï¿½(4Î»)
 ***********************************************************************/
 void BUILD_CID_offhook(void)
 {
-	// Ê¹ÓÃĞÂµÄJSON·¢ËÍº¯Êı
-	SEND_CID_JSON("call_answer", "offhook", NULL);
-
-	//ÖØ´«ÉèÖÃ
-	gpsUaInfo->waiting_response = 1;
-    gpsUaInfo->retry_count = 0;
-    gpsUaInfo->max_retry = 3;
-    gpsUaInfo->retry_timeout = 2000;  // 2Ãë
-    gpsUaInfo->retry_timer = 2000;
-    gpsUaInfo->last_msg_type = MSG_TYPE_OFFHOOK;
+	int j;
+	char *SendMsg;	
+	SendMsg =(char *)(gpNetTxBuf + gpsNetTx->wr*NET_BUF_SIZE);
+	
+		
+	j=sprintf(SendMsg,"offhook1001\r\n");
+		
+	NET_TxPcbLenWr(SIP_TX,j);
 }
+
+
+
+// /***********************************************************************
+// "start" + ï¿½ï¿½ï¿½(4Î») + ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(16Î») + ï¿½ï¿½ï¿½ï¿½ï¿½(16Î») 
+// ***********************************************************************/
+// void BUILD_CID_start(void)
+// {
+// 	int i;
+	
+// 	strcpy((char *)gFskCidBuf,gpsUaInfo->called_number);	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+// 	for(i =strlen((char *)gFskCidBuf); i <MAX_NUM_LEN; i++){
+// 		gFskCidBuf[i] =0x20;
+// 	}
+// 	gFskCidBuf[MAX_NUM_LEN] =0;
+	
+// 	// Ã¿ï¿½Î¶ï¿½ï¿½ï¿½EEPROMï¿½ï¿½È¡ï¿½ï¿½ï¿½ÂµÄ±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+// 	strcpy((char *)gFskOwnBuf,(const char*)gpsEeprom->own_num);	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+// 	for(i =strlen((char *)gFskOwnBuf); i <MAX_NUM_LEN; i++){
+// 		gFskOwnBuf[i] =0x20;
+// 	}
+// 	gFskOwnBuf[MAX_NUM_LEN] =0;
+	
+// 	// Ê¹ï¿½ï¿½ï¿½Âµï¿½JSONï¿½ï¿½ï¿½Íºï¿½ï¿½ï¿½
+// 	SEND_CID_JSON("incoming_call", "start", (char*)gFskCidBuf);
+
+// 	//ï¿½Ø´ï¿½ï¿½ï¿½ï¿½ï¿½
+// 	gpsUaInfo->waiting_response = 1;
+//     gpsUaInfo->retry_count = 0;
+//     gpsUaInfo->max_retry = 3;
+//     gpsUaInfo->retry_timeout = 2000;  // 2ï¿½ï¿½
+//     gpsUaInfo->retry_timer = 2000;
+//     gpsUaInfo->last_msg_type = MSG_TYPE_START;
+// }
+
+// /***********************************************************************
+// "stop" + ï¿½ï¿½ï¿½(4Î»)
+// ***********************************************************************/
+// void BUILD_CID_stop(void)
+// {
+// 	// Ê¹ï¿½ï¿½ï¿½Âµï¿½JSONï¿½ï¿½ï¿½Íºï¿½ï¿½ï¿½
+// 	SEND_CID_JSON("call_end", "stop", NULL);
+
+// 	//ï¿½Ø´ï¿½ï¿½ï¿½ï¿½ï¿½
+// 	gpsUaInfo->waiting_response = 1;
+//     gpsUaInfo->retry_count = 0;
+//     gpsUaInfo->max_retry = 3;
+//     gpsUaInfo->retry_timeout = 2000;  // 2ï¿½ï¿½
+//     gpsUaInfo->retry_timer = 2000;
+//     gpsUaInfo->last_msg_type = MSG_TYPE_STOP;
+// }
+
+// /***********************************************************************
+// "stop" + ï¿½ï¿½ï¿½(4Î»)
+// ***********************************************************************/
+// void BUILD_CID_offhook(void)
+// {
+// 	// Ê¹ï¿½ï¿½ï¿½Âµï¿½JSONï¿½ï¿½ï¿½Íºï¿½ï¿½ï¿½
+// 	SEND_CID_JSON("call_answer", "offhook", NULL);
+
+// 	//ï¿½Ø´ï¿½ï¿½ï¿½ï¿½ï¿½
+// 	gpsUaInfo->waiting_response = 1;
+//     gpsUaInfo->retry_count = 0;
+//     gpsUaInfo->max_retry = 3;
+//     gpsUaInfo->retry_timeout = 2000;  // 2ï¿½ï¿½
+//     gpsUaInfo->retry_timer = 2000;
+//     gpsUaInfo->last_msg_type = MSG_TYPE_OFFHOOK;
+// }
 
 
 /***********************************************************************
@@ -158,26 +217,26 @@ void BUILD_register(void)
 
 
 /***********************************************************************
-;Ö÷½ĞÕª»ú·¢ËÍINVITE(sip_mechanism=#TX_INVITE):
+;ï¿½ï¿½ï¿½ï¿½Õªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½INVITE(sip_mechanism=#TX_INVITE):
 ;	INVITE sip:Called@server_ip:5060 SIP/2.0
-;1).  ²úÉúViaÍ·×Ö¶ÎVia: SIP/2.0/UDP Ô´IP:5060;branch=z9hG4bKxxxxxx
-;2).  ²úÉúFromÍ·×Ö¶Î From:sip:Ö÷½ĞºÅ@·şÎñÆ÷IP:tag= xxxxxx
-;3).  ²úÉúToÍ·×Ö¶ÎTo:sip:±»½ĞºÅ@·şÎñÆ÷IP
-;4).  ²úÉúCall-IDÍ·×Ö¶ÎCall-ID:xxxxxx@·şÎñÆ÷IP
-;5).  ²úÉúContactÍ·×Ö¶ÎContact:< sip:±¾»úºÅ@±¾»úIP:5060>
-;6).  ²úÉúCseqÍ·×Ö¶ÎCSeq: xxx INVITE
-;7).  ²úÉúMax-FowordsÍ·×Ö¶ÎMax-Forwards: 70
-;8).  ²úÉúAllowÍ·×Ö¶ÎAllow: INVITE,CANCEL,ACK,BYE,NOTIFY,REFER,OPTIONS,INFO,MESSAGE,UPDATE
-;9).  ²úÉúUser-AgentÍ·×Ö¶ÎUser-Agent:HHDX-IP-PHON-09040801
-;10). ²»²úÉúRecord-RouteÍ·×Ö¶Î
-;12). ²»²úÉúRouteÍ·×Ö¶ÎRoute: <sip:·şÎñÆ÷IP:5060;lr>
-;13). ²úÉúContent-TypeÍ·×Ö¶ÎContent-Type: application/sdp
-;14). ²úÉúContent-LengthÍ·×Ö¶ÎContent-Length: xx
-;15). ²úÉúSDPĞ­Òé
+;1).  ï¿½ï¿½ï¿½ï¿½ViaÍ·ï¿½Ö¶ï¿½Via: SIP/2.0/UDP Ô´IP:5060;branch=z9hG4bKxxxxxx
+;2).  ï¿½ï¿½ï¿½ï¿½FromÍ·ï¿½Ö¶ï¿½ From:sip:ï¿½ï¿½ï¿½Ğºï¿½@ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½IP:tag= xxxxxx
+;3).  ï¿½ï¿½ï¿½ï¿½ToÍ·ï¿½Ö¶ï¿½To:sip:ï¿½ï¿½ï¿½Ğºï¿½@ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½IP
+;4).  ï¿½ï¿½ï¿½ï¿½Call-IDÍ·ï¿½Ö¶ï¿½Call-ID:xxxxxx@ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½IP
+;5).  ï¿½ï¿½ï¿½ï¿½ContactÍ·ï¿½Ö¶ï¿½Contact:< sip:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½@ï¿½ï¿½ï¿½ï¿½IP:5060>
+;6).  ï¿½ï¿½ï¿½ï¿½CseqÍ·ï¿½Ö¶ï¿½CSeq: xxx INVITE
+;7).  ï¿½ï¿½ï¿½ï¿½Max-FowordsÍ·ï¿½Ö¶ï¿½Max-Forwards: 70
+;8).  ï¿½ï¿½ï¿½ï¿½AllowÍ·ï¿½Ö¶ï¿½Allow: INVITE,CANCEL,ACK,BYE,NOTIFY,REFER,OPTIONS,INFO,MESSAGE,UPDATE
+;9).  ï¿½ï¿½ï¿½ï¿½User-AgentÍ·ï¿½Ö¶ï¿½User-Agent:HHDX-IP-PHON-09040801
+;10). ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Record-RouteÍ·ï¿½Ö¶ï¿½
+;12). ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½RouteÍ·ï¿½Ö¶ï¿½Route: <sip:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½IP:5060;lr>
+;13). ï¿½ï¿½ï¿½ï¿½Content-TypeÍ·ï¿½Ö¶ï¿½Content-Type: application/sdp
+;14). ï¿½ï¿½ï¿½ï¿½Content-LengthÍ·ï¿½Ö¶ï¿½Content-Length: xx
+;15). ï¿½ï¿½ï¿½ï¿½SDPĞ­ï¿½ï¿½
 ;		v=0
-;		o=±¾»úºÅ 0246810 1357911 IN IP4 ±¾»úIP
+;		o=ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 0246810 1357911 IN IP4 ï¿½ï¿½ï¿½ï¿½IP
 ;		s=A call
-;		c=IN IP4 ±¾»úIP
+;		c=IN IP4 ï¿½ï¿½ï¿½ï¿½IP
 ;		t=0 0
 ;		m=audio 5000 RTP/AVP 8
 ;		a=rtpmap:8 PCMA/8000
@@ -195,18 +254,18 @@ void BUILD_invite(void)
 	
 	j=sprintf(SendMsg,"INVITE sip:%s@%s:%d SIP/2.0\r\n",UAinfo->called_number,UAinfo->server_ip,UAinfo->server_port);
 	SIP_CountBranch(reg_ramdom);	
-	gsMsg.via[0] =MymallocCopy(gsMsg.via[0],24,reg_ramdom);		//cancelÓëinviteÒ»ÖÂ
+	gsMsg.via[0] =MymallocCopy(gsMsg.via[0],24,reg_ramdom);		//cancelï¿½ï¿½inviteÒ»ï¿½ï¿½
 	j+=sprintf(SendMsg+j,"Via: SIP/2.0/UDP %s:%d;branch=%s\r\n",UAinfo->host_ip,UAinfo->host_port,reg_ramdom);
 	SIP_CountTag(reg_ramdom);
-	gsMsg.from =MymallocCopy(gsMsg.from,17,reg_ramdom);		//cancelÓëinviteÒ»ÖÂ
+	gsMsg.from =MymallocCopy(gsMsg.from,17,reg_ramdom);		//cancelï¿½ï¿½inviteÒ»ï¿½ï¿½
 	j+=sprintf(SendMsg+j,"From: sip:%s@%s;tag=%s\r\n",UAinfo->calling_number,UAinfo->server_ip,reg_ramdom);
   j+=sprintf(SendMsg+j,"To: sip:%s@%s\r\n",UAinfo->called_number,UAinfo->server_ip);  
 	SIP_CountCallid(reg_ramdom);
-	gsMsg.callid =MymallocCopy(gsMsg.callid,31,reg_ramdom);//cancelÓëinviteÒ»ÖÂ
+	gsMsg.callid =MymallocCopy(gsMsg.callid,31,reg_ramdom);//cancelï¿½ï¿½inviteÒ»ï¿½ï¿½
 	j+=sprintf(SendMsg+j,"Call-ID: %s@%s\r\n",reg_ramdom,UAinfo->host_ip);
 	j+=sprintf(SendMsg+j,"Contact: sip:%s@%s:%d\r\n",UAinfo->calling_number,UAinfo->host_ip,UAinfo->host_port);	
 	UAinfo->cseq_value ++;
-	gsMsg.cseq_num =UAinfo->cseq_value;	//cancelÓëinviteÒ»ÖÂ
+	gsMsg.cseq_num =UAinfo->cseq_value;	//cancelï¿½ï¿½inviteÒ»ï¿½ï¿½
 //	if(UAinfo->cseq_value ==0)
 //		UAinfo->cseq_value =1;
 	j+=sprintf(SendMsg+j,"CSeq: %d INVITE\r\n",UAinfo->cseq_value);
@@ -222,7 +281,7 @@ void BUILD_invite(void)
   j=SDP_building(SendMsg,UAinfo,j);
 	//Int2String(SendMsg+bp-7,j-bp);
 	sprintf(ip_string,"%d",j-bp);
-	strncpy(SendMsg+bp-7,ip_string,strlen(ip_string));	//strncpy²»»á×·¼Ó"\0"
+	strncpy(SendMsg+bp-7,ip_string,strlen(ip_string));	//strncpyï¿½ï¿½ï¿½ï¿½×·ï¿½ï¿½"\0"
 	
 	NET_TxPcbLenWr(SIP_TX,j);
 }
@@ -370,17 +429,17 @@ void BUILD_trying(void)
 }
 
 /***********************************************************************
-;·¢ËÍ180 Ringing
+;ï¿½ï¿½ï¿½ï¿½180 Ringing
 ;	SIP/2.0 180 Ringing
-;1).  ²úÉúViaÍ·×Ö¶Î(¿ÉÄÜÓĞ¶à¸ö)Via: SIP/2.0/UDP  Ô´IP:5060;branch=z9hG4bKxxxxxx
-;2).  ²úÉúFromÍ·×Ö¶Î From:sip:Ö÷½ĞºÅ@·şÎñÆ÷IP:tag= xxxxxx
-;3).  ²úÉúToÍ·×Ö¶ÎTo:sip:±»½ĞºÅ@·şÎñÆ÷IP;tag= xxxxxx
-;4).  ²úÉúCall-IDÍ·×Ö¶ÎCall-ID:xxxxxx@·şÎñÆ÷IP
-;5).  ÅĞ¶Ïsip_route_num·ñ=0£¿²úÉúRouteÍ·×Ö¶Î
-;6).  ²úÉúContactÍ·×Ö¶ÎContact:< sip:±¾»úºÅ@±¾»úIP:5060>
-;7).  ²úÉúCseqÍ·×Ö¶ÎCSeq: xxx INVITE
-;8).  ²úÉúMax-FowordsÍ·×Ö¶ÎMax-Forwards: 70
-;9).  ²úÉúContent-LengthÍ·×Ö¶ÎContent-Length: 0
+;1).  ï¿½ï¿½ï¿½ï¿½ViaÍ·ï¿½Ö¶ï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½Ğ¶ï¿½ï¿½)Via: SIP/2.0/UDP  Ô´IP:5060;branch=z9hG4bKxxxxxx
+;2).  ï¿½ï¿½ï¿½ï¿½FromÍ·ï¿½Ö¶ï¿½ From:sip:ï¿½ï¿½ï¿½Ğºï¿½@ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½IP:tag= xxxxxx
+;3).  ï¿½ï¿½ï¿½ï¿½ToÍ·ï¿½Ö¶ï¿½To:sip:ï¿½ï¿½ï¿½Ğºï¿½@ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½IP;tag= xxxxxx
+;4).  ï¿½ï¿½ï¿½ï¿½Call-IDÍ·ï¿½Ö¶ï¿½Call-ID:xxxxxx@ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½IP
+;5).  ï¿½Ğ¶ï¿½sip_route_numï¿½ï¿½=0ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½RouteÍ·ï¿½Ö¶ï¿½
+;6).  ï¿½ï¿½ï¿½ï¿½ContactÍ·ï¿½Ö¶ï¿½Contact:< sip:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½@ï¿½ï¿½ï¿½ï¿½IP:5060>
+;7).  ï¿½ï¿½ï¿½ï¿½CseqÍ·ï¿½Ö¶ï¿½CSeq: xxx INVITE
+;8).  ï¿½ï¿½ï¿½ï¿½Max-FowordsÍ·ï¿½Ö¶ï¿½Max-Forwards: 70
+;9).  ï¿½ï¿½ï¿½ï¿½Content-LengthÍ·ï¿½Ö¶ï¿½Content-Length: 0
 ;***********************************************************************/
 void BUILD_ringing(void)
 {	
@@ -411,26 +470,26 @@ void BUILD_ringing(void)
 
 
 /***********************************************************************
-;±»½ĞÕª»ú·¢ËÍ200 OK(sip_mechanism=#TX_INVITE_200_OK):
+;ï¿½ï¿½ï¿½ï¿½Õªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½200 OK(sip_mechanism=#TX_INVITE_200_OK):
 ;	SIP/2.0 200 OK
-;1).  ²úÉúViaÍ·×Ö¶ÎVia: SIP/2.0/UDP  Ô´IP:5060;branch=z9hG4bKxxxxxx
-;2).  ²úÉúFromÍ·×Ö¶Î From:sip:Ö÷½ĞºÅ@·şÎñÆ÷IP;tag= xxxxxx
-;3).  ²úÉúToÍ·×Ö¶ÎTo:sip:±»½ĞºÅ@·şÎñÆ÷IP;tag= xxxxxx
-;4).  ²úÉúCall-IDÍ·×Ö¶ÎCall-ID:xxxxxx@·şÎñÆ÷IP
-;5).  ²úÉúContactÍ·×Ö¶ÎContact:< sip:±¾»úºÅ@±¾»úIP:5060>
-;6).  ²úÉúCseqÍ·×Ö¶ÎCSeq: xxx INVITE
-;7).  ²úÉúMax-FowordsÍ·×Ö¶ÎMax-Forwards: 70
-;8).  ²úÉúAllowÍ·×Ö¶ÎAllow: INVITE,CANCEL,ACK,BYE,NOTIFY,REFER,OPTIONS,INFO,MESSAGE,UPDATE
-;9).  ²úÉúUser-AgentÍ·×Ö¶ÎUser-Agent:HHDX-IP-PHON-09040801
-;10). ²»²úÉúRecord-RouteÍ·×Ö¶Î
-;12). ²»²úÉúRouteÍ·×Ö¶ÎRoute: <sip:·şÎñÆ÷IP:5060;lr>
-;13). ²úÉúContent-TypeÍ·×Ö¶ÎContent-Type: application/sdp
-;14). ²úÉúContent-LengthÍ·×Ö¶ÎContent-Length: xx
-;15). ²úÉúSDPĞ­Òé
+;1).  ï¿½ï¿½ï¿½ï¿½ViaÍ·ï¿½Ö¶ï¿½Via: SIP/2.0/UDP  Ô´IP:5060;branch=z9hG4bKxxxxxx
+;2).  ï¿½ï¿½ï¿½ï¿½FromÍ·ï¿½Ö¶ï¿½ From:sip:ï¿½ï¿½ï¿½Ğºï¿½@ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½IP;tag= xxxxxx
+;3).  ï¿½ï¿½ï¿½ï¿½ToÍ·ï¿½Ö¶ï¿½To:sip:ï¿½ï¿½ï¿½Ğºï¿½@ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½IP;tag= xxxxxx
+;4).  ï¿½ï¿½ï¿½ï¿½Call-IDÍ·ï¿½Ö¶ï¿½Call-ID:xxxxxx@ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½IP
+;5).  ï¿½ï¿½ï¿½ï¿½ContactÍ·ï¿½Ö¶ï¿½Contact:< sip:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½@ï¿½ï¿½ï¿½ï¿½IP:5060>
+;6).  ï¿½ï¿½ï¿½ï¿½CseqÍ·ï¿½Ö¶ï¿½CSeq: xxx INVITE
+;7).  ï¿½ï¿½ï¿½ï¿½Max-FowordsÍ·ï¿½Ö¶ï¿½Max-Forwards: 70
+;8).  ï¿½ï¿½ï¿½ï¿½AllowÍ·ï¿½Ö¶ï¿½Allow: INVITE,CANCEL,ACK,BYE,NOTIFY,REFER,OPTIONS,INFO,MESSAGE,UPDATE
+;9).  ï¿½ï¿½ï¿½ï¿½User-AgentÍ·ï¿½Ö¶ï¿½User-Agent:HHDX-IP-PHON-09040801
+;10). ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Record-RouteÍ·ï¿½Ö¶ï¿½
+;12). ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½RouteÍ·ï¿½Ö¶ï¿½Route: <sip:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½IP:5060;lr>
+;13). ï¿½ï¿½ï¿½ï¿½Content-TypeÍ·ï¿½Ö¶ï¿½Content-Type: application/sdp
+;14). ï¿½ï¿½ï¿½ï¿½Content-LengthÍ·ï¿½Ö¶ï¿½Content-Length: xx
+;15). ï¿½ï¿½ï¿½ï¿½SDPĞ­ï¿½ï¿½
 ;		v=0
-;		o=±¾»úºÅ 0246810 1357911 IN IP4 ±¾»úIP
+;		o=ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 0246810 1357911 IN IP4 ï¿½ï¿½ï¿½ï¿½IP
 ;		s=A call
-;		c=IN IP4 ±¾»úIP
+;		c=IN IP4 ï¿½ï¿½ï¿½ï¿½IP
 ;		t=0 0
 ;		m=audio 5000 RTP/AVP 8
 ;		a=rtpmap:8 PCMA/8000
@@ -468,7 +527,7 @@ void BUILD_invite_ok(void)
   j=SDP_building(SendMsg,UAinfo,j);
 	//Int2String(SendMsg+bp-7,j-bp);
 	sprintf(ip_string,"%d",j-bp);
-	strncpy(SendMsg+bp-7,ip_string,strlen(ip_string));	//strncpy²»»á×·¼Ó"\0"
+	strncpy(SendMsg+bp-7,ip_string,strlen(ip_string));	//strncpyï¿½ï¿½ï¿½ï¿½×·ï¿½ï¿½"\0"
 	
 	NET_TxPcbLenWr(SIP_TX,j);
 }
@@ -546,206 +605,206 @@ void BUILD_487(void)
 	NET_TxPcbLenWr(SIP_TX,j);
 }
 
-/***********************************************************************
-¶¯Ì¬¶Ë¿ÚÇëÇóº¯Êı
-***********************************************************************/
-void BUILD_port_request(void)
-{
-	int j;
-	char *SendMsg;	
-	SendMsg =(char *)(gpNetTxBuf + gpsNetTx->wr*NET_BUF_SIZE);
+// /***********************************************************************
+// ï¿½ï¿½Ì¬ï¿½Ë¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+// ***********************************************************************/
+// void BUILD_port_request(void)
+// {
+// 	int j;
+// 	char *SendMsg;	
+// 	SendMsg =(char *)(gpNetTxBuf + gpsNetTx->wr*NET_BUF_SIZE);
 	
-	/*¶Ë¿ÚÇëÇóÃüÁî
-	ÖÕ¶Ë>>·şÎñÆ÷£¨id=ÖÕ¶ËÎ¨Ò»±àºÅ¡¢type=ÇëÇóÀàĞÍ£©
-	Port_Request={"id":"1222","type":"port_request"}
-	·şÎñÆ÷>>ÖÕ¶Ë£¨port=¶¯Ì¬·ÖÅäµÄ¶Ë¿ÚºÅ£©
-	Port_Response={"port":"8888","status":"success"}*/
-	
-	j=sprintf(SendMsg,"{\"id\":\"%s\",\"type\":\"port_request\"}\r\n", gDeviceId);
-	
-	NET_TxPcbLenWr(SIP_TX,j);
-	
-	// ÉèÖÃ¶Ë¿ÚÇëÇó×´Ì¬
-	gpsUaInfo->port_request_timer = PORT_REQUEST_TIMEOUT;
-	gpsUaInfo->port_request_retry++;
-}
+// 	/*ï¿½Ë¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+// 	ï¿½Õ¶ï¿½>>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½id=ï¿½Õ¶ï¿½Î¨Ò»ï¿½ï¿½Å¡ï¿½type=ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í£ï¿½
+// 	Port_Request={"id":"1222","type":"port_request"}
+// 	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½>>ï¿½Õ¶Ë£ï¿½port=ï¿½ï¿½Ì¬ï¿½ï¿½ï¿½ï¿½Ä¶Ë¿ÚºÅ£ï¿½
+// 	Port_Response={"port":"8888","status":"success"}*/
 
-/***********************************************************************
-¶Ë¿ÚÑéÖ¤º¯Êı
-***********************************************************************/
-void BUILD_port_verify(u16 port)
-{
-	int j;
-	char *SendMsg;	
-	SendMsg =(char *)(gpNetTxBuf + gpsNetTx->wr*NET_BUF_SIZE);
-	
-	/*¶Ë¿ÚÑéÖ¤ÃüÁî
-	ÖÕ¶Ë>>·şÎñÆ÷£¨Í¨¹ı¶¯Ì¬¶Ë¿Ú·¢ËÍÑéÖ¤ÏûÏ¢£©
-	Port_Verify={"id":"1222","type":"port_verify","port":"8888"}*/
-	
-	j=sprintf(SendMsg,"{\"id\":\"%s\",\"type\":\"port_verify\",\"port\":\"%d\"}\r\n", gDeviceId, port);
-	
-	NET_TxPcbLenWr(SIP_TX,j);
-}
+// 	j=sprintf(SendMsg,"{\"id\":\"%s\",\"type\":\"port_request\"}\r\n", gpsEeprom->own_id);
 
-/***********************************************************************
-ÎÄ¼ş´«Êä¿ªÊ¼º¯Êı
-***********************************************************************/
-void BUILD_file_start(const char* filename, u32 filesize)
-{
-	int j;
-	char *SendMsg;	
-	SendMsg =(char *)(gpNetTxBuf + gpsNetTx->wr*NET_BUF_SIZE);
+// 	NET_TxPcbLenWr(SIP_TX,j);
 	
-	/*ÎÄ¼ş´«Êä¿ªÊ¼ÃüÁî
-	File_Start={"id":"1222","type":"file_start","filename":"record.wav","size":"102400"}*/
-	
-	j=sprintf(SendMsg,"{\"id\":\"%s\",\"type\":\"file_start\",\"filename\":\"%s\",\"size\":\"%lu\"}\r\n", 
-		gDeviceId, filename, filesize);
-	
-	NET_TxPcbLenWr(SIP_TX,j);
-}
+// 	// ï¿½ï¿½ï¿½Ã¶Ë¿ï¿½ï¿½ï¿½ï¿½ï¿½×´Ì¬
+// 	gpsUaInfo->port_request_timer = PORT_REQUEST_TIMEOUT;
+// 	gpsUaInfo->port_request_retry++;
+// }
 
-/***********************************************************************
-ÎÄ¼şÊı¾İ¿é´«Êäº¯Êı
-***********************************************************************/
-void BUILD_file_data(u16 block_num, u8* data, u16 data_len)
-{
-	int j;
-	char *SendMsg;	
-	SendMsg =(char *)(gpNetTxBuf + gpsNetTx->wr*NET_BUF_SIZE);
+// /***********************************************************************
+// ï¿½Ë¿ï¿½ï¿½ï¿½Ö¤ï¿½ï¿½ï¿½ï¿½
+// ***********************************************************************/
+// void BUILD_port_verify(u16 port)
+// {
+// 	int j;
+// 	char *SendMsg;	
+// 	SendMsg =(char *)(gpNetTxBuf + gpsNetTx->wr*NET_BUF_SIZE);
 	
-	/*ÎÄ¼şÊı¾İ¿é´«Êä - ¼ò»¯°æ£¬Êµ¼ÊÓ¦¸ÃÓÃ¶ş½øÖÆ´«Êä
-	File_Data={"id":"1222","type":"file_data","block":"1","data":"base64_encoded_data"}*/
-	
-	j=sprintf(SendMsg,"{\"id\":\"%s\",\"type\":\"file_data\",\"block\":\"%d\",\"length\":\"%d\"}\r\n", 
-		gDeviceId, block_num, data_len);
-	
-	// ×¢Òâ£ºÕâÀï¼ò»¯´¦Àí£¬Êµ¼ÊÓ¦¸Ã½«¶ş½øÖÆÊı¾İ½øĞĞBase64±àÂë»òÖ±½Ó·¢ËÍ¶ş½øÖÆ
-	memcpy(SendMsg + j, data, data_len);
-	j += data_len;
-	
-	NET_TxPcbLenWr(SIP_TX,j);
-}
+// 	/*ï¿½Ë¿ï¿½ï¿½ï¿½Ö¤ï¿½ï¿½ï¿½ï¿½
+// 	ï¿½Õ¶ï¿½>>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¨ï¿½ï¿½ï¿½ï¿½Ì¬ï¿½Ë¿Ú·ï¿½ï¿½ï¿½ï¿½ï¿½Ö¤ï¿½ï¿½Ï¢ï¿½ï¿½
+// 	Port_Verify={"id":"1222","type":"port_verify","port":"8888"}*/
 
-/***********************************************************************
-ÎÄ¼ş´«Êä½áÊøº¯Êı
-***********************************************************************/
-void BUILD_file_end(u16 total_blocks, u32 total_size)
-{
-	int j;
-	char *SendMsg;	
-	SendMsg =(char *)(gpNetTxBuf + gpsNetTx->wr*NET_BUF_SIZE);
-	
-	/*ÎÄ¼ş´«Êä½áÊøÃüÁî
-	File_End={"id":"1222","type":"file_end","total_blocks":"100","total_size":"102400"}*/
-	
-	j=sprintf(SendMsg,"{\"id\":\"%s\",\"type\":\"file_end\",\"total_blocks\":\"%d\",\"total_size\":\"%lu\"}\r\n", 
-		gDeviceId, total_blocks, total_size);
-	
-	NET_TxPcbLenWr(SIP_TX,j);
-}
+// 	j=sprintf(SendMsg,"{\"id\":\"%s\",\"type\":\"port_verify\",\"port\":\"%d\"}\r\n", gpsEeprom->own_id, port);
 
-// Â¼ÒôÎÄ¼ş´«ÊäÊ¾Àıº¯Êı
-void transfer_recording_file(const char* filename)
-{
-    // ±äÁ¿ÉùÃ÷±ØĞëÔÚº¯Êı¿ªÍ·£¨C89±ê×¼£©
-    u8 sample_data[] = "Recording file content data block...";
-    u32 file_size = 1024;  // ¼ÙÉè1KBÂ¼ÒôÎÄ¼ş
-    u16 total_blocks;
-    u16 block;
-    u16 data_len;
-    
-    // ¼ÆËã×Ü¿éÊı
-    total_blocks = (file_size + FILE_BLOCK_SIZE - 1) / FILE_BLOCK_SIZE;
-    
-    // 1. Ê×ÏÈÇëÇó¶¯Ì¬¶Ë¿Ú
-    if(!gpsUaInfo->port_negotiated)
-    {
-        printf("Requesting dynamic port for file transfer...\r\n");
-        BUILD_port_request();
-        gpsUaInfo->port_request_timer = PORT_REQUEST_TIMEOUT;
-        gpsUaInfo->port_request_retry = 0;
-        return;
-    }
-    
-    // 2. ÑéÖ¤¶Ë¿Ú¿ÉÓÃĞÔ
-    if(!gpsUaInfo->port_verified)
-    {
-        printf("Verifying port %d...\r\n", gpsUaInfo->dynamic_port);
-        BUILD_port_verify(gpsUaInfo->dynamic_port);
-        return;
-    }
-    
-    // 3. ¿ªÊ¼ÎÄ¼ş´«Êä (Ä£ÄâÂ¼ÒôÎÄ¼ş)
-    printf("Starting file transfer: %s\r\n", filename);
-    
-    // ·¢ËÍÎÄ¼ş¿ªÊ¼ÏûÏ¢
-    BUILD_file_start(filename, file_size);
-    
-    // ·Ö¿é·¢ËÍÊı¾İ£¨C89 forÑ­»·¸ñÊ½£©
-    for(block = 1; block <= total_blocks; block++)
-    {
-        data_len = (block == total_blocks) ? 
-                   (file_size % FILE_BLOCK_SIZE) : FILE_BLOCK_SIZE;
-        BUILD_file_data(block, sample_data, data_len);
-    }
-    
-    // ·¢ËÍÎÄ¼ş½áÊøÏûÏ¢
-    BUILD_file_end(total_blocks, file_size);
-    
-    printf("File transfer completed: %d blocks, %d bytes\r\n", 
-           total_blocks, file_size);
-}
+// 	NET_TxPcbLenWr(SIP_TX,j);
+// }
 
-// JSON¸ñÊ½À´µçĞÅÏ¢·¢ËÍº¯Êı
-void SEND_CID_JSON(const char* msg_type, const char* status, const char* call_number)
-{
-    char json_msg[256];
-    char timestamp[16];
-    char *SendMsg;
-    int msg_len;
-    
-    // »ñÈ¡µ±Ç°Ê±¼ä´Á
-    sprintf(timestamp, "%04d%02d%02d%02d%02d%02d", 
-        gsDate.year, gsDate.month, gsDate.day, 
-        gsDate.hour, gsDate.min, gsDate.sec);
-    
-    // ¹¹½¨JSONÏûÏ¢
-    if(call_number != NULL)
-    {
-        // °üº¬À´µçºÅÂëµÄÏûÏ¢£¨ºôÈëÊÂ¼ş£©
-        msg_len = sprintf(json_msg, 
-            "{\"id\":\"%s\",\"number\":\"%s\",\"call\":\"%s\",\"timestamp\":\"%s\",\"type\":\"%s\",\"status\":\"%s\"}\r\n",
-            gDeviceId, gpsEeprom->own_num, call_number, timestamp, msg_type, status);
-    }
-    else
-    {
-        // ²»°üº¬À´µçºÅÂëµÄÏûÏ¢£¨½ÓÌı/¹Ò¶ÏÊÂ¼ş£©
-        msg_len = sprintf(json_msg, 
-            "{\"id\":\"%s\",\"number\":\"%s\",\"timestamp\":\"%s\",\"type\":\"%s\",\"status\":\"%s\"}\r\n",
-            gDeviceId, gpsEeprom->own_num, timestamp, msg_type, status);
-    }
-    
-    // ÍøÂç·¢ËÍ
-    SendMsg = (char *)(gpNetTxBuf + gpsNetTx->wr*NET_BUF_SIZE);
-    strcpy(SendMsg, json_msg);
-    NET_TxPcbLenWr(SIP_TX, msg_len);
-    
-    // ´®¿Ú·¢ËÍ
-    printf("CID_JSON: %s", json_msg);
-}
+// /***********************************************************************
+// ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ä¿ªÊ¼ï¿½ï¿½ï¿½ï¿½
+// ***********************************************************************/
+// void BUILD_file_start(const char* filename, u32 filesize)
+// {
+// 	int j;
+// 	char *SendMsg;	
+// 	SendMsg =(char *)(gpNetTxBuf + gpsNetTx->wr*NET_BUF_SIZE);
+	
+// 	/*ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ä¿ªÊ¼ï¿½ï¿½ï¿½ï¿½
+// 	File_Start={"id":"1222","type":"file_start","filename":"record.wav","size":"102400"}*/
+	
+// 	j=sprintf(SendMsg,"{\"id\":\"%s\",\"type\":\"file_start\",\"filename\":\"%s\",\"size\":\"%lu\"}\r\n", 
+// 		gpsEeprom->own_id, filename, filesize);
 
-// ³õÊ¼»¯¶¯Ì¬¶Ë¿ÚĞ­ÉÌ
-void init_dynamic_port_negotiation(void)
-{
-    printf("Initializing dynamic port negotiation...\r\n");
+// 	NET_TxPcbLenWr(SIP_TX,j);
+// }
+
+// /***********************************************************************
+// ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½İ¿é´«ï¿½äº¯ï¿½ï¿½
+// ***********************************************************************/
+// void BUILD_file_data(u16 block_num, u8* data, u16 data_len)
+// {
+// 	int j;
+// 	char *SendMsg;	
+// 	SendMsg =(char *)(gpNetTxBuf + gpsNetTx->wr*NET_BUF_SIZE);
+	
+// 	/*ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½İ¿é´«ï¿½ï¿½ - ï¿½ò»¯°æ£¬Êµï¿½ï¿½Ó¦ï¿½ï¿½ï¿½Ã¶ï¿½ï¿½ï¿½ï¿½Æ´ï¿½ï¿½ï¿½
+// 	File_Data={"id":"1222","type":"file_data","block":"1","data":"base64_encoded_data"}*/
+	
+// 	j=sprintf(SendMsg,"{\"id\":\"%s\",\"type\":\"file_data\",\"block\":\"%d\",\"length\":\"%d\"}\r\n", 
+// 		gDeviceId, block_num, data_len);
+	
+// 	// ×¢ï¿½â£ºï¿½ï¿½ï¿½ï¿½ò»¯´ï¿½ï¿½ï¿½ï¿½ï¿½Êµï¿½ï¿½Ó¦ï¿½Ã½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½İ½ï¿½ï¿½ï¿½Base64ï¿½ï¿½ï¿½ï¿½ï¿½Ö±ï¿½Ó·ï¿½ï¿½Í¶ï¿½ï¿½ï¿½ï¿½ï¿½
+// 	memcpy(SendMsg + j, data, data_len);
+// 	j += data_len;
+	
+// 	NET_TxPcbLenWr(SIP_TX,j);
+// }
+
+// /***********************************************************************
+// ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+// ***********************************************************************/
+// void BUILD_file_end(u16 total_blocks, u32 total_size)
+// {
+// 	int j;
+// 	char *SendMsg;	
+// 	SendMsg =(char *)(gpNetTxBuf + gpsNetTx->wr*NET_BUF_SIZE);
+	
+// 	/*ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+// 	File_End={"id":"1222","type":"file_end","total_blocks":"100","total_size":"102400"}*/
+	
+// 	j=sprintf(SendMsg,"{\"id\":\"%s\",\"type\":\"file_end\",\"total_blocks\":\"%d\",\"total_size\":\"%lu\"}\r\n", 
+// 		gDeviceId, total_blocks, total_size);
+	
+// 	NET_TxPcbLenWr(SIP_TX,j);
+// }
+
+// // Â¼ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+// void transfer_recording_file(const char* filename)
+// {
+//     // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Úºï¿½ï¿½ï¿½ï¿½ï¿½Í·ï¿½ï¿½C89ï¿½ï¿½×¼ï¿½ï¿½
+//     u8 sample_data[] = "Recording file content data block...";
+//     u32 file_size = 1024;  // ï¿½ï¿½ï¿½ï¿½1KBÂ¼ï¿½ï¿½ï¿½Ä¼ï¿½
+//     u16 total_blocks;
+//     u16 block;
+//     u16 data_len;
     
-    // Æô¶¯¶Ë¿ÚÇëÇó
-    if(gpsUaInfo->dynamic_port == 0)
-    {
-        transfer_recording_file("recording_001.wav");
-    }
-}
+//     // ï¿½ï¿½ï¿½ï¿½ï¿½Ü¿ï¿½ï¿½ï¿½
+//     total_blocks = (file_size + FILE_BLOCK_SIZE - 1) / FILE_BLOCK_SIZE;
+    
+//     // 1. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì¬ï¿½Ë¿ï¿½
+//     if(!gpsUaInfo->port_negotiated)
+//     {
+//         printf("Requesting dynamic port for file transfer...\r\n");
+//         BUILD_port_request();
+//         gpsUaInfo->port_request_timer = PORT_REQUEST_TIMEOUT;
+//         gpsUaInfo->port_request_retry = 0;
+//         return;
+//     }
+    
+//     // 2. ï¿½ï¿½Ö¤ï¿½Ë¿Ú¿ï¿½ï¿½ï¿½ï¿½ï¿½
+//     if(!gpsUaInfo->port_verified)
+//     {
+//         printf("Verifying port %d...\r\n", gpsUaInfo->dynamic_port);
+//         BUILD_port_verify(gpsUaInfo->dynamic_port);
+//         return;
+//     }
+    
+//     // 3. ï¿½ï¿½Ê¼ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ (Ä£ï¿½ï¿½Â¼ï¿½ï¿½ï¿½Ä¼ï¿½)
+//     printf("Starting file transfer: %s\r\n", filename);
+    
+//     // ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½Ï¢
+//     BUILD_file_start(filename, file_size);
+    
+//     // ï¿½Ö¿é·¢ï¿½ï¿½ï¿½ï¿½ï¿½İ£ï¿½C89 forÑ­ï¿½ï¿½ï¿½ï¿½Ê½ï¿½ï¿½
+//     for(block = 1; block <= total_blocks; block++)
+//     {
+//         data_len = (block == total_blocks) ? 
+//                    (file_size % FILE_BLOCK_SIZE) : FILE_BLOCK_SIZE;
+//         BUILD_file_data(block, sample_data, data_len);
+//     }
+    
+//     // ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
+//     BUILD_file_end(total_blocks, file_size);
+    
+//     printf("File transfer completed: %d blocks, %d bytes\r\n", 
+//            total_blocks, file_size);
+// }
+
+// // JSONï¿½ï¿½Ê½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½Íºï¿½ï¿½ï¿½
+// void SEND_CID_JSON(const char* msg_type, const char* status, const char* call_number)
+// {
+//     char json_msg[256];
+//     char timestamp[16];
+//     char *SendMsg;
+//     int msg_len;
+    
+//     // ï¿½ï¿½È¡ï¿½ï¿½Ç°Ê±ï¿½ï¿½ï¿½
+//     sprintf(timestamp, "%04d%02d%02d%02d%02d%02d", 
+//         gsDate.year, gsDate.month, gsDate.day, 
+//         gsDate.hour, gsDate.min, gsDate.sec);
+    
+//     // ï¿½ï¿½ï¿½ï¿½JSONï¿½ï¿½Ï¢
+//     if(call_number != NULL)
+//     {
+//         // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â¼ï¿½ï¿½ï¿½
+//         msg_len = sprintf(json_msg, 
+//             "{\"id\":\"%s\",\"number\":\"%s\",\"call\":\"%s\",\"timestamp\":\"%s\",\"type\":\"%s\",\"status\":\"%s\"}\r\n",
+//             gpsEeprom->own_id, gpsEeprom->own_num, call_number, timestamp, msg_type, status);
+//     }
+//     else
+//     {
+//         // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½/ï¿½Ò¶ï¿½ï¿½Â¼ï¿½ï¿½ï¿½
+//         msg_len = sprintf(json_msg, 
+//             "{\"id\":\"%s\",\"number\":\"%s\",\"timestamp\":\"%s\",\"type\":\"%s\",\"status\":\"%s\"}\r\n",
+//             gpsEeprom->own_id, gpsEeprom->own_num, timestamp, msg_type, status);
+//     }
+    
+//     // ï¿½ï¿½ï¿½ç·¢ï¿½ï¿½
+//     SendMsg = (char *)(gpNetTxBuf + gpsNetTx->wr*NET_BUF_SIZE);
+//     strcpy(SendMsg, json_msg);
+//     NET_TxPcbLenWr(SIP_TX, msg_len);
+    
+//     // ï¿½ï¿½ï¿½Ú·ï¿½ï¿½ï¿½
+//     printf("CID_JSON: %s", json_msg);
+// }
+
+// // ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½Ì¬ï¿½Ë¿ï¿½Ğ­ï¿½ï¿½
+// void init_dynamic_port_negotiation(void)
+// {
+//     printf("Initializing dynamic port negotiation...\r\n");
+    
+//     // ï¿½ï¿½ï¿½ï¿½ï¿½Ë¿ï¿½ï¿½ï¿½ï¿½ï¿½
+//     if(gpsUaInfo->dynamic_port == 0)
+//     {
+//         transfer_recording_file("recording_001.wav");
+//     }
+// }
 
 

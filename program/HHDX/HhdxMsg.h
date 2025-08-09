@@ -29,6 +29,7 @@
 #define JS_DIAL_NUM					52
 #define JS_REC_START			    53
 #define JS_REC_STOP				    54
+#define JS_REC_OFFHOOK			    55
 
 struct stHhdxFlag
 {

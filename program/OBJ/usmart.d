@@ -45,3 +45,5 @@
 ..\obj\usmart.o: ..\HHDX\HhdxMsg.h
 ..\obj\usmart.o: ..\HARDWARE\CW2015\cw2015.h
 ..\obj\usmart.o: ..\HARDWARE\CW2015\iic.h
+..\obj\usmart.o: ..\HHDX\RecMsgBuilding.h
+..\obj\usmart.o: ..\HARDWARE\FSK\usart3_FSK.h

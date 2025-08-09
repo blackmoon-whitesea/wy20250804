@@ -47,3 +47,5 @@
 ..\obj\cw2015.o: ..\HHDX\SipFunction.h
 ..\obj\cw2015.o: ..\HHDX\SipStructure.h
 ..\obj\cw2015.o: ..\HHDX\SipConstant.h
+..\obj\cw2015.o: ..\HARDWARE\24CXX\24cxx.h
+..\obj\cw2015.o: ..\HARDWARE\IIC\myiic.h

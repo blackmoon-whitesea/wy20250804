@@ -1,64 +1,65 @@
 #include "timer.h"
 #include "lwip_comm.h"
-#include "SipFunction.h"
-#include "SipStructure.h"
+//#include "SipFunction.h"
+//#include "SipStructure.h"
+#include "RecMsgBuilding.h"
 
 //////////////////////////////////////////////////////////////////////////////////	 
-//±¾³ÌÐòÖ»¹©Ñ§Ï°Ê¹ÓÃ£¬Î´¾­×÷ÕßÐí¿É£¬²»µÃÓÃÓÚÆäËüÈÎºÎÓÃÍ¾
-//ALIENTEK STM32F407¿ª·¢°å
-//¶¨Ê±Æ÷ Çý¶¯´úÂë	   
-//ÕýµãÔ­×Ó@ALIENTEK
-//¼¼ÊõÂÛÌ³:www.openedv.com
-//´´½¨ÈÕÆÚ:2014/5/4
-//°æ±¾£ºV1.0
-//°æÈ¨ËùÓÐ£¬µÁ°æ±Ø¾¿¡£
-//Copyright(C) ¹ãÖÝÊÐÐÇÒíµç×Ó¿Æ¼¼ÓÐÏÞ¹«Ë¾ 2014-2024
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö»ï¿½ï¿½Ñ§Ï°Ê¹ï¿½Ã£ï¿½Î´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îºï¿½ï¿½ï¿½Í¾
+//ALIENTEK STM32F407ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+//ï¿½ï¿½Ê±ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½	   
+//ï¿½ï¿½ï¿½ï¿½Ô­ï¿½ï¿½@ALIENTEK
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì³:www.openedv.com
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:2014/5/4
+//ï¿½æ±¾ï¿½ï¿½V1.0
+//ï¿½ï¿½È¨ï¿½ï¿½ï¿½Ð£ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ï¿½ï¿½
+//Copyright(C) ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¿Æ¼ï¿½ï¿½ï¿½ï¿½Þ¹ï¿½Ë¾ 2014-2024
 //All rights reserved									  
 ////////////////////////////////////////////////////////////////////////////////// 	 
 
-extern u32 lwip_localtime;	//lwip±¾µØÊ±¼ä¼ÆÊýÆ÷,µ¥Î»:ms
+extern u32 lwip_localtime;	//lwipï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,ï¿½ï¿½Î»:ms
 extern struct stUaInfo *gpsUaInfo;
 extern struct stSipTxFlag gsSipTxFlag;
 struct stTimer3 *gpsT3;
 
-//Í¨ÓÃ¶¨Ê±Æ÷3ÖÐ¶Ï³õÊ¼»¯
-//arr£º×Ô¶¯ÖØ×°Öµ¡£
-//psc£ºÊ±ÖÓÔ¤·ÖÆµÊý
-//¶¨Ê±Æ÷Òç³öÊ±¼ä¼ÆËã·½·¨:Tout=((arr+1)*(psc+1))/Ft us.
-//Ft=¶¨Ê±Æ÷¹¤×÷ÆµÂÊ,µ¥Î»:Mhz
-//ÕâÀïÊ¹ÓÃµÄÊÇ¶¨Ê±Æ÷3!
+//Í¨ï¿½Ã¶ï¿½Ê±ï¿½ï¿½3ï¿½Ð¶Ï³ï¿½Ê¼ï¿½ï¿½
+//arrï¿½ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½×°Öµï¿½ï¿½
+//pscï¿½ï¿½Ê±ï¿½ï¿½Ô¤ï¿½ï¿½Æµï¿½ï¿½
+//ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ã·½ï¿½ï¿½:Tout=((arr+1)*(psc+1))/Ft us.
+//Ft=ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æµï¿½ï¿½,ï¿½ï¿½Î»:Mhz
+//ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½Ãµï¿½ï¿½Ç¶ï¿½Ê±ï¿½ï¿½3!
 void TIM3_Int_Init(u16 arr,u16 psc)
 {
 	TIM_TimeBaseInitTypeDef TIM_TimeBaseInitStructure;
 	NVIC_InitTypeDef NVIC_InitStructure;
 	
-	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3,ENABLE);  ///Ê¹ÄÜTIM3Ê±ÖÓ
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3,ENABLE);  ///Ê¹ï¿½ï¿½TIM3Ê±ï¿½ï¿½
 	
-	TIM_TimeBaseInitStructure.TIM_Prescaler=psc;  //¶¨Ê±Æ÷·ÖÆµ
-	TIM_TimeBaseInitStructure.TIM_CounterMode=TIM_CounterMode_Up; //ÏòÉÏ¼ÆÊýÄ£Ê½
-	TIM_TimeBaseInitStructure.TIM_Period=arr;   //×Ô¶¯ÖØ×°ÔØÖµ
+	TIM_TimeBaseInitStructure.TIM_Prescaler=psc;  //ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½Æµ
+	TIM_TimeBaseInitStructure.TIM_CounterMode=TIM_CounterMode_Up; //ï¿½ï¿½ï¿½Ï¼ï¿½ï¿½ï¿½Ä£Ê½
+	TIM_TimeBaseInitStructure.TIM_Period=arr;   //ï¿½Ô¶ï¿½ï¿½ï¿½×°ï¿½ï¿½Öµ
 	TIM_TimeBaseInitStructure.TIM_ClockDivision=TIM_CKD_DIV1; 
 	
 	TIM_TimeBaseInit(TIM3,&TIM_TimeBaseInitStructure);
 	
-	TIM_ITConfig(TIM3,TIM_IT_Update,ENABLE); //ÔÊÐí¶¨Ê±Æ÷3¸üÐÂÖÐ¶Ï
-	TIM_Cmd(TIM3,ENABLE); //Ê¹ÄÜ¶¨Ê±Æ÷3
+	TIM_ITConfig(TIM3,TIM_IT_Update,ENABLE); //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½3ï¿½ï¿½ï¿½ï¿½ï¿½Ð¶ï¿½
+	TIM_Cmd(TIM3,ENABLE); //Ê¹ï¿½Ü¶ï¿½Ê±ï¿½ï¿½3
 	
-	NVIC_InitStructure.NVIC_IRQChannel=TIM3_IRQn; //¶¨Ê±Æ÷3ÖÐ¶Ï
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority=0x01; //ÇÀÕ¼ÓÅÏÈ¼¶1
-	NVIC_InitStructure.NVIC_IRQChannelSubPriority=0x03; //×ÓÓÅÏÈ¼¶3
+	NVIC_InitStructure.NVIC_IRQChannel=TIM3_IRQn; //ï¿½ï¿½Ê±ï¿½ï¿½3ï¿½Ð¶ï¿½
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority=0x01; //ï¿½ï¿½Õ¼ï¿½ï¿½ï¿½È¼ï¿½1
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority=0x03; //ï¿½ï¿½ï¿½ï¿½ï¿½È¼ï¿½3
 	NVIC_InitStructure.NVIC_IRQChannelCmd=ENABLE;
 	NVIC_Init(&NVIC_InitStructure);
 	
 }
 
-//¶¨Ê±Æ÷3ÖÐ¶Ï·þÎñº¯Êý: 1ms
+//ï¿½ï¿½Ê±ï¿½ï¿½3ï¿½Ð¶Ï·ï¿½ï¿½ï¿½ï¿½ï¿½: 1ms
 
 void TIM3_IRQHandler(void)
 {
-	if(TIM_GetITStatus(TIM3,TIM_IT_Update)==SET) //Òç³öÖÐ¶Ï
+	if(TIM_GetITStatus(TIM3,TIM_IT_Update)==SET) //ï¿½ï¿½ï¿½ï¿½Ð¶ï¿½
 	{
-// --------- 1ms »ù×¼
+// --------- 1ms ï¿½ï¿½×¼
 		lwip_localtime ++;		
 		gpsT3->rtp ++;
 		gpsT3->eeprom ++;
@@ -69,7 +70,7 @@ void TIM3_IRQHandler(void)
 		gpsT3->dtmf_low ++;
 		gpsT3->dtmf_hi ++;
 		
-// --------- 100ms »ù×¼
+// --------- 100ms ï¿½ï¿½×¼
 		gpsT3->timer100ms ++;		
 		if(gpsT3->timer100ms ==100){	//100ms
 			gpsT3->timer100ms = 0;			
@@ -82,62 +83,63 @@ void TIM3_IRQHandler(void)
 			gpsT3->bat_ringing++;
 		}
 
-		//ÖØ´«¼ÆÊ±Æ÷
-        if(gpsUaInfo->waiting_response && gpsUaInfo->retry_timer > 0)
+		//ï¿½Ø´ï¿½ï¿½ï¿½Ê±ï¿½ï¿½
+        if(gpsRecInfo->waiting_response && gpsRecInfo->retry_timer > 0)
         {
-            gpsUaInfo->retry_timer--;
-            if(gpsUaInfo->retry_timer == 0)
+            gpsRecInfo->retry_timer--;
+            if(gpsRecInfo->retry_timer == 0)
             {
-                // ³¬Ê±£¬´¥·¢ÖØ´«
-                if(gpsUaInfo->retry_count < gpsUaInfo->max_retry)
+                // ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø´ï¿½
+                if(gpsRecInfo->retry_count < gpsRecInfo->max_retry)
                 {
-                    gpsUaInfo->retry_count++;
-                    gpsUaInfo->retry_timer = gpsUaInfo->retry_timeout;
-                    // ÖØ·¢ÏûÏ¢µÄ±êÖ¾
-                    gsSipTxFlag.retry = 1;
+                    gpsRecInfo->retry_count++;
+                    gpsRecInfo->retry_timer = gpsRecInfo->retry_timeout;
+                    // ï¿½Ø·ï¿½ï¿½ï¿½Ï¢ï¿½Ä±ï¿½Ö¾
+                    gsRecTxFlag.retry = 1;
                 }
                 else
                 {
-                    // ´ïµ½×î´óÖØ´«´ÎÊý£¬·ÅÆú
-                    gpsUaInfo->waiting_response = 0;
-                    gpsUaInfo->retry_count = 0;
+                    // ï¿½ïµ½ï¿½ï¿½ï¿½ï¿½Ø´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+                    gpsRecInfo->waiting_response = 0;
+                    gpsRecInfo->retry_count = 0;
                 }
             }
         }
         
-        // ¶Ë¿ÚÇëÇó¶¨Ê±Æ÷´¦Àí
-        if(gpsUaInfo->port_request_timer > 0)
-        {
-            gpsUaInfo->port_request_timer--;
-            if(gpsUaInfo->port_request_timer == 0)
-            {
-                if(gpsUaInfo->port_request_retry < 3)  // ×î¶àÖØÊÔ3´Î
-                {
-                    gpsUaInfo->port_request_retry++;
-                    gpsUaInfo->port_request_timer = 30;  // 3Ãë³¬Ê± (100ms*30)
+//         // ï¿½Ë¿ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+//         if(gpsUaInfo->port_request_timer > 0)
+//         {
+//             gpsUaInfo->port_request_timer--;
+//             if(gpsUaInfo->port_request_timer == 0)
+//             {
+//                 if(gpsUaInfo->port_request_retry < 3)  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½3ï¿½ï¿½
+//                 {
+//                     gpsUaInfo->port_request_retry++;
+//                     gpsUaInfo->port_request_timer = 30;  // 3ï¿½ë³¬Ê± (100ms*30)
                     
-                    // ÖØÐÂÇëÇó¶Ë¿Ú
-                    if(!gpsUaInfo->port_negotiated)
-                    {
-                        BUILD_port_request();
-                    }
-                    else if(!gpsUaInfo->port_verified)
-                    {
-                        BUILD_port_verify(gpsUaInfo->dynamic_port);
-                    }
-                }
-                else
-                {
-                    // ¶Ë¿ÚÇëÇóÊ§°Ü£¬Ê¹ÓÃÄ¬ÈÏ¶Ë¿Ú
-                    printf("Port negotiation failed, using default port\r\n");
-                    gpsUaInfo->dynamic_port = 0;  // Ê¹ÓÃÄ¬ÈÏÅäÖÃ
-                }
-            }
-        }
+//                     // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë¿ï¿½
+//                     if(!gpsUaInfo->port_negotiated)
+//                     {
+//                         BUILD_port_request();
+//                     }
+//                     else if(!gpsUaInfo->port_verified)
+//                     {
+//                         BUILD_port_verify(gpsUaInfo->dynamic_port);
+//                     }
+//                 }
+//                 else
+//                 {
+//                     // ï¿½Ë¿ï¿½ï¿½ï¿½ï¿½ï¿½Ê§ï¿½Ü£ï¿½Ê¹ï¿½ï¿½Ä¬ï¿½Ï¶Ë¿ï¿½
+//                     printf("Port negotiation failed, using default port\r\n");
+//                     gpsUaInfo->dynamic_port = 0;  // Ê¹ï¿½ï¿½Ä¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+//                 }
+//             }
+//         }
 
-	}
-	TIM_ClearITPendingBit(TIM3,TIM_IT_Update);  //Çå³ýÖÐ¶Ï±êÖ¾Î»
+// 	}
+
+ 	TIM_ClearITPendingBit(TIM3,TIM_IT_Update);  //ï¿½ï¿½ï¿½ï¿½Ð¶Ï±ï¿½Ö¾Î»
+
+ }
 
 }
-
-

@@ -48,7 +48,7 @@ int main(void)
 	mymem_init(SRAMCCM);	//初始化CCM内存池		
 	ETH_MemMalloc();;		//内存申请失败
 	lwip_comm_mem_malloc();	//内存申请失败
-	NET_MemMalloc();			//分配收发内存	
+	NET_MemMalloc();		//分配收发内存	动态数据结构内存分配
 	uart_init(115200);   	//串口波特率设置
 
 	// LED0 = 0;  // 点亮LED0（假设LED0低电平有效）
@@ -115,6 +115,7 @@ int main(void)
 	SIP_UainfoInit();		
 	gsNetFlag.netlink =KEY_NETLINK;	//读取net link pin
 	
+	RecInfoInit();
 
 	printf("初始化已完成！\r\n");
 
@@ -138,15 +139,14 @@ int main(void)
 				gsNetFlag.bind =1;	
 				NET_UdppcbConnect(gpsaUdppcb[0],gpsEeprom->sv_ip,SIP_PORT,SIP_PORT);				
 				// 根据动态端口设置RTP连接
-				//if(gpsUaInfo->dynamic_port > 0)
-				//{
-				//	NET_UdppcbConnect(gpsaUdppcb[1],gpsEeprom->sv_ip,gpsUaInfo->dynamic_port,gpsUaInfo->dynamic_port);
-				//}
-				//else
-				//{
-					//NET_UdppcbConnect(gpsaUdppcb[1],gpsEeprom->sv_ip,RTP_LOCAL_PORT,RTP_LOCAL_PORT);
-					NET_UdppcbConnect(gpsaUdppcb[1],gpsEeprom->sv_ip,gpsEeprom->port,RTP_LOCAL_PORT);
-				//}
+				if(gpsUaInfo->dynamic_port > 0)
+				{
+					NET_UdppcbConnect(gpsaUdppcb[1],gpsEeprom->sv_ip,gpsUaInfo->dynamic_port,gpsUaInfo->dynamic_port);
+				}
+				else
+				{
+					NET_UdppcbConnect(gpsaUdppcb[1],gpsEeprom->sv_ip,RTP_LOCAL_PORT,RTP_LOCAL_PORT);
+				}
 			}
 		}
 			
@@ -201,7 +201,9 @@ int main(void)
 		if(gsSipRxFlag.ok_reg){
 			SIP_TxFlow();
 		}
-		
+
+		Rec_TxFlow();//Rec重发
+
 //6. 收到SDP协议
 		if(gsSipRxFlag.sdp ==1){
 			gsSipRxFlag.sdp =0;			

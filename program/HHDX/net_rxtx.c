@@ -13,6 +13,7 @@
 #include "HhdxMsg.h"
 #include "24cxx.h" 
 #include "cw2015.h" 
+#include "RecMsgBuilding.h"
 
 char *gTempPointer;
 char gTempChar;
@@ -22,14 +23,14 @@ uint8_t *gpNetRxBuf;
 uint8_t *gpNetTxBuf;
 struct stNetRx *gpsNetRx;
 struct stNetTx *gpsNetTx;
-struct udp_pcb *gpsaUdppcb[3];  		//¶¨Òå3¸öUDP·þÎñÆ÷¿ØÖÆ¿é
+struct udp_pcb *gpsaUdppcb[3];  		//ï¿½ï¿½ï¿½ï¿½3ï¿½ï¿½UDPï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¿ï¿½
 
 struct stNetFlag gsNetFlag;	
 
 /*
-Ð´Èë·¢ËÍÇøµØÖ·++
-1. ÏÈÔñudppcb[x]
-2. ·¢ËÍlength
+Ð´ï¿½ë·¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·++
+1. ï¿½ï¿½ï¿½ï¿½udppcb[x]
+2. ï¿½ï¿½ï¿½ï¿½length
 */
 void NET_TxPcbLenWr(u8 pcb,int j)
 {
@@ -57,12 +58,19 @@ void NET_RxParse(void)
 //	printf("\r\n");	
 
 //------------------ sip --------------------
+	// if(gpsNetRx->port[gpsNetRx->rd] == SIP_PORT){
+	// 	name_index = ANALYSIS_line(addr);
+	// 	if(name_index){
+	// 		ANALYSIS_line_to_msg(name_index,addr,len);		//??????ï¿½Ö»ï¿½addrï¿½ï¿½Í·ï¿½ï¿½Ê¼ï¿½È½ï¿½
+	// 	}
+	// }
+
 	if(gpsNetRx->port[gpsNetRx->rd] == SIP_PORT){
-		name_index = ANALYSIS_line(addr);
+		name_index = HHDX_RecCommand(addr);
 		if(name_index){
-			ANALYSIS_line_to_msg(name_index,addr,len);		//??????ÓÖ»áaddr´ÓÍ·¿ªÊ¼±È½Ï
+			HHDX_RecDivideJson(name_index,gTempPointer,len);
 		}
-	}
+	}	
 //------------------ manage/other --------------------	
 	else{
 		name_index = HHDX_Command(addr);
@@ -72,24 +80,24 @@ void NET_RxParse(void)
 	}
 }
 
-//UDP½ÓÊÕ»Øµ÷º¯Êý
+//UDPï¿½ï¿½ï¿½Õ»Øµï¿½ï¿½ï¿½ï¿½ï¿½
 void NET_UdpRx(void *arg,struct udp_pcb *upcb,struct pbuf *p,struct ip_addr *addr,u16_t port)
 {
 	struct pbuf *q;
 	uint8_t *dst_addr;
 	struct ip_addr ip_addr_t;
-	if(p!=NULL)	//½ÓÊÕµ½²»Îª¿ÕµÄÊý¾ÝÊ±
+	if(p!=NULL)	//ï¿½ï¿½ï¿½Õµï¿½ï¿½ï¿½Îªï¿½Õµï¿½ï¿½ï¿½ï¿½ï¿½Ê±
 	{
 	// ----------- RTP ---------------
-		if(port == gpsUaInfo->rtp_port)			//×¢£ºmanage portÓÐ¿ÉÄÜ=rtp port!!!!!ÐèÔö¼ÓÅÐ¶ÏµÚÒ»¸ö×Ö½Ú=¡®0x80¡¯
+		if(port == gpsUaInfo->rtp_port)			//×¢ï¿½ï¿½manage portï¿½Ð¿ï¿½ï¿½ï¿½=rtp port!!!!!ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¶Ïµï¿½Ò»ï¿½ï¿½ï¿½Ö½ï¿½=ï¿½ï¿½0x80ï¿½ï¿½
 		{
 			q=p;
 			if(q->len ==172){	
-				memcpy(gRtpRxBuf[gRtpRxNum],q->payload,172);	//¿½±´Êý¾Ý£¬±¾Ó¦¸Ã´ÓµÚ12×Ö½Ú´Ó¿ªÊ¼£¬µ«q->payload+12±àÒë³ö´í
-//				memcpy(gRtpRxBuf[gRtpRxNum],(char *)(q->payload+12),160);	//µÈ´òµç»°Ê±ÔÙ²âÊÔ
+				memcpy(gRtpRxBuf[gRtpRxNum],q->payload,172);	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý£ï¿½ï¿½ï¿½Ó¦ï¿½Ã´Óµï¿½12ï¿½Ö½Ú´Ó¿ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½q->payload+12ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+//				memcpy(gRtpRxBuf[gRtpRxNum],(char *)(q->payload+12),160);	//ï¿½È´ï¿½ç»°Ê±ï¿½Ù²ï¿½ï¿½ï¿½
 //				printf("l=%d,0x%x,0x%x\r\n",q->len,gRtpRxBuf[gRtpRxNum][3],gRtpRxBuf[gRtpRxNum][12]);
 				gRtpRxNum ++;
-				gRtpRxNum &= (~RTP_BUF_NUM);	//×¢£º±ØÐëÊÇ2,4,8,16...
+				gRtpRxNum &= (~RTP_BUF_NUM);	//×¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½2,4,8,16...
 				
 			}
 		}
@@ -97,10 +105,10 @@ void NET_UdpRx(void *arg,struct udp_pcb *upcb,struct pbuf *p,struct ip_addr *add
 		else{
 			dst_addr =(gpNetRxBuf + gpsNetRx->wr*NET_BUF_SIZE);
 			gpsNetRx->len[gpsNetRx->wr] =0;
-			for(q=p;q!=NULL;q=q->next)  //±éÀúÍêÕû¸öpbufÁ´±í
+			for(q=p;q!=NULL;q=q->next)  //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½pbufï¿½ï¿½ï¿½ï¿½
 			{
-				//q->lenÒ»¶¨Ð¡ÓÚNET_MAX_BUF_SIZE
-				memcpy(dst_addr,q->payload,q->len);//¿½±´Êý¾Ý	
+				//q->lenÒ»ï¿½ï¿½Ð¡ï¿½ï¿½NET_MAX_BUF_SIZE
+				memcpy(dst_addr,q->payload,q->len);//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½	
 				dst_addr=dst_addr+q->len;	
 				gpsNetRx->len[gpsNetRx->wr] = gpsNetRx->len[gpsNetRx->wr]+q->len;
 	
@@ -108,70 +116,72 @@ void NET_UdpRx(void *arg,struct udp_pcb *upcb,struct pbuf *p,struct ip_addr *add
 				printf("rx=%d\r\n",q->len);
 			}
 		
-//		upcb->remote_ip=*addr; 				//¼ÇÂ¼Ô¶³ÌÖ÷»úµÄIPµØÖ·
-//		upcb->remote_port=port;  			//¼ÇÂ¼Ô¶³ÌÖ÷»úµÄ¶Ë¿ÚºÅ
+//		upcb->remote_ip=*addr; 				//ï¿½ï¿½Â¼Ô¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½IPï¿½ï¿½Ö·
+//		upcb->remote_port=port;  			//ï¿½ï¿½Â¼Ô¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¶Ë¿Úºï¿½
 //		lwipdev.remoteip[0]=upcb->remote_ip.addr&0xff; 		//IADDR4
 //		lwipdev.remoteip[1]=(upcb->remote_ip.addr>>8)&0xff; //IADDR3
 //		lwipdev.remoteip[2]=(upcb->remote_ip.addr>>16)&0xff;//IADDR2
 //		lwipdev.remoteip[3]=(upcb->remote_ip.addr>>24)&0xff;//IADDR1
 		
 			ip_addr_t =*addr;
-			gpsNetRx->port[gpsNetRx->wr]=port;  			//¼ÇÂ¼Ô¶³ÌÖ÷»úµÄ¶Ë¿ÚºÅ
+			gpsNetRx->port[gpsNetRx->wr]=port;  			//ï¿½ï¿½Â¼Ô¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¶Ë¿Úºï¿½
 //			printf("%d\r\n",gpsNetRx->port[gpsNetRx->wr]);
 			gpsNetRx->remoteip[gpsNetRx->wr][0]=(ip_addr_t.addr>>0)&0xff; 		//IADDR4
 			gpsNetRx->remoteip[gpsNetRx->wr][1]=(ip_addr_t.addr>>8)&0xff; 		//IADDR3
 			gpsNetRx->remoteip[gpsNetRx->wr][2]=(ip_addr_t.addr>>16)&0xff;		//IADDR2
 			gpsNetRx->remoteip[gpsNetRx->wr][3]=(ip_addr_t.addr>>24)&0xff;		//IADDR1
 			
-//		gpsNetRx->len[gpsNetRx->wr]= q->tot_len;		//???????ÎªÊ²Ã´ÊÇ¹Ì¶¨µÄ805
+//		gpsNetRx->len[gpsNetRx->wr]= q->tot_len;		//???????ÎªÊ²Ã´ï¿½Ç¹Ì¶ï¿½ï¿½ï¿½805
 //		printf("wr=%d\r\n",gpsNetRx->len[gpsNetRx->wr]);
 			gpsNetRx->wr ++;
 			gpsNetRx->wr &= (~NET_RXBUFNB);
 		
 		}
 		
-		pbuf_free(p);//ÊÍ·ÅÄÚ´æ
+		pbuf_free(p);//ï¿½Í·ï¿½ï¿½Ú´ï¿½
 		
 	}else
 	{
 		udp_disconnect(upcb); 
-//		udp_demo_flag &= ~(1<<0);	//±ê¼ÇÁ¬½Ó¶Ï¿ª
+//		udp_demo_flag &= ~(1<<0);	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¶Ï¿ï¿½
 	}
 } 
 
-//UDP·þÎñÆ÷·¢ËÍÊý¾Ý
+//UDPï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 void NET_UdpTx(struct udp_pcb *upcb)
 {
 	struct pbuf *ptr;
 	u16_t data_len;
 	data_len =gpsNetTx->len[gpsNetTx->rd];
-	ptr=pbuf_alloc(PBUF_TRANSPORT,data_len,PBUF_POOL); //ÉêÇëÄÚ´æ
+	ptr=pbuf_alloc(PBUF_TRANSPORT,data_len,PBUF_POOL); //ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½
 	if(ptr)
 	{
 //		printf("tol=%d,len=%d\r\n",ptr->tot_len ,data_len);
-		pbuf_take(ptr,(char*)(gpNetTxBuf + gpsNetTx->rd*NET_BUF_SIZE),data_len); //½«gpNetTxBufÖÐµÄÊý¾Ý´ò°ü½øpbuf½á¹¹ÖÐ
-		udp_send(upcb,ptr);	//udp·¢ËÍÊý¾Ý 
-		pbuf_free(ptr);//ÊÍ·ÅÄÚ´æ
+		pbuf_take(ptr,(char*)(gpNetTxBuf + gpsNetTx->rd*NET_BUF_SIZE),data_len); //ï¿½ï¿½gpNetTxBufï¿½Ðµï¿½ï¿½ï¿½ï¿½Ý´ï¿½ï¿½ï¿½ï¿½pbufï¿½á¹¹ï¿½ï¿½
+		udp_send(upcb,ptr);	//udpï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 
+		pbuf_free(ptr);//ï¿½Í·ï¿½ï¿½Ú´ï¿½
 	} 
 } 
 
 /*
- ÎªnetÊÕ·¢·ÖÅäÄÚ´æ
+ Îªnetï¿½Õ·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½
 */
 u8 NET_MemMalloc(void)
 { 
 	char i;
-	gpNetRxBuf=mymalloc(SRAMIN,NET_BUF_SIZE*NET_RXBUFNB);	//ÉêÇëÄÚ´æ
-	gpNetTxBuf=mymalloc(SRAMIN,NET_BUF_SIZE*NET_TXBUFNB);	//ÉêÇëÄÚ´æ
-	gpsNetRx=mymalloc(SRAMIN,sizeof(struct stNetRx));	//ÉêÇëÄÚ´æ
-	gpsNetTx=mymalloc(SRAMIN,sizeof(struct stNetTx));	//ÉêÇëÄÚ´æ
-	gpsT3=mymalloc(SRAMIN,sizeof(struct stTimer3));	//ÉêÇëÄÚ´æ	
+	gpNetRxBuf=mymalloc(SRAMIN,NET_BUF_SIZE*NET_RXBUFNB);	//ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½
+	gpNetTxBuf=mymalloc(SRAMIN,NET_BUF_SIZE*NET_TXBUFNB);	//ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½
+	gpsNetRx=mymalloc(SRAMIN,sizeof(struct stNetRx));	//ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½
+	gpsNetTx=mymalloc(SRAMIN,sizeof(struct stNetTx));	//ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½
+	gpsT3=mymalloc(SRAMIN,sizeof(struct stTimer3));	//ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½	
 //Initial struct UAinfo = 0;	
-	gpsUaInfo=mymalloc(SRAMIN,sizeof(struct stUaInfo));	//ÉêÇëÄÚ´æ	
+	gpsUaInfo=mymalloc(SRAMIN,sizeof(struct stUaInfo));	//ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½	
+	gpsRecInfo=mymalloc(SRAMIN,sizeof(struct stRecInfo));	//ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½
 	memset(gpsUaInfo,'\0',sizeof(struct stUaInfo));
 //eeprom	
 	gEeprom_len = sizeof(struct stEeprom);
-	gpsEeprom=mymalloc(SRAMIN,gEeprom_len);	//ÉêÇëÄÚ´æ
+	
+	gpsEeprom=mymalloc(SRAMIN,gEeprom_len);	//ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½
 	
 	for(i=0; i<MAX_SERVER_NUMBER; i++){
 		gsMsg.via[i] = NULL;
@@ -181,27 +191,27 @@ u8 NET_MemMalloc(void)
 	gsMsg.to= NULL;
 	gsMsg.callid= NULL;
 	gsMsg.cseq= NULL;		
-	gsNetFlag.bind =0;		//ÔÊÐíbind
+	gsNetFlag.bind =0;		//ï¿½ï¿½ï¿½ï¿½bind
 	
 	if(!gpNetRxBuf||!gpNetTxBuf||!gpsNetRx||!gpsNetTx||!gpsT3)
 	{
 		NET_MemFree();
-		return 1;	//ÉêÇëÊ§°Ü
+		return 1;	//ï¿½ï¿½ï¿½ï¿½Ê§ï¿½ï¿½
 	}	
-	return 0;		//ÉêÇë³É¹¦
+	return 0;		//ï¿½ï¿½ï¿½ï¿½É¹ï¿½
 }
 
 void NET_MemFree(void)
 { 
-	myfree(SRAMIN,gpNetRxBuf);		//ÊÍ·ÅÄÚ´æ
-	myfree(SRAMIN,gpNetTxBuf);		//ÊÍ·ÅÄÚ´æ  
-	myfree(SRAMIN,gpsNetTx);		//ÊÍ·ÅÄÚ´æ
-	myfree(SRAMIN,gpsNetRx);		//ÊÍ·ÅÄÚ´æ  
-	myfree(SRAMIN,gpsT3);		//ÊÍ·ÅÄÚ´æ 
+	myfree(SRAMIN,gpNetRxBuf);		//ï¿½Í·ï¿½ï¿½Ú´ï¿½
+	myfree(SRAMIN,gpNetTxBuf);		//ï¿½Í·ï¿½ï¿½Ú´ï¿½  
+	myfree(SRAMIN,gpsNetTx);		//ï¿½Í·ï¿½ï¿½Ú´ï¿½
+	myfree(SRAMIN,gpsNetRx);		//ï¿½Í·ï¿½ï¿½Ú´ï¿½  
+	myfree(SRAMIN,gpsT3);		//ï¿½Í·ï¿½ï¿½Ú´ï¿½ 
 }
 
 /*
- ³õÊ¼»¯¸÷±äÁ¿
+ ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 */
 void NET_VariateInit(void)
 {
@@ -221,36 +231,36 @@ void NET_VariateInit(void)
 
 void NET_UdppcbConnect(struct udp_pcb *upcb,u8 *dst_ip, u16 dst_port, u16 src_port)
 {	
-	struct ip_addr rmtipaddr;  	//Ô¶¶ËipµØÖ·
+	struct ip_addr rmtipaddr;  	//Ô¶ï¿½ï¿½ipï¿½ï¿½Ö·
 	lwipdev.remoteip[0]=dst_ip[0];	
 	lwipdev.remoteip[1]=dst_ip[1];
 	lwipdev.remoteip[2]=dst_ip[2];
 	lwipdev.remoteip[3]=dst_ip[3];
-	IP4_ADDR(&rmtipaddr,lwipdev.remoteip[0],lwipdev.remoteip[1],lwipdev.remoteip[2],lwipdev.remoteip[3]);	//½«4Î»8bytes => 1¸ö32word
-	udp_connect(upcb,&rmtipaddr,dst_port);	//¿Í»§¶ËÁ¬½Óµ½Ö¸¶¨IPµØÖ·ºÍ¶Ë¿ÚºÅµÄ·þÎñÆ÷
-	udp_bind(upcb,IP_ADDR_ANY,src_port);//°ó¶¨±¾µØIPµØÖ·Óë¶Ë¿ÚºÅ
-	udp_recv(upcb,NET_UdpRx,NULL);//×¢²á½ÓÊÕ»Øµ÷º¯Êý
+	IP4_ADDR(&rmtipaddr,lwipdev.remoteip[0],lwipdev.remoteip[1],lwipdev.remoteip[2],lwipdev.remoteip[3]);	//ï¿½ï¿½4Î»8bytes => 1ï¿½ï¿½32word
+	udp_connect(upcb,&rmtipaddr,dst_port);	//ï¿½Í»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Óµï¿½Ö¸ï¿½ï¿½IPï¿½ï¿½Ö·ï¿½Í¶Ë¿ÚºÅµÄ·ï¿½ï¿½ï¿½ï¿½ï¿½
+	udp_bind(upcb,IP_ADDR_ANY,src_port);//ï¿½ó¶¨±ï¿½ï¿½ï¿½IPï¿½ï¿½Ö·ï¿½ï¿½Ë¿Úºï¿½
+	udp_recv(upcb,NET_UdpRx,NULL);//×¢ï¿½ï¿½ï¿½ï¿½Õ»Øµï¿½ï¿½ï¿½ï¿½ï¿½
 }
 
 
 /**********************************
-1. ´´½¨¶à¸öudppcb
-2. Á¬½Ó²¢×¢²ásip server
+1. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½udppcb
+2. ï¿½ï¿½ï¿½Ó²ï¿½×¢ï¿½ï¿½sip server
 **********************************/
 void NET_UdppcbNew(void)
 {		
-	gpsaUdppcb[0]=udp_new();	//·ÖÅäsip struct udp_pcbÄÚ´æ
-	gpsaUdppcb[1]=udp_new();	//·ÖÅärtp struct udp_pcbÄÚ´æ
-	gpsaUdppcb[2]=udp_new();	//·ÖÅämanagement software struct udp_pcbÄÚ´æ
+	gpsaUdppcb[0]=udp_new();	//ï¿½ï¿½ï¿½ï¿½sip struct udp_pcbï¿½Ú´ï¿½
+	gpsaUdppcb[1]=udp_new();	//ï¿½ï¿½ï¿½ï¿½rtp struct udp_pcbï¿½Ú´ï¿½
+	gpsaUdppcb[2]=udp_new();	//ï¿½ï¿½ï¿½ï¿½management software struct udp_pcbï¿½Ú´ï¿½
 }
 
 
 
-//¹Ø±ÕUDPÁ¬½Ó
+//ï¿½Ø±ï¿½UDPï¿½ï¿½ï¿½ï¿½
 void NET_udp_connection_close(struct udp_pcb *upcb)
 {
 	udp_disconnect(upcb); 
-	udp_remove(upcb);			//¶Ï¿ªUDPÁ¬½Ó 
-	gsNetFlag.udp_conn =0;	//±ê¼ÇÁ¬½Ó¶Ï¿ª
+	udp_remove(upcb);			//ï¿½Ï¿ï¿½UDPï¿½ï¿½ï¿½ï¿½ 
+	gsNetFlag.udp_conn =0;	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¶Ï¿ï¿½
 }
 

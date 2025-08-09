@@ -7,6 +7,8 @@
 #include <24cxx.h>
 #include <HhdxMsg.h>
 #include "cw2015.h"  // 添加 CW2015 头文件包含
+#include "RecMsgBuilding.h"
+#include "usart3_FSK.h"
 
 // 外部变量声明
 extern unsigned int gBatVal;  // CW2015 电压采样值
@@ -90,9 +92,10 @@ u8 *sys_cmd_tab[]=
 	"setip",//192.168.0.30 2555.255.255.0 192.168.0.1
 	"setsvip",//192.168.0.10 5000
 	"setnum",//Change phone number
-	"readV",//Read voltage
-	"changeV",//Change voltage
-	"setid",//Set
+	"readbatv",//Read bat voltage
+	"setoffhookv",//set offhook-voltage
+	"setid",//Set id
+	"testjson",//1 start 2 offhook 3  stop
 };	    
 
 //Execute system commands
@@ -147,8 +150,8 @@ u8 usmart_sys_cmd_exe(u8 *str)
 			printf("        localip netmask gateway\r\n");
 			printf("setsvip:Set server IP address and port\r\n");
 			printf("setnum:Set num\r\n");
-			printf("readV: Read voltage\r\n");
-			printf("changeV: Change voltage\r\n");
+			printf("readbatv: Read bat voltage\r\n");
+			printf("sethookv: Set offhook voltage:nophone ring onhookl onhookh offhookl offhookh\r\n");
 			printf("setid: Set device ID (affects all JSON messages)\r\n");
 			printf("Note: IP address must be valid, otherwise setting fails.\r\n");
 			printf("System commands support case-insensitive input.\r\n");
@@ -249,6 +252,8 @@ u8 usmart_sys_cmd_exe(u8 *str)
 			printf("STM32 unique ID: 0x%08X\r\n",*(vu32*)(0x1FFF7A10));
 			//输出电话号码nmuber
 			printf("Phone Number: %s\r\n",gpsEeprom->own_num);
+			//输出芯片编号id
+			printf("Device ID: %s\r\n", gpsEeprom->own_id);  // 输出设备ID
 				
 			printf("\r\n");	
 			break;
@@ -426,7 +431,7 @@ u8 usmart_sys_cmd_exe(u8 *str)
 
 			}else return USMART_PARMERR;			//parameter error.		
 			break;
-		case 11://read voltage
+		case 11://read bat voltage
 			printf("\r\n");
 			//从 cw2015.c 中读取电压值
 			printf("Reading voltage...\r\n");
@@ -437,32 +442,80 @@ u8 usmart_sys_cmd_exe(u8 *str)
 			}
 			
 			// 显示原始AD值和转换后的电压值
-			printf("Raw AD Value: %d\r\n", gBatVal);
-			printf("Voltage: %d.%02dV\r\n", gBatVal/100, gBatVal%100);
-			
+			//printf("Raw AD Value: %d\r\n", gBatVal);
+			printf("Bat Voltage: %d.%02dV\r\n", gBatVal/100, gBatVal%100);
+		
 			// 显示电话状态对应的电压范围
-			printf("Voltage Status:\r\n");
-			if(gBatVal < 168) {
-				printf("  Status: Disconnected (< 1.68V)\r\n");
-			}
-			else if((gBatVal > 170) && (gBatVal < 190)) {
-				printf("  Status: Off-hook (1.70V - 1.90V)\r\n");
-			}
-			else if((gBatVal > 236) && (gBatVal < 264)) {
-				printf("  Status: On-hook (2.36V - 2.64V)\r\n");
-			}
-			else if(gBatVal > 280) {
-				printf("  Status: Ringing (> 2.80V)\r\n");
-			}
-			else {
-				printf("  Status: Unknown range\r\n");
-			}
+			//printf("Voltage Status:\r\n");
+			//if(gBatVal < 168) {
+				printf("  Status: Disconnected default(< 168),current(<%d)\r\n",gpsEeprom->nophone_hv);
+			//}
+			//else if((gBatVal > 170) && (gBatVal < 190)) {
+				printf("  Status: Off-hook default(170 - 190),current(%d - %d)\r\n",gpsEeprom->offhook_lv,gpsEeprom->offhook_hv);
+			//}
+			//else if((gBatVal > 236) && (gBatVal < 264)) {
+				printf("  Status: On-hook default(236 - 264),current(%d - %d)\r\n",gpsEeprom->onhook_lv,gpsEeprom->onhook_hv);
+			//}
+			//else if(gBatVal > 280) {
+				printf("  Status: Ringing default(> 280),current(> %d\r\n",gpsEeprom->ring_lv);
+			//}
+			//else {
+			//	printf("  Status: Unknown range\r\n");
+			//}
 			
-			printf("Read voltage completed.\r\n");
+			//printf("Read voltage completed.\r\n");
 			break;
 
-		case 12://change voltage
+		case 12://set bat voltage
 			printf("\r\n");
+			//nophone
+			res=usmart_get_aparm(str,sfname,&i);
+			if(res==0)return USMART_FUNCERR;
+			if(i==0){
+				usmart_str2num(sfname,&res);
+				gpsEeprom->nophone_hv=res;
+			}else return USMART_PARMERR;
+            //ring
+			res=usmart_get_aparm(str,sfname,&i);
+			if(res==0)return USMART_FUNCERR;
+			if(i==0){
+				usmart_str2num(sfname,&res);
+				gpsEeprom->ring_lv=res;
+			}else return USMART_PARMERR;
+			//onhookl
+			res=usmart_get_aparm(str,sfname,&i);
+			if(res==0)return USMART_FUNCERR;
+			if(i==0){
+				usmart_str2num(sfname,&res);
+				gpsEeprom->onhook_lv=res;
+			}else return USMART_PARMERR;
+			//onhookh
+			res=usmart_get_aparm(str,sfname,&i);
+			if(res==0)return USMART_FUNCERR;
+			if(i==0){
+				usmart_str2num(sfname,&res);
+				gpsEeprom->nophone_hv=res;
+			}else return USMART_PARMERR;
+			//offhookl
+			res=usmart_get_aparm(str,sfname,&i);
+			if(res==0)return USMART_FUNCERR;
+			if(i==0){
+				usmart_str2num(sfname,&res);
+				gpsEeprom->offhook_lv=res;
+			}else return USMART_PARMERR;
+			//offhookh
+			res=usmart_get_aparm(str,sfname,&i);
+			if(res==0)return USMART_FUNCERR;
+			if(i==0){
+				usmart_str2num(sfname,&res);
+				gpsEeprom->offhook_hv=res;
+			}else return USMART_PARMERR;
+
+			printf("Set hookvol success:%d %d %d %d %d %d",gpsEeprom->nophone_hv,
+			  gpsEeprom->ring_lv,gpsEeprom->onhook_lv,gpsEeprom->onhook_hv,
+			  gpsEeprom->offhook_lv,gpsEeprom->offhook_hv);
+
+			gsHhdxFlag.eepromwr =1;
 			break;
 
 		case 13://setid command, set ID
@@ -472,7 +525,7 @@ u8 usmart_sys_cmd_exe(u8 *str)
 			if(i==0)//get parameters
 			{
 				//处理ID数字
-				printf("Setting Device ID to: %s\r\n",sfname);
+				printf("Setting Device ID to: %s (length: %d)\r\n",sfname, strlen(sfname));
 				
 				// 检查输入是否为有效数字
 				for(j=0;j<strlen(sfname);j++) {
@@ -482,26 +535,57 @@ u8 usmart_sys_cmd_exe(u8 *str)
 					}
 				}
 				
-				// 检查长度限制（最多8位数字）
-				if(strlen(sfname) > 8) {
-					printf("Error: ID too long (max 8 digits)!\r\n");
+				// 检查长度限制（最多7位数字，因为own_id[8]只能存储7个字符+结束符）
+				if(strlen(sfname) > 7) {
+					printf("Error: ID too long (max 7 digits for own_id[8] array)!\r\n");
 					return USMART_PARMERR;
 				}
+
+				printf("Before setting: own_id='%s'\r\n", gpsEeprom->own_id);
 				
 				// 设置新的设备ID到全局变量中
-				strncpy(gDeviceId, sfname, sizeof(gDeviceId)-1);
-				gDeviceId[sizeof(gDeviceId)-1] = '\0';  // 确保字符串结尾
+				strncpy(gpsEeprom->own_id, sfname, sizeof(gpsEeprom->own_id)-1);
+				gpsEeprom->own_id[sizeof(gpsEeprom->own_id)-1] = '\0';  // 确保字符串结尾
 				
-				printf("Device ID successfully set to: %s\r\n", gDeviceId);
-				printf("This change affects all JSON messages:\r\n");
-				printf("- Port request/verify messages\r\n");
-				printf("- File transfer messages\r\n");
-				printf("- Call status messages (CID_JSON)\r\n");
-				printf("Changes take effect immediately.\r\n");
+				//printf("After setting: own_id='%s' (length: %d)\r\n", gpsEeprom->own_id, strlen(gpsEeprom->own_id));
+				//printf("Array size: %d bytes\r\n", sizeof(gpsEeprom->own_id));
+				printf("Device ID successfully set to: %s\r\n", gpsEeprom->own_id);
+				//printf("This change affects all JSON messages:\r\n");
+				//printf("- Port request/verify messages\r\n");
+				//printf("- File transfer messages\r\n");
+				//printf("- Call status messages (CID_JSON)\r\n");
+				//printf("Changes take effect immediately.\r\n");
+				gsHhdxFlag.eepromwr =1;
 
 			}else return USMART_PARMERR;			//parameter error.		
 			break;
-
+		case 14:
+			printf("\r\n");
+			res=usmart_get_aparm(str,sfname,&i);
+			if(res==0)return USMART_FUNCERR;		//error getting parameters
+			if(i==0)//get parameters
+			{
+				i=usmart_str2num(sfname,&res);	   		//record parameters
+				switch(res)
+				{
+					case 1: //start	
+						 gpsRecInfo->called_number[0] = '2'; 
+						 gpsRecInfo->called_number[1] = '3';
+						 gpsRecInfo->called_number[2] = '4';
+						 gpsRecInfo->called_number[3] = '5';	
+						 gpsRecInfo->called_number[4] = '\0';
+						
+						 BUILD_CID_JSON_start();  
+						 break;
+					case 2: //offhook
+						 BUILD_CID_JSON_offhook();
+						 break;	
+					case 3: //stop
+						 BUILD_CID_JSON_stop();
+						 break;
+				}
+			}else return USMART_PARMERR;
+			break;
 		default://illegal command
 			//return USMART_FUNCERR;
 			return 0;

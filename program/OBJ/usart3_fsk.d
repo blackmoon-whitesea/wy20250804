@@ -46,3 +46,4 @@
 ..\obj\usart3_fsk.o: ..\HARDWARE\CW2015\cw2015.h
 ..\obj\usart3_fsk.o: ..\HARDWARE\CW2015\iic.h
 ..\obj\usart3_fsk.o: ..\HARDWARE\TIMER\timer.h
+..\obj\usart3_fsk.o: ..\HHDX\RecMsgBuilding.h

@@ -73,6 +73,8 @@
 "..\obj\tel_func.o"
 "..\obj\rtp.o"
 "..\obj\hhdxmsg.o"
+"..\obj\recmsg.o"
+"..\obj\recmsgbuilding.o"
 "..\obj\audio.o"
 "..\obj\usart3_fsk.o"
 "..\obj\usmart.o"
